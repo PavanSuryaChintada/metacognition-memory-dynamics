@@ -1,0 +1,51 @@
+{
+  "source": "notebooks/metacognition.ipynb, Colab run (cells 2, 3, 5 at executions 12, 13, 14). Values copied from the printed output in results/notebook_output.txt unless a note says otherwise.",
+  "model": "facebook/ijepa_vith14_1k",
+  "seed": 42,
+  "steps": 500,
+  "base_params": {"gamma": 0.2, "delta": 0.1, "beta": 3.0, "h": 0.01, "initial_activation": 1.0},
+  "memories": [
+    {"index": 0, "label": "golden_retriever", "decay_rate": 0.8745401188473625, "url": "https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=400"},
+    {"index": 1, "label": "cat", "decay_rate": 1.4507143064099162, "url": "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=400"},
+    {"index": 2, "label": "pug", "decay_rate": 1.231993941811405, "url": "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=400"},
+    {"index": 3, "label": "cute_dog", "decay_rate": 1.0986584841970366, "url": "https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?w=400"}
+  ],
+  "memories_note": "The notebook printed decay rates to 2 decimals (0.87, 1.45, 1.23, 1.10). Full precision values are the first four U(0.5, 1.5) draws after np.random.seed(42), which is how the notebook generated them.",
+  "single_run": {
+    "eta": 0.8,
+    "replay_prob": 0.3,
+    "final_activations": {"golden_retriever": 0.0, "cat": 0.0, "pug": 0.13794458, "cute_dog": 0.0},
+    "final_energy": 0.0150,
+    "retrieval": {
+      "query": "golden_retriever (same image as memory 0)",
+      "top": [
+        {"label": "pug", "score": 0.0414},
+        {"label": "cute_dog", "score": 0.0000},
+        {"label": "golden_retriever", "score": 0.0000}
+      ]
+    },
+    "figure": "figures/dynamics_demo.png"
+  },
+  "regimes": {
+    "sweep_a": {
+      "cell": 3,
+      "figure": "figures/three_regimes_sweep_a.png",
+      "note": "No numbers were printed for this sweep. approx_final_norm values are read off the figure.",
+      "runs": [
+        {"name": "Collapse", "eta": 0.1, "replay_prob": 0.1, "approx_final_norm": 0.01},
+        {"name": "Balanced", "eta": 2.0, "replay_prob": 0.5, "approx_final_norm": 0.6},
+        {"name": "Runaway", "eta": 8.0, "replay_prob": 0.9, "approx_final_norm": 4.7}
+      ]
+    },
+    "sweep_b": {
+      "cell": 5,
+      "figure": "figures/three_regimes_sweep_b.png",
+      "note": "Printed numbers come from a second set of runs that cell 5 made after plotting, with fresh random draws, so they differ slightly from the plotted curves' end points.",
+      "runs": [
+        {"name": "Collapse", "eta": 0.05, "replay_prob": 0.05, "final_norm": 0.0048, "final_energy": 0.000014},
+        {"name": "Balanced", "eta": 2.0, "replay_prob": 0.4, "final_norm": 0.5003, "final_energy": 0.197150},
+        {"name": "Runaway", "eta": 10.0, "replay_prob": 0.9, "final_norm": 5.7369, "final_energy": 25.923445}
+      ]
+    }
+  }
+}

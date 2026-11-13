@@ -4,5 +4,5 @@ __pycache__/
 .venv/
 venv/
 
-# run_experiments.py writes here by default
+# run_experiments.py writes here by default; results/ holds the recorded notebook run
 outputs/

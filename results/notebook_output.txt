@@ -1,0 +1,29 @@
+# Printed output recorded in notebooks/metacognition.ipynb (Colab run).
+# Copied verbatim; nothing re-run. Cell numbers are 0-based positions in the notebook.
+
+## Cell 2 (execution 12): encoding, 500-step run, retrieval
+
+Loading I-JEPA processor and model...
+
+Encoding images with I-JEPA...
+  Successfully stored: golden_retriever (decay=0.87)
+  Successfully stored: cat (decay=1.45)
+  Successfully stored: pug (decay=1.23)
+  Successfully stored: cute_dog (decay=1.10)
+
+Running memory dynamics (500 steps)...
+
+Final activations: [0.         0.         0.13794458 0.        ]
+Final energy: 0.0150
+
+Querying with the first dog image...
+Top retrievals:
+  1. pug (score=0.0414)
+  2. cute_dog (score=0.0000)
+  3. golden_retriever (score=0.0000)
+
+## Cell 5 (execution 14): three-regime sweep B, final state
+
+Collapse: final ||a|| = 0.0048, final energy = 0.000014
+Balanced: final ||a|| = 0.5003, final energy = 0.197150
+Runaway: final ||a|| = 5.7369, final energy = 25.923445
