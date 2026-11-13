@@ -109,6 +109,7 @@ def main():
     parser.add_argument("--embeddings", type=Path, default=None,
                         help="load embeddings saved by a previous run instead of running I-JEPA")
     args = parser.parse_args()
+    args.out.mkdir(parents=True, exist_ok=True)
 
     # One generator for every random draw, in notebook order. RandomState(seed)
     # yields the same stream as np.random.seed(seed) did in the notebook.
