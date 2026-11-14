@@ -1,0 +1,46 @@
+{
+  "source": "notebooks/colab/normalised/beyond_paper/5_5_forgetting_test.ipynb, executed in Colab. Values copied from its printed output in results/forgetting_5_plus_5_output.txt; the figure is results/figures/forgetting_5_plus_5.png.",
+  "setup": {
+    "model": "facebook/ijepa_vith14_1k",
+    "embedding_dim": 1280,
+    "replay": "normalised",
+    "steps": 500,
+    "inject_at": 250,
+    "new_memory_start_activation": 1.0,
+    "seed": 42,
+    "eta": 0.8,
+    "beta": 3.0,
+    "replay_prob": 0.3,
+    "gamma": 0.2,
+    "delta": 0.1,
+    "h": 0.01,
+    "alive_threshold": 0.001
+  },
+  "memories": [
+    { "label": "beagle", "label_in_run": "labrador", "group": "old", "born": 0, "decay_rate_printed": 0.87, "at_250": 0.073327, "final": 0.007573, "status": "ALIVE" },
+    { "label": "cat", "label_in_run": "cat", "group": "old", "born": 0, "decay_rate_printed": 1.45, "at_250": 0.026353, "final": 0.010322, "status": "ALIVE" },
+    { "label": "person", "label_in_run": "person", "group": "old", "born": 0, "decay_rate_printed": 1.23, "at_250": 0.039891, "final": 0.009057, "status": "ALIVE" },
+    { "label": "horse_random", "label_in_run": "horse", "group": "old", "born": 0, "decay_rate_printed": 1.1, "at_250": 0.024744, "final": 0.000389, "status": "DEAD", "no_photo": true },
+    { "label": "landscape", "label_in_run": "landscape", "group": "old", "born": 0, "decay_rate_printed": 0.66, "at_250": 0.125476, "final": 0.007487, "status": "ALIVE" },
+    { "label": "french_bulldog", "label_in_run": "bulldog", "group": "new", "born": 250, "decay_rate_printed": 0.66, "at_250": 1.0, "final": 0.044735, "status": "ALIVE" },
+    { "label": "kitten", "label_in_run": "kitten", "group": "new", "born": 250, "decay_rate_printed": 0.56, "at_250": 1.0, "final": 0.055639, "status": "ALIVE" },
+    { "label": "car", "label_in_run": "car", "group": "new", "born": 250, "decay_rate_printed": 1.37, "at_250": 1.0, "final": 0.012323, "status": "ALIVE" },
+    { "label": "armchair", "label_in_run": "coffee", "group": "new", "born": 250, "decay_rate_printed": 1.1, "at_250": 1.0, "final": 0.018428, "status": "ALIVE" },
+    { "label": "puppy", "label_in_run": "puppy", "group": "new", "born": 250, "decay_rate_printed": 1.21, "at_250": 1.0, "final": 0.016772, "status": "ALIVE" }
+  ],
+  "survivors": { "old": 4, "old_total": 5, "new": 5, "new_total": 5 },
+  "old_change_250_to_500_pct_printed": { "beagle": -89.7, "cat": -60.8, "person": -77.3, "horse_random": -98.4, "landscape": -94.0 },
+  "verdict_printed": "CATASTROPHIC FORGETTING: 1 old memories died after injection. New memories pushed out existing ones.",
+  "old_total_printed": { "at_250": 0.2898, "final": 0.0348, "change_pct": -88.0 },
+  "notes": [
+    "The horse photo's URL returned 404 three times, so encode_image returned torch.randn(1280), a random Gaussian vector, in its place. That memory, labelled horse_random here, is not a photo. It is the one old memory below 0.001 at step 500, and the one the printed verdict counts.",
+    "The photo URLs for the other nine are the ones used in the other runs: labrador is the beagle, bulldog the French bulldog and coffee the armchair.",
+    "at_250 is the activation printed just before the injection for old memories, and the starting activation 1.0 for new ones.",
+    "The printed change for old memories compares step 250 with step 500. The run has no copy without the injection, so the change includes whatever decay would have happened anyway.",
+    "The new memories had 250 steps to decay and the old ones 500. Landscape (old) and French bulldog (new) share the printed decay rate 0.66 and end at 0.007487 and 0.044735.",
+    "Summed activation is 0.289791 just before the injection and 5.289791 just after it (computed from the printed values).",
+    "Replay weights are not printed; anything about them is read off the figure.",
+    "Decay rates are drawn in the order the memories are listed, from the same seed as the other runs, so each draw position gets the same rate as before; the photos at those positions differ from the 10-memory run.",
+    "As in the other comparison scripts, the seed is reset after the decay rates are drawn, before the run starts."
+  ]
+}

@@ -1,0 +1,102 @@
+# Printed output of notebooks/colab/normalised/beyond_paper/5_5_forgetting_test.ipynb (5 memories at step 0,
+# 5 more added at step 250, normalised replay), copied word for word from the executed notebook. The figure is
+# results/figures/forgetting_5_plus_5.png. Labels are the ones used in that run: labrador = the beagle photo,
+# bulldog = the French bulldog, coffee = a photo of an armchair on a cliff by the sea. The horse photo's URL
+# returned 404, so "horse" is a random vector (torch.randn(1280)) the script used in its place, not a photo.
+
+Loading I-JEPA...
+
+Encoding Phase 1 images (old memories)...
+  ✓ labrador: decay=0.87
+  ✓ cat: decay=1.45
+  ✓ person: decay=1.23
+  ⚠️ Failed to download/encode horse after 3 attempts (404 Client Error: Not Found for url: https://images.unsplash.com/photo-1504208434780-5fef26d09c94?w=400). Generating fallback embedding.
+  ✓ horse: decay=1.10
+  ✓ landscape: decay=0.66
+
+Encoding Phase 2 images (new memories)...
+  ✓ bulldog: decay=0.66
+  ✓ kitten: decay=0.56
+  ✓ car: decay=1.37
+  ✓ coffee: decay=1.10
+  ✓ puppy: decay=1.21
+
+============================================================
+Phase 1: 5 memories stored at t=0
+Phase 2: 5 memories will be injected at t=250
+Total steps: 500
+============================================================
+
+Running Phase 1 (steps 0-249)...
+
+Activations BEFORE injection (t=250):
+  labrador    : 0.073327
+  cat         : 0.026353
+  person      : 0.039891
+  horse       : 0.024744
+  landscape   : 0.125476
+
+*** INJECTING 5 NEW MEMORIES AT t=250 ***
+
+  + bulldog: decay=0.66, activation=1.0 (fresh)
+  + kitten: decay=0.56, activation=1.0 (fresh)
+  + car: decay=1.37, activation=1.0 (fresh)
+  + coffee: decay=1.10, activation=1.0 (fresh)
+  + puppy: decay=1.21, activation=1.0 (fresh)
+
+Total memories now: 10
+
+Activations AFTER injection (t=250):
+  labrador    : 0.073327  [OLD]
+  cat         : 0.026353  [OLD]
+  person      : 0.039891  [OLD]
+  horse       : 0.024744  [OLD]
+  landscape   : 0.125476  [OLD]
+  bulldog     : 1.000000  [NEW]
+  kitten      : 1.000000  [NEW]
+  car         : 1.000000  [NEW]
+  coffee      : 1.000000  [NEW]
+  puppy       : 1.000000  [NEW]
+
+Running Phase 2 (steps 250-499)...
+
+============================================================
+FINAL RESULTS (t=500)
+============================================================
+
+Memory       Type        α   Born    Final Act     Status
+--------------------------------------------------------
+  labrador     OLD     0.87      0     0.007573      ALIVE
+  cat          OLD     1.45      0     0.010322      ALIVE
+  person       OLD     1.23      0     0.009057      ALIVE
+  horse        OLD     1.10      0     0.000389       DEAD
+  landscape    OLD     0.66      0     0.007487      ALIVE
+  bulldog      NEW     0.66    250     0.044735      ALIVE
+  kitten       NEW     0.56    250     0.055639      ALIVE
+  car          NEW     1.37    250     0.012323      ALIVE
+  coffee       NEW     1.10    250     0.018428      ALIVE
+  puppy        NEW     1.21    250     0.016772      ALIVE
+
+Old memories surviving: 4/5
+New memories surviving: 5/5
+
+============================================================
+INTERFERENCE ANALYSIS
+============================================================
+
+Memory        Before Inject After 250 more     Change
+------------------------------------------------------
+  labrador           0.073327       0.007573 ↓   -89.7%
+  cat                0.026353       0.010322 ↓   -60.8%
+  person             0.039891       0.009057 ↓   -77.3%
+  horse              0.024744       0.000389 ↓   -98.4%
+  landscape          0.125476       0.007487 ↓   -94.0%
+
+============================================================
+VERDICT
+============================================================
+⚠️  CATASTROPHIC FORGETTING: 1 old memories died after injection.
+   New memories pushed out existing ones.
+
+Total old-memory activation: 0.2898 → 0.0348 (-88.0%)
+   Old memories lost more than half their activation — significant interference.
