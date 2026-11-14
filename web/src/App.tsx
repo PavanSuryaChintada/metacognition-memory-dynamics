@@ -10,10 +10,10 @@ import { Pipeline } from "./components/Pipeline";
 import { DriveChart } from "./components/DriveChart";
 import { Tex } from "./components/Tex";
 import { ReplaySection } from "./components/ReplaySection";
+import { VerdictSection } from "./components/Verdict";
 import { useEnterProgress, useRevealAll } from "./hooks";
 
 const run = recorded.single_run;
-const sweepA = recorded.regimes.sweep_a.runs;
 const sweepB = recorded.regimes.sweep_b.runs;
 const decays = recorded.memories.map((m) => m.decay_rate);
 const minDecay = Math.min(...decays);
@@ -24,7 +24,6 @@ const top = run.retrieval.top[0];
 const impliedCosine = top.score / run.final_activations[top.label];
 const startNorm = Math.sqrt(recorded.memories.length);
 const drive = (r: { eta: number; replay_prob: number }) => +(r.eta * r.replay_prob).toFixed(4);
-const bound = (eta: number) => Math.max(startNorm, eta / minDecay);
 const file = (path: string) => `${REPO}/blob/main/${path}`;
 const N = ({ children }: { children: string }) => <span className="nocase">{children}</span>;
 const d = (n: number) => ({ "--d": n }) as CSSProperties;
@@ -44,9 +43,8 @@ export function App() {
         <ReplaySection num={5} />
         <RetrievalSection />
         <RegimesSection />
-        <TheorySection />
         <PaperSection />
-        <FindingsSection />
+        <VerdictSection num={9} startEnergy={startEnergy} minDecay={minDecay} />
         <ReproduceSection />
       </main>
       <DarkClose />
@@ -248,46 +246,6 @@ function SingleRunSection() {
               </tbody>
             </table>
           </Card>
-          <Card
-            label="Figure 2 · Colab output"
-            meta="‖a(t)‖ · energy, log scale · final activations"
-            note={
-              <>
-                The notebook's own figure, unchanged. Its axis uses the labels from the run: <code>golden_retriever</code> is the
-                beagle, <code>pug</code> the person and <code>cute_dog</code> the French bulldog. ‖a‖ falls from {startNorm.toFixed(1)}{" "}
-                to a noisy plateau near 0.15 from about step 280.
-              </>
-            }
-            numbers={
-              <table>
-                <thead>
-                  <tr>
-                    <th>Memory</th>
-                    <th className="num">
-                      Decay rate <N>α</N>
-                    </th>
-                    <th className="num">Activation at step {recorded.steps}</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {memories.map((m) => (
-                    <tr key={m.label}>
-                      <td>{m.name}</td>
-                      <td className="num">{m.decay_rate.toFixed(2)}</td>
-                      <td className="num">{m.final === 0 ? "0" : m.final.toFixed(8)}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            }
-          >
-            <div className="plate">
-              <img
-                src={figures.demo}
-                alt="Colab figure: activation norm falling from 2 to about 0.15, energy falling from about 3 to 0.015, and a bar chart where only the third memory is above zero."
-              />
-            </div>
-          </Card>
         </div>
       </div>
     </Section>
@@ -345,14 +303,14 @@ function RegimesSection() {
       label="Regimes"
       num={7}
       headline="Three regimes, ordered by replay."
-      lead="Section 4 of the paper predicts collapse, a balanced state and runaway reinforcement as replay gets stronger. The same four memories were run under three settings of η and p, twice."
+      lead="Section 4 of the paper predicts collapse, a balanced state and runaway reinforcement as replay gets stronger. The same four memories were run under three settings of η and p."
     >
       <div className="grid">
         <div className="indent stack">
           <Card
             label={
               <>
-                Figure 4 · Final <N>‖a‖</N> against replay drive
+                Figure 3 · Final <N>‖a‖</N> against replay drive
               </>
             }
             meta="Log scales · seed 42 · 500 steps"
@@ -360,7 +318,6 @@ function RegimesSection() {
               <table>
                 <thead>
                   <tr>
-                    <th>Sweep</th>
                     <th>Regime</th>
                     <th className="num">
                       <N>η</N>
@@ -380,7 +337,6 @@ function RegimesSection() {
                 <tbody>
                   {sweepB.map((r) => (
                     <tr key={`b${r.name}`}>
-                      <td>Final settings</td>
                       <td>{r.name}</td>
                       <td className="num">{r.eta}</td>
                       <td className="num">{r.replay_prob}</td>
@@ -389,29 +345,18 @@ function RegimesSection() {
                       <td className="num">{r.final_energy}</td>
                     </tr>
                   ))}
-                  {sweepA.map((r) => (
-                    <tr key={`a${r.name}`}>
-                      <td>First sweep</td>
-                      <td>{r.name}</td>
-                      <td className="num">{r.eta}</td>
-                      <td className="num">{r.replay_prob}</td>
-                      <td className="num">{drive(r)}</td>
-                      <td className="num">≈ {r.approx_final_norm}</td>
-                      <td className="num">not printed</td>
-                    </tr>
-                  ))}
                 </tbody>
               </table>
             }
           >
             <DriveChart
               exact={sweepB.map((r) => ({ name: r.name, drive: drive(r), norm: r.final_norm }))}
-              approx={sweepA.map((r) => ({ name: r.name, drive: drive(r), norm: r.approx_final_norm }))}
+              approx={[]}
               start={startNorm}
             />
           </Card>
           <Card
-            label="Figure 5 · Final settings"
+            label="Figure 4 · The three regimes"
             meta="Colab output"
             note={`The printed values come from a second run of each setting with fresh random draws, so the Balanced curve here ends near 0.47 while the table says ${sweepB[1].final_norm}.`}
           >
@@ -419,14 +364,6 @@ function RegimesSection() {
               <img
                 src={figures.sweepB}
                 alt="Colab figure: Collapse decays smoothly to zero; Balanced drops to around 0.5 and hovers; Runaway climbs from 2 to about 6 and levels off."
-              />
-            </div>
-          </Card>
-          <Card label="Figure 6 · First sweep" meta="Colab output" note="Slightly different settings. No numbers were printed, so its points in Figure 4 are read off this figure.">
-            <div className="plate">
-              <img
-                src={figures.sweepA}
-                alt="Colab figure: Collapse decays to zero, Balanced settles near 0.6, Runaway climbs to about 4.7."
               />
             </div>
           </Card>
@@ -448,87 +385,12 @@ function RegimesSection() {
   );
 }
 
-function TheorySection() {
-  const peaks: Record<string, string> = { Collapse: "≈ 2.0 (start)", Balanced: "≈ 2.0 (start)", Runaway: "≈ 6.1" };
-  return (
-    <Section
-      id="theory"
-      label="Theory"
-      num={8}
-      headline="Inside the paper's bounds."
-      lead={
-        <>
-          Section 3.2 proves no trajectory leaves <Tex>{"\\|a\\| \\le \\max(\\|a(0)\\|,\\ \\eta / \\lambda_{\\min}(R))"}</Tex>, with{" "}
-          <Tex>{"R = A + \\gamma L + \\delta\\mathbf{1}\\mathbf{1}^\\top"}</Tex>. Since <Tex>{"L"}</Tex> and{" "}
-          <Tex>{"\\mathbf{1}\\mathbf{1}^\\top"}</Tex> are positive semidefinite, <Tex>{"\\lambda_{\\min}(R) \\ge \\min_i \\alpha_i"}</Tex> ={" "}
-          {minDecay.toFixed(3)}, which gives a bound from the recorded decay rates alone.
-        </>
-      }
-    >
-      <div className="grid">
-        <div className="indent stack">
-          <Card label="Boundedness · section 3.2" meta="Largest ‖a‖ read off Figure 5">
-            <table>
-              <thead>
-                <tr>
-                  <th>Regime</th>
-                  <th className="num">
-                    <N>η</N>
-                  </th>
-                  <th className="num">
-                    Bound on <N>‖a‖</N>
-                  </th>
-                  <th className="num">
-                    Largest <N>‖a‖</N> seen
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {sweepB.map((r) => (
-                  <tr key={r.name}>
-                    <td>{r.name}</td>
-                    <td className="num">{r.eta}</td>
-                    <td className="num big">{bound(r.eta).toFixed(2)}</td>
-                    <td className="num big">{peaks[r.name]}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </Card>
-          <div className="prose-cols" data-reveal>
-            <div>
-              <div className="label" style={{ marginBottom: 12 }}>
-                Boundedness
-              </div>
-              <p>
-                Every run stays inside its bound. Runaway is replay-dominated, not divergent: it levels off near 6, well under{" "}
-                {bound(sweepB[2].eta).toFixed(1)}. Section 4.3 says strong replay can make an equilibrium unstable; section 3.2 says
-                trajectories stay bounded regardless. This run fits the second.
-              </p>
-            </div>
-            <div>
-              <div className="label" style={{ marginBottom: 12 }}>
-                Energy · sections 2.4 and 3.1
-              </div>
-              <p>
-                Energy only has to fall with replay off, and the paper's own remark says replay need not preserve that. With replay
-                on, the single run's energy falls about 200 times then wobbles, and runaway ends higher ({sweepB[2].final_energy.toFixed(1)}
-                ) than it started (about {startEnergy.toFixed(2)}). Both fit the theory.
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </Section>
-  );
-}
-
 function PaperSection() {
   return (
     <Section
       id="paper"
       label="The paper"
-      num={9}
+      num={8}
       headline="Same equations, real embeddings."
       lead="The paper proves its results for any embeddings, then illustrates them with synthetic data. Everything here that isn't about the embeddings is the same."
     >
@@ -584,19 +446,6 @@ function PaperSection() {
                       {recorded.steps} steps, one seed ({recorded.seed})
                     </td>
                   </tr>
-                  <tr>
-                    <td>Regimes</td>
-                    <td data-label="Paper">Collapse, balanced and runaway (Figures 1 and 3)</td>
-                    <td data-label="This project">The same three, from three settings of η and p</td>
-                  </tr>
-                  <tr>
-                    <td>Energy</td>
-                    <td data-label="Paper">With replay off, falls steadily (Figure 4)</td>
-                    <td data-label="This project">
-                      With replay on, falls from about {startEnergy.toFixed(2)} to {run.final_energy.toFixed(3)}, then wobbles as replay adds
-                      energy back
-                    </td>
-                  </tr>
                 </tbody>
               </table>
             </div>
@@ -624,49 +473,12 @@ function PaperSection() {
   );
 }
 
-function FindingsSection() {
-  return (
-    <Section id="findings" label="Findings" num={10} headline="What it shows, and what it doesn't.">
-      <div className="grid">
-        <div className="indent two-col">
-          <div data-reveal>
-            <div className="label">Shows</div>
-            <ul className="points">
-              <li>The paper's dynamics run unchanged on real 1,280-dimensional I-JEPA embeddings.</li>
-              <li>They produce the collapse, balanced and runaway regimes the paper predicts.</li>
-              <li>Every trajectory stays inside the paper's boundedness bound.</li>
-              <li>Replay put all of its weight on one memory, the person, from the first replay event to the last, and not on the one that decays slowest.</li>
-              <li>Every pair of photos has a cosine similarity between 0.30 and 0.47 in I-JEPA's embedding space.</li>
-              <li>Retrieval weighted by activation returns whatever survived, even over an exact match.</li>
-            </ul>
-          </div>
-          <div data-reveal style={d(1)}>
-            <div className="label">Doesn't show</div>
-            <ul className="points">
-              <li>
-                Whether similar memories help each other survive. Only one memory ever received replay, so this setup can't show
-                it.
-              </li>
-              <li>Anything statistical. One seed and four memories, where the paper uses 10 seeds and 200 memories.</li>
-              <li>
-                Why the person's replay score is the highest. Cosine similarity alone doesn't explain it: the French bulldog has the
-                largest total similarity to the others (1.27, against the person's 1.22). The score also depends on each embedding's
-                length, which wasn't printed.
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </Section>
-  );
-}
-
 function ReproduceSection() {
   return (
     <Section
       id="reproduce"
       label="Reproduce"
-      num={11}
+      num={10}
       headline="Run it yourself."
       lead={
         <>
@@ -700,8 +512,8 @@ function Statement() {
   const [ref, p] = useEnterProgress<HTMLParagraphElement>(0.3);
   const lines = [
     "Random vectors showed the equations hold.",
-    "Real embeddings show they run on perception.",
-    "Next: does meaning change which memory survives?",
+    "Real embeddings show they run, inside the paper's bounds.",
+    "At β = 3, replay keeps one memory and lets the rest go.",
   ];
   return (
     <p className="statement" ref={ref}>

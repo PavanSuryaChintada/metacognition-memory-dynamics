@@ -138,7 +138,7 @@ export function ReplaySection({ num }: { num: number }) {
           </Card>
 
           <Card
-            label="Figure 3 · Replay tracking"
+            label="Figure 2 · Replay tracking"
             meta="Colab output"
             note={
               <>

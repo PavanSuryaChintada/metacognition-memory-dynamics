@@ -37,9 +37,11 @@ export function DriveChart({ exact, approx, start }: { exact: Point[]; approx: P
         <span>
           <i className="key-line" /> Final settings, printed values
         </span>
-        <span>
-          <i className="key-ring" /> First sweep, read off its figure
-        </span>
+        {approx.length > 0 && (
+          <span>
+            <i className="key-ring" /> First sweep, read off its figure
+          </span>
+        )}
       </div>
       <svg ref={seenRef} className={seen ? "is-drawn" : undefined} width={width} height={height} role="img" aria-label="Final activation size against replay drive, log scales. It rises from 0.0048 at drive 0.0025 to 0.5003 at 0.8 and 5.7369 at 9.">
         {TICKS.map((t) => (
