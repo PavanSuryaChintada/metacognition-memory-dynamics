@@ -39,12 +39,14 @@ Four Unsplash images, each encoded once and stored as a memory. All runs share t
 |---|---|---|---|
 | 0 | `golden_retriever` | a beagle | 0.87 |
 | 1 | `cat` | a cat | 1.45 |
-| 2 | `pug` | **a person** (portrait photo, not a dog) | 1.23 |
+| 2 | `person` | a person | 1.23 |
 | 3 | `cute_dog` | a French bulldog | 1.10 |
 
-> **One label doesn't match its image.** In the notebook's `urls` and `labels` lists, entry 2 is labelled `pug`, but its URL (`photo-1517841905240-472988babdf9`) is a photo of a person. That memory is the one that survives, so the results are about a person photo, not a pug. The other three labels fit their images; `golden_retriever` is a beagle, which is only a breed detail.
+> **Entry 2 was renamed from `pug` to `person`.**
 >
-> The figures in [`results/`](results/) are the notebook's original output, so they keep its labels. **Read `pug` in any figure as "person".** The code in this repo uses descriptive labels.
+> - **Why:** the notebook's first cell used a Wikimedia photo of a pug in that slot. When cell 2 switched to Unsplash URLs, the label stayed `pug`, but the new photo at that position (`photo-1517841905240-472988babdf9`) is a person.
+> - **No numbers change:** labels are only used for printing.
+> - **The record still says `pug`:** the printed output and the Colab figures in [`results/`](results/) come from the run, made before the rename. **Read `pug` there as "person".**
 
 ## Results
 
@@ -61,7 +63,7 @@ All numbers below come from the notebook run in [`notebooks/metacognition.ipynb`
 |---|---|---|
 | beagle | 0.87 | 0 |
 | cat | 1.45 | 0 |
-| person (`pug`) | 1.23 | **0.1379** |
+| person | 1.23 | **0.1379** |
 | French bulldog | 1.10 | 0 |
 
 Final energy is **0.0150**.
@@ -76,7 +78,7 @@ The query is the beagle image, the same image as memory 0.
 
 | Rank | Memory | Score |
 |---|---|---|
-| 1 | person (`pug`) | 0.0414 |
+| 1 | person | 0.0414 |
 | 2 | French bulldog (`cute_dog`) | 0.0000 |
 | 3 | beagle (`golden_retriever`) | 0.0000 |
 

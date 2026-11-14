@@ -141,12 +141,12 @@ function MemoriesSection() {
         id="memories"
         label="The memories"
         num={2}
-        headline="Four photos. The one labelled pug is a person."
+        headline="Four photos, four memories."
         lead={
           <>
-            Each card shows the photo, the label the notebook gave it, and its decay rate. The cat and the two dogs fit their labels
-            (<code>golden_retriever</code> is a beagle, a breed detail). The third photo is labelled <code>pug</code> but shows a
-            person, and it is the memory that survives. The Colab figures keep the notebook's labels.
+            Each card shows the photo, its label in the notebook, and its decay rate. The third photo is a person, and it is the
+            memory that survives. Its label read <code>pug</code> when the notebook ran, so the Colab figures still say{" "}
+            <code>pug</code>; it has been renamed <code>person</code> to match the photo.
           </>
         }
       />
@@ -253,9 +253,8 @@ function SingleRunSection() {
             meta="‖a(t)‖ · energy, log scale · final activations"
             note={
               <>
-                The notebook's own figure, unchanged. Read <code>pug</code> as the person, <code>golden_retriever</code> as the beagle
-                and <code>cute_dog</code> as the French bulldog. ‖a‖ falls from {startNorm.toFixed(1)} to a noisy plateau near 0.15
-                from about step 280.
+                The notebook's own figure, unchanged, made before the label was renamed: the bar marked <code>pug</code> is the person
+                photo. ‖a‖ falls from {startNorm.toFixed(1)} to a noisy plateau near 0.15 from about step 280.
               </>
             }
             numbers={

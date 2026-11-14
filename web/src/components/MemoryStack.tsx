@@ -5,13 +5,12 @@ import { useIsNarrow, usePinnedProgress } from "../hooks";
 const ease = (t: number) => 1 - Math.pow(1 - t, 3);
 
 function MemoryCard({ m, i, style }: { m: (typeof memories)[number]; i: number; style?: CSSProperties }) {
-  // Only flag a label that names a different kind of thing from the photo.
-  const mismatch = m.label === "person" && m.notebook_label === "pug";
+  const survived = m.final > 0;
   return (
     <article className="memory-card" style={style}>
       <div className="memory-card-head">
         <span className="label">({String(i + 1).padStart(2, "0")})</span>
-        {mismatch && <span className="tag">Label says pug</span>}
+        {survived && <span className="tag">Survives</span>}
       </div>
       <img src={m.thumb} alt={m.name} width={480} height={360} loading="lazy" />
       <h4>{m.name}</h4>

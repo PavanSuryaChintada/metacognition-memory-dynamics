@@ -7,10 +7,10 @@
   "memories": [
     {"index": 0, "label": "beagle", "notebook_label": "golden_retriever", "decay_rate": 0.8745401188473625, "url": "https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=400"},
     {"index": 1, "label": "cat", "notebook_label": "cat", "decay_rate": 1.4507143064099162, "url": "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=400"},
-    {"index": 2, "label": "person", "notebook_label": "pug", "decay_rate": 1.231993941811405, "url": "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=400"},
+    {"index": 2, "label": "person", "notebook_label": "person", "decay_rate": 1.231993941811405, "url": "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=400"},
     {"index": 3, "label": "french_bulldog", "notebook_label": "cute_dog", "decay_rate": 1.0986584841970366, "url": "https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?w=400"}
   ],
-  "memories_note": "The notebook printed decay rates to 2 decimals (0.87, 1.45, 1.23, 1.10). Full precision values are the first four U(0.5, 1.5) draws after np.random.seed(42), which is how the notebook generated them. 'label' is what the image shows; 'notebook_label' is what the notebook called it.",
+  "memories_note": "The notebook printed decay rates to 2 decimals (0.87, 1.45, 1.23, 1.10). Full precision values are the first four U(0.5, 1.5) draws after np.random.seed(42), which is how the notebook generated them. 'label' is what the image shows; 'notebook_label' is the label in the notebook's code. Entry 2 read 'pug' when the notebook ran, so the printed output and the Colab figures still say pug; it has since been renamed 'person' to match its image. Labels are only used for printing, so no number changes.",
   "single_run": {
     "eta": 0.8,
     "replay_prob": 0.3,
