@@ -46,7 +46,7 @@ Four Unsplash images, each encoded once and stored as a memory. All runs share t
 
 ## Results
 
-Sections 1 to 3 come from the notebook run in [`notebooks/metacognition.ipynb`](notebooks/metacognition.ipynb). Sections 4 to 6 come from the later Colab runs in [`notebooks/colab/`](notebooks/colab/). For sections 1 to 3:
+Sections 1 to 3 come from the notebook run in [`notebooks/metacognition.ipynb`](notebooks/metacognition.ipynb). Sections 4 to 7 come from the later Colab runs in [`notebooks/colab/`](notebooks/colab/). For sections 1 to 3:
 
 - The printed output is in [`results/notebook_output.txt`](results/notebook_output.txt), copied verbatim.
 - Every value is collected in [`results/metrics.json`](results/metrics.json).
@@ -227,6 +227,46 @@ In the order the notebook prints them, which is by unrounded decay rate:
 - **"DEAD" in the printed table means at or below 0.001.** The raw arm's other nine values are only known to be at most 0.001.
 - **Same replay timing in both arms**, as in §5: the seed is reset after the decay rates are drawn.
 
+### 7. Beyond the paper: new memories added partway through (fifth Colab run)
+
+Every run above stores all of its memories at step 0. [`notebooks/colab/normalised/beyond_paper/5_5_forgetting_test.ipynb`](notebooks/colab/normalised/beyond_paper/5_5_forgetting_test.ipynb) stores five at step 0 and runs for 250 steps, then adds five new ones at activation 1 and runs all ten to step 500. It uses normalised replay with the same settings as §5 and §6: η = 0.8, β = 3, γ = 0.2, δ = 0.1, h = 0.01, p = 0.3, seed 42.
+
+- **Printed output:** [`results/forgetting_5_plus_5_output.txt`](results/forgetting_5_plus_5_output.txt), copied word for word.
+- **Numbers:** [`results/forgetting_5_plus_5.json`](results/forgetting_5_plus_5.json).
+- **Labels:** `labrador` is the beagle, `bulldog` the French bulldog and `coffee` the armchair, as in §6.
+- **The horse is not a photo.** Its link returned 404 three times, so the notebook used a random vector, `torch.randn(1280)`, in its place. It is called the random vector below.
+
+![Five old memories, five new ones added at step 250](results/figures/forgetting_5_plus_5.png)
+
+| Memory | Group | Decay rate α | Step 250 | Step 500 | Change (printed) |
+|---|---|---|---|---|---|
+| beagle | old | 0.87 | 0.073327 | 0.007573 | −89.7% |
+| cat | old | 1.45 | 0.026353 | 0.010322 | −60.8% |
+| person | old | 1.23 | 0.039891 | 0.009057 | −77.3% |
+| random vector (`horse`) | old | 1.10 | 0.024744 | 0.000389 | −98.4% |
+| landscape | old | 0.66 | 0.125476 | 0.007487 | −94.0% |
+| French bulldog | new | 0.66 | 1 (added) | 0.044735 | |
+| kitten | new | 0.56 | 1 (added) | 0.055639 | |
+| car | new | 1.37 | 1 (added) | 0.012323 | |
+| armchair | new | 1.10 | 1 (added) | 0.018428 | |
+| puppy | new | 1.21 | 1 (added) | 0.016772 | |
+
+- **Above 0.001 at step 500:** 4 of 5 old memories and 5 of 5 new ones. The old memory below it is the random vector. All four old photos stay.
+- **The old photos fall 61% to 94% from step 250 to step 500.** There is no copy of the run without the new memories, so this change also holds whatever decay would have happened anyway.
+- **The figure shows when it happens.**
+  - Before step 250 the old memories fall slowly. After it they bend down sharply.
+  - The random vector drops to 0 almost at once. Within about 100 steps the photos are close to 0 on the panel's scale.
+  - The old memories' replay weights drop at step 250, from between 0.15 and 0.24 to between 0 and 0.11. They climb back to between 0.08 and 0.11 by step 500.
+  - These values are read off the figure; the notebook doesn't print them.
+- **Summed activation goes from 0.290 to 5.290 at the injection, about 18 times.** The inhibition term $\delta(\mathbf{1}^\top a)$ is proportional to that sum and takes the same amount off every memory. The run didn't log forces, so each term's share isn't recorded.
+- **New memories end above every old one, but they are 250 steps younger.**
+  - Landscape (old) and French bulldog (new) both print α = 0.66. They end at 0.0075 and 0.0447.
+  - Without a run that adds the same five at step 0, being younger and arriving late can't be told apart.
+- **The printed verdict counts the random vector.** The notebook ends with "CATASTROPHIC FORGETTING: 1 old memories died after injection" and "Total old-memory activation: 0.2898 → 0.0348 (−88.0%)". The memory that died is the random vector.
+  - In 1,280 dimensions, a random vector's cosine similarity with any fixed vector is close to 0, with a spread of about 0.028.
+  - So its replay score gets almost nothing from the new memories.
+- **Not tested:** new memories starting below 1, or extra replay for old memories after new ones arrive.
+
 ## Comparison with the paper
 
 The paper's experiments (section 5.1) and this run share every parameter except the embeddings.
@@ -340,7 +380,9 @@ Every run stays inside its bound. "Runaway" is replay-dominated but bounded, whi
 │       │   └── metacognition_4_memories.ipynb   # run A again + replay tracking
 │       ├── normalised/
 │       │   ├── normalised_metacognition.ipynb   # raw vs normalised, 4 memories
-│       │   └── metacognition_10_mem.ipynb       # raw vs normalised, 10 memories
+│       │   ├── metacognition_10_mem.ipynb       # raw vs normalised, 10 memories
+│       │   └── beyond_paper/
+│       │       └── 5_5_forgetting_test.ipynb    # 5 memories + 5 added at step 250
 │       ├── _facebook_ijepa_vith14_1k.ipynb      # I-JEPA encoder check
 │       └── facebook_vjepa2_vitl_fpc64_256.ipynb # V-JEPA 2 trial, not used
 ├── results/                   # recorded output of every run used
@@ -350,7 +392,8 @@ Every run stays inside its bound. "Runaway" is replay-dominated but bounded, whi
 │   │   ├── three_regimes_sweep_b.png
 │   │   ├── softmax_results.png           # replay-tracking run
 │   │   ├── normalised.png                # raw vs normalised, 4 memories
-│   │   └── normalised_10_memories.png    # raw vs normalised, 10 memories
+│   │   ├── normalised_10_memories.png    # raw vs normalised, 10 memories
+│   │   └── forgetting_5_plus_5.png       # forgetting test
 │   ├── metrics.json
 │   ├── notebook_output.txt    # printed output, verbatim
 │   ├── replay_tracking.json   # numbers from the replay-tracking run
@@ -358,7 +401,9 @@ Every run stays inside its bound. "Runaway" is replay-dominated but bounded, whi
 │   ├── normalised_replay.json # numbers from the 4-memory raw vs normalised run
 │   ├── normalised_output.txt  # its printed output, verbatim
 │   ├── normalised_10_memories.json         # numbers from the 10-memory run
-│   └── normalised_10_memories_output.txt   # its printed output, verbatim
+│   ├── normalised_10_memories_output.txt   # its printed output, verbatim
+│   ├── forgetting_5_plus_5.json            # numbers from the forgetting test
+│   └── forgetting_5_plus_5_output.txt      # its printed output, verbatim
 ├── web/                       # website: Vite + React + TypeScript
 │   ├── src/                   # pages, components, styles
 │   └── public/memories/       # thumbnails of the photos
@@ -375,6 +420,7 @@ Every run was executed in Google Colab. The notebooks are kept with their code a
 | [`notebooks/colab/unnormalised/metacognition_4_memories.ipynb`](notebooks/colab/unnormalised/metacognition_4_memories.ipynb) | The original runs again, then replay tracking (cell headed `TRUE RUN 1 REPRODUCTION WITH F(a) TRACKING`). Two exploratory cells before it use other settings and aren't used | Results §4 |
 | [`notebooks/colab/normalised/normalised_metacognition.ipynb`](notebooks/colab/normalised/normalised_metacognition.ipynb) | Raw vs normalised replay, 4 memories | Results §5 |
 | [`notebooks/colab/normalised/metacognition_10_mem.ipynb`](notebooks/colab/normalised/metacognition_10_mem.ipynb) | Raw vs normalised replay, 10 memories | Results §6 |
+| [`notebooks/colab/normalised/beyond_paper/5_5_forgetting_test.ipynb`](notebooks/colab/normalised/beyond_paper/5_5_forgetting_test.ipynb) | Beyond the paper: five memories at step 0, five more added at step 250, normalised replay | Results §7 |
 | [`notebooks/colab/_facebook_ijepa_vith14_1k.ipynb`](notebooks/colab/_facebook_ijepa_vith14_1k.ipynb) | Encoder check: cosine similarity of a dog photo with a cat (0.3244) and with another dog (0.3804) | Not used |
 | [`notebooks/colab/facebook_vjepa2_vitl_fpc64_256.ipynb`](notebooks/colab/facebook_vjepa2_vitl_fpc64_256.ipynb) | V-JEPA 2 video trial: gets an embedding of shape [1, 8192, 1024], then the classification step stops with `OSError` because the model id `facebook/vjepa2-vitl-fpc64-256-ssv2` isn't on Hugging Face | Not used |
 
@@ -410,7 +456,7 @@ Other flags:
 
 ## Website
 
-[`web/`](web/) is the website for everything above. The overview page shows what stays the same in every run: the model, the memories, the architecture and the paper's setup. Its hero holds two cards, one per run (unnormalised replay and normalised replay), and each opens a page with that run's explanation and every recorded result. The normalised-replay page has two experiment cards, 4 memories and 10 memories. Every page links the Colab notebook its numbers come from.
+[`web/`](web/) is the website for everything above. The overview page shows what stays the same in every run: the model, the memories, the architecture and the paper's setup. Its hero holds two cards, one per run (unnormalised replay and normalised replay), and each opens a page with that run's explanation and every recorded result. The normalised-replay page has three experiment cards: 4 memories, 10 memories, and tests beyond the paper. Every page links the Colab notebook its numbers come from.
 
 - **No copied numbers.** It imports the JSON files and Colab figures straight from `results/`, so the pages always show the recorded runs.
 - **Built with** Vite, React and TypeScript. The charts are hand-written SVG and the maths uses KaTeX. There are no other runtime dependencies.
