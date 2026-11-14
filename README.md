@@ -42,9 +42,9 @@ Four Unsplash images, each encoded once and stored as a memory. All runs share t
 | 2 | `pug` | **a person** (portrait photo, not a dog) | 1.23 |
 | 3 | `cute_dog` | a French bulldog | 1.10 |
 
-> **Label correction.** The notebook's labels were carried over from its first attempt, which used Wikimedia photos of a labrador, a cat, a pug and a dog. Those downloads failed. The Unsplash images that replaced them were never checked against the labels, and image 2 is a photo of a person.
+> **One label doesn't match its image.** In the notebook's `urls` and `labels` lists, entry 2 is labelled `pug`, but its URL (`photo-1517841905240-472988babdf9`) is a photo of a person. That memory is the one that survives, so the results are about a person photo, not a pug. The other three labels fit their images; `golden_retriever` is a beagle, which is only a breed detail.
 >
-> The figures in [`results/`](results/) are the notebook's original output, so they still show the old labels. **Read `pug` in any figure as "person".** The code in this repo uses the corrected labels.
+> The figures in [`results/`](results/) are the notebook's original output, so they keep its labels. **Read `pug` in any figure as "person".** The code in this repo uses descriptive labels.
 
 ## Results
 
