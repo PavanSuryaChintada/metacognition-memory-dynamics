@@ -265,6 +265,12 @@ const NOTEBOOK_ROWS: { path: string; href: string; what: string; output?: string
     output: "results/normalised_10_memories_output.txt",
   },
   {
+    path: "colab/normalised/beyond_paper/5_5_forgetting_test.ipynb",
+    href: NOTEBOOKS.forgetting,
+    what: "Run B, beyond the paper: five memories from step 0, five more added at step 250. The horse photo's link was dead, so a random vector stands in for it.",
+    output: "results/forgetting_5_plus_5_output.txt",
+  },
+  {
     path: "colab/_facebook_ijepa_vith14_1k.ipynb",
     href: NOTEBOOKS.ijepaSample,
     what: "Encoder check: loads I-JEPA and prints the cosine similarity of a dog photo with a cat (0.3244) and with another dog (0.3804).",

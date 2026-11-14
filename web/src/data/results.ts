@@ -5,11 +5,13 @@ import normalisedRun from "../../../results/normalised_replay.json";
 import normalisedFigure from "../../../results/figures/normalised.png";
 import tenRun from "../../../results/normalised_10_memories.json";
 import tenFigure from "../../../results/figures/normalised_10_memories.png";
+import forgettingRun from "../../../results/forgetting_5_plus_5.json";
+import forgettingFigure from "../../../results/figures/forgetting_5_plus_5.png";
 import demoFigure from "../../../results/figures/dynamics_demo.png";
 import sweepAFigure from "../../../results/figures/three_regimes_sweep_a.png";
 import sweepBFigure from "../../../results/figures/three_regimes_sweep_b.png";
 import softmaxFigure from "../../../results/figures/softmax_results.png";
-import type { NormalisedComparison, Recorded, ReplayTracking, TenMemories } from "./types";
+import type { ForgettingTest, NormalisedComparison, Recorded, ReplayTracking, TenMemories } from "./types";
 
 export const recorded = metrics as Recorded;
 /** The second Colab run, which logged the softmax replay weights at every step. */
@@ -18,6 +20,8 @@ export const replay = replayRun as ReplayTracking;
 export const normalised = normalisedRun as NormalisedComparison;
 /** The 10-memory run: the same comparison with six more photos. */
 export const ten = tenRun as TenMemories;
+/** A test beyond the paper: five memories at step 0, five more added at step 250. */
+export const forgetting = forgettingRun as ForgettingTest;
 export const figures = {
   demo: demoFigure,
   sweepA: sweepAFigure,
@@ -25,6 +29,7 @@ export const figures = {
   softmax: softmaxFigure,
   normalised: normalisedFigure,
   ten: tenFigure,
+  forgetting: forgettingFigure,
 };
 
 /**
@@ -66,6 +71,16 @@ export const REPO = "https://github.com/PavanSuryaChintada/metacognition-memory-
 export const AUTHOR = "Pavan Surya Chintada";
 export const AUTHOR_GITHUB = "https://github.com/PavanSuryaChintada";
 
+/**
+ * The forgetting test's ten memories. "horse_random" is the random vector the notebook used when the
+ * horse photo's link was dead, so it has no thumbnail.
+ */
+export const forgettingMemories = forgetting.memories.map((m) => ({
+  ...m,
+  name: m.no_photo ? "Random vector" : PHOTOS[m.label].name,
+  thumb: m.no_photo ? undefined : PHOTOS[m.label].thumb,
+}));
+
 /** The ten memories of the 10-memory run, with names, thumbnails and printed decay rates. */
 export const tenMemories = ten.memories.map((m) => ({
   label: m.label,
@@ -81,6 +96,7 @@ export const NOTEBOOKS = {
   unnormalised4: nb("colab/unnormalised/metacognition_4_memories.ipynb"),
   normalised4: nb("colab/normalised/normalised_metacognition.ipynb"),
   normalised10: nb("colab/normalised/metacognition_10_mem.ipynb"),
+  forgetting: nb("colab/normalised/beyond_paper/5_5_forgetting_test.ipynb"),
   ijepaSample: nb("colab/_facebook_ijepa_vith14_1k.ipynb"),
   vjepaSample: nb("colab/facebook_vjepa2_vitl_fpc64_256.ipynb"),
 };

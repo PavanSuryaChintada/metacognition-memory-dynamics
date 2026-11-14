@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 
-export type Route = "home" | "unnormalised" | "normalised" | "normalised-10";
+export type Route = "home" | "unnormalised" | "normalised" | "normalised-10" | "normalised-beyond";
 
 const parse = (hash: string): Route =>
   hash === "#/unnormalised"
@@ -9,9 +9,11 @@ const parse = (hash: string): Route =>
       ? "normalised"
       : hash === "#/normalised/10"
         ? "normalised-10"
-        : "home";
+        : hash === "#/normalised/beyond"
+          ? "normalised-beyond"
+          : "home";
 
-const isRunB = (r: Route) => r === "normalised" || r === "normalised-10";
+export const isRunB = (r: Route) => r === "normalised" || r === "normalised-10" || r === "normalised-beyond";
 
 /**
  * Hash routing: "#/unnormalised" and "#/normalised" open a run's page; any other hash is
@@ -30,7 +32,7 @@ export function useRoute() {
   useEffect(() => {
     const from = prev.current;
     prev.current = route;
-    // switching between run B's 4- and 10-memory views keeps the reader at the experiment cards
+    // switching between run B's views keeps the reader at the experiment cards
     if (from && from !== route && isRunB(from) && isRunB(route)) {
       const raf = requestAnimationFrame(() => document.getElementById("experiments")?.scrollIntoView());
       return () => cancelAnimationFrame(raf);

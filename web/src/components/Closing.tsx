@@ -34,8 +34,8 @@ export function Closing() {
       <div className="wrap">
         <Statement />
         <p className="sub">
-          Everything here comes from four recorded Colab runs: the original notebook, the replay-tracking run, and the
-          raw-versus-normalised comparisons with 4 and 10 memories.
+          Everything here comes from five recorded Colab runs: the original notebook, the replay-tracking run, the
+          raw-versus-normalised comparisons with 4 and 10 memories, and the forgetting test beyond the paper.
         </p>
 
         <div className="footer-cols">
@@ -76,6 +76,9 @@ export function Closing() {
               </li>
               <li>
                 <a href={NOTEBOOKS.normalised10}>Run B, 10 memories</a>
+              </li>
+              <li>
+                <a href={NOTEBOOKS.forgetting}>Run B, forgetting test</a>
               </li>
               <li>
                 <a href={`${REPO}/tree/main/notebooks/colab`}>All Colab notebooks</a>

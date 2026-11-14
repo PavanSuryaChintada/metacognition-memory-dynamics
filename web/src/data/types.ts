@@ -47,6 +47,39 @@ export type TenMemories = {
   order_by_decay_as_printed: string[];
 };
 
+/** Shape of results/forgetting_5_plus_5.json: five memories at step 0, five more added at step 250. */
+export type ForgettingTest = {
+  setup: {
+    replay: string;
+    steps: number;
+    inject_at: number;
+    new_memory_start_activation: number;
+    seed: number;
+    eta: number;
+    beta: number;
+    replay_prob: number;
+    gamma: number;
+    delta: number;
+    h: number;
+    alive_threshold: number;
+  };
+  memories: {
+    label: string;
+    label_in_run: string;
+    group: "old" | "new";
+    born: number;
+    decay_rate_printed: number;
+    at_250: number;
+    final: number;
+    status: string;
+    no_photo?: boolean;
+  }[];
+  survivors: { old: number; old_total: number; new: number; new_total: number };
+  old_change_250_to_500_pct_printed: Record<string, number>;
+  verdict_printed: string;
+  old_total_printed: { at_250: number; final: number; change_pct: number };
+};
+
 /** Shape of results/metrics.json: the numbers the Colab run printed. */
 export type Recorded = {
   source: string;

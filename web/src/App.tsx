@@ -4,7 +4,7 @@ import { Home } from "./pages/Home";
 import { RunUnnormalised } from "./pages/RunUnnormalised";
 import { RunNormalised } from "./pages/RunNormalised";
 import { useRevealAll } from "./hooks";
-import { useRoute } from "./router";
+import { isRunB, useRoute } from "./router";
 
 /** Overview with the two run cards, plus one page per run, switched by the URL hash. */
 export function App() {
@@ -13,11 +13,11 @@ export function App() {
   return (
     <>
       <Header route={route} />
-      <main key={route === "normalised-10" ? "normalised" : route}>
+      <main key={isRunB(route) ? "normalised" : route}>
         {route === "unnormalised" ? (
           <RunUnnormalised />
-        ) : route === "normalised" || route === "normalised-10" ? (
-          <RunNormalised view={route === "normalised-10" ? 10 : 4} />
+        ) : isRunB(route) ? (
+          <RunNormalised view={route === "normalised-10" ? 10 : route === "normalised-beyond" ? "beyond" : 4} />
         ) : (
           <Home />
         )}

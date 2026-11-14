@@ -1,7 +1,7 @@
 import type { CSSProperties, ReactNode } from "react";
 import { REPO } from "../data/results";
 import { useHeaderOnDark } from "../hooks";
-import type { Route } from "../router";
+import { isRunB, type Route } from "../router";
 
 /** The project mark: three memories fading, one held by replay. */
 export function Mark({ size = 26 }: { size?: number }) {
@@ -36,7 +36,7 @@ export function Header({ route }: { route: Route }) {
               <a href="#/unnormalised" aria-current={route === "unnormalised" ? "page" : undefined}>
                 Run A
               </a>
-              <a href="#/normalised" aria-current={route === "normalised" || route === "normalised-10" ? "page" : undefined}>
+              <a href="#/normalised" aria-current={isRunB(route) ? "page" : undefined}>
                 Run B
               </a>
             </>

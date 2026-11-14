@@ -1,5 +1,6 @@
 import {
   figures,
+  forgetting,
   memories,
   nameOf,
   normalised,
@@ -9,6 +10,7 @@ import {
   replay,
   ten,
   tenMemories,
+  forgettingMemories,
 } from "../data/results";
 import { file, lateShareRange, normalisedFinals } from "../data/derived";
 import { Card, Section } from "../components/Layout";
@@ -19,10 +21,12 @@ import { N } from "../components/ui";
 const pct = (v: number) => `${(v * 100).toFixed(1)}%`;
 /** Lower-case a memory name mid-sentence, keeping "French" capitalised. */
 const lc = (name: string) => (name.startsWith("French") ? name : name.toLowerCase());
-const CARD_SCALE = 0.05; // both experiment cards share this bar scale
+const CARD_SCALE = 0.05; // the 4- and 10-memory cards share this bar scale
 
-/** Run B: replay scores from embeddings scaled to length 1, run with 4 and with 10 memories. */
-export function RunNormalised({ view }: { view: 4 | 10 }) {
+type View = 4 | 10 | "beyond";
+
+/** Run B: replay scores from embeddings scaled to length 1, run with 4 and with 10 memories, plus tests beyond the paper. */
+export function RunNormalised({ view }: { view: View }) {
   return (
     <>
       <RunIntro
@@ -38,7 +42,8 @@ export function RunNormalised({ view }: { view: 4 | 10 }) {
             </p>
             <p>
               It was run twice: with the four photos used everywhere else on this site, and with ten photos. Each run also repeats the
-              raw version side by side, so every comparison below is within one script. Pick one.
+              raw version side by side, so every comparison below is within one script. A third box holds tests beyond the paper,
+              starting with new memories added partway through a run. Pick one.
             </p>
           </>
         }
@@ -46,14 +51,14 @@ export function RunNormalised({ view }: { view: 4 | 10 }) {
         formulaNote="X̂ is X with every embedding scaled to length 1, so X̂ᵀX̂ holds cosine similarities. Only F(a) uses it; diffusion already used cosine similarity in both runs."
       />
       <ExperimentCards view={view} />
-      {view === 4 ? <FourMemories /> : <TenMemoriesView />}
+      {view === 4 ? <FourMemories /> : view === 10 ? <TenMemoriesView /> : <BeyondView />}
     </>
   );
 }
 
 /* ------------------------------------------------------------------ cards */
 
-function ExperimentCards({ view }: { view: 4 | 10 }) {
+function ExperimentCards({ view }: { view: View }) {
   const tenLate = ten.final_activations.normalised;
   return (
     <section className="section" id="experiments">
@@ -105,10 +110,40 @@ function ExperimentCards({ view }: { view: 4 | 10 }) {
               </div>
             </dl>
           </a>
+          <a
+            className={`run-card experiment-card${view === "beyond" ? " on" : ""}`}
+            href="#/normalised/beyond"
+            aria-current={view === "beyond" ? "page" : undefined}
+          >
+            <div className="run-card-head">
+              <span className="label">Experiment 3</span>
+              {view === "beyond" && <span className="tag new">Showing</span>}
+            </div>
+            <h2 className="run-title">Tests beyond the paper</h2>
+            <p className="run-desc">
+              New memories partway through a run: five stored at step 0, five more added at step {forgetting.setup.inject_at}.
+            </p>
+            <Timeline />
+            <dl className="run-stats">
+              <div>
+                <dt>Old memories left</dt>
+                <dd>
+                  {forgetting.survivors.old} of {forgetting.survivors.old_total}{" "}
+                  <span className="dd-sub">the one lost is a random vector, not a photo</span>
+                </dd>
+              </div>
+              <div>
+                <dt>New memories left</dt>
+                <dd>
+                  {forgetting.survivors.new} of {forgetting.survivors.new_total}
+                </dd>
+              </div>
+            </dl>
+          </a>
         </div>
         <p className="run-cards-note muted small">
-          Bars show the normalised arm's activation at step 500 on the same scale, 0 to {CARD_SCALE}, in both cards. Same η, β, p and
-          seed in both experiments; the first four photos and their decay rates are the same.
+          In the first two cards, bars show the normalised arm's activation at step 500 on the same scale, 0 to {CARD_SCALE}. Same η, β,
+          p and seed in both; the first four photos and their decay rates are the same.
         </p>
       </div>
     </section>
@@ -674,6 +709,426 @@ function Code10Section({ num }: { num: number }) {
           </ul>
           <div className="btn-row">
             <a className="btn btn-primary" href={NOTEBOOKS.normalised10}>
+              Open the Colab notebook on GitHub
+            </a>
+            <a className="btn btn-text" href="#/normalised">
+              <span aria-hidden="true">←</span> Back to 4 memories
+            </a>
+          </div>
+        </div>
+      </div>
+    </Section>
+  );
+}
+
+/* ------------------------------------------------------- tests beyond the paper */
+
+const fg = forgetting.setup;
+const oldMems = forgettingMemories.filter((m) => m.group === "old");
+const newMems = forgettingMemories.filter((m) => m.group === "new");
+const randomVec = forgettingMemories.find((m) => m.no_photo)!;
+const oldPhotos = oldMems.filter((m) => !m.no_photo);
+const sumBefore = oldMems.reduce((s, m) => s + m.at_250, 0);
+const sumAfter = sumBefore + newMems.length * fg.new_memory_start_activation;
+const range = (xs: number[]) => [Math.min(...xs), Math.max(...xs)] as const;
+const oldPhotoFinal = range(oldPhotos.map((m) => m.final));
+const newFinal = range(newMems.map((m) => m.final));
+const pctChange = forgetting.old_change_250_to_500_pct_printed;
+const photoDrops = range(oldPhotos.map((m) => -pctChange[m.label]));
+const topEnd = [...forgettingMemories].sort((a, b) => b.final - a.final)[0];
+const minDecayAll = Math.min(...forgettingMemories.map((m) => m.decay_rate_printed));
+// an old photo and a new one that print the same decay rate: same α, different age
+const pairOld = oldPhotos.find((o) => newMems.some((n) => n.decay_rate_printed === o.decay_rate_printed))!;
+const pairNew = newMems.find((n) => n.decay_rate_printed === pairOld.decay_rate_printed)!;
+const f4 = (v: number) => v.toFixed(4);
+
+/** Which memories exist when: five from step 0, five more from the injection step. */
+function Timeline({ large = false }: { large?: boolean }) {
+  const at = (fg.inject_at / fg.steps) * 100;
+  return (
+    <div
+      className={`timeline${large ? " timeline-large" : ""}`}
+      role="img"
+      aria-label={`Five old memories from step 0 to ${fg.steps}; five new memories from step ${fg.inject_at} to ${fg.steps}.`}
+    >
+      <div className="tl-row">
+        <span className="tl-name">5 old</span>
+        <span className="tl-track">
+          <span className="tl-bar" style={{ left: 0, right: 0 }} />
+        </span>
+      </div>
+      <div className="tl-row">
+        <span className="tl-name">5 new</span>
+        <span className="tl-track">
+          <span className="tl-bar tl-new" style={{ left: `${at}%`, right: 0 }} />
+        </span>
+      </div>
+      <div className="tl-row">
+        <span className="tl-name">step</span>
+        <span className="tl-ticks">
+          <span>0</span>
+          <span>{fg.inject_at}</span>
+          <span>{fg.steps}</span>
+        </span>
+      </div>
+    </div>
+  );
+}
+
+function Thumb({ m }: { m: (typeof forgettingMemories)[number] }) {
+  return m.thumb ? (
+    <img className="thumb" src={m.thumb} alt="" width={48} height={36} />
+  ) : (
+    <span className="thumb thumb-none" aria-hidden="true">
+      no photo
+    </span>
+  );
+}
+
+function BeyondView() {
+  return (
+    <>
+      <TestSection num={1} />
+      <BeyondResultSection num={2} />
+      <OldMemoriesSection num={3} />
+      <NewVsOldSection num={4} />
+      <VerdictLineSection num={5} />
+      <BeyondFigureSection num={6} />
+      <BeyondFindingsSection num={7} />
+      <BeyondCodeSection num={8} />
+    </>
+  );
+}
+
+function TestSection({ num }: { num: number }) {
+  return (
+    <Section
+      id="test"
+      label="The test"
+      num={num}
+      headline="Five memories, then five more halfway through."
+      lead={`Every other run on this site stores all of its memories at step 0. Here five are stored at step 0 and run for ${fg.inject_at} steps. Then five new ones are added at activation ${fg.new_memory_start_activation}, and all ten run on to step ${fg.steps}.`}
+    >
+      <div className="grid">
+        <div className="indent stack">
+          <Card
+            label="Timeline"
+            meta="5_5_forgetting_test.ipynb"
+            note={
+              <>
+                The horse photo's link returned 404 three times, so the notebook put a random vector (<code>torch.randn(1280)</code>) in its
+                place. It runs as a memory labelled <code>horse</code>, but it is not a photo, and this page calls it the random vector.
+              </>
+            }
+          >
+            <Timeline large />
+            <ul className="points compact" style={{ marginTop: 18 }}>
+              <li>
+                <b>Old, from step 0:</b> {oldMems.map((m) => lc(m.name)).join(", ")}.
+              </li>
+              <li>
+                <b>New, from step {fg.inject_at}:</b> {newMems.map((m) => lc(m.name)).join(", ")}, each starting at{" "}
+                {fg.new_memory_start_activation}.
+              </li>
+              <li>
+                Normalised replay, as in the rest of run B. <N>η</N> = {fg.eta}, <N>β</N> = {fg.beta}, <N>γ</N> = {fg.gamma},{" "}
+                <N>δ</N> = {fg.delta}, h = {fg.h}, p = {fg.replay_prob}, seed {fg.seed}.
+              </li>
+            </ul>
+          </Card>
+        </div>
+      </div>
+    </Section>
+  );
+}
+
+function BeyondResultSection({ num }: { num: number }) {
+  return (
+    <Section
+      id="result"
+      label="The result"
+      num={num}
+      headline={`${forgetting.survivors.old} of ${forgetting.survivors.old_total} old memories and ${forgetting.survivors.new} of ${forgetting.survivors.new_total} new ones are left.`}
+      lead={`Status as the notebook printed it at step ${fg.steps}: above ${fg.alive_threshold} counts as left. Each memory's activation just before the new ones arrived, and at the end.`}
+    >
+      <div className="grid">
+        <div className="indent stack">
+          <div className="stats">
+            <Card label="Old memories left" meta={`Above ${fg.alive_threshold}`}>
+              <div className="stat-value ember">
+                {forgetting.survivors.old}
+                <span className="unit">of {forgetting.survivors.old_total}</span>
+              </div>
+              <div className="stat-sub">
+                The one below is the random vector, at {randomVec.final.toFixed(6)}. All four photos stay.
+              </div>
+            </Card>
+            <Card label="New memories left" meta={`Added at step ${fg.inject_at}`} delay={1}>
+              <div className="stat-value">
+                {forgetting.survivors.new}
+                <span className="unit">of {forgetting.survivors.new_total}</span>
+              </div>
+              <div className="stat-sub">
+                They end between {f4(newFinal[0])} and {f4(newFinal[1])}.
+              </div>
+            </Card>
+            <Card label="Highest at the end" meta={topEnd.name} delay={2}>
+              <div className="stat-value">{f4(topEnd.final)}</div>
+              <div className="stat-sub">
+                New, {topEnd.decay_rate_printed === minDecayAll ? "with the slowest decay in the run" : "decay rate"}, <N>α</N> ={" "}
+                {topEnd.decay_rate_printed.toFixed(2)}.
+              </div>
+            </Card>
+          </div>
+          <Card
+            label={`Activation at step ${fg.inject_at} and step ${fg.steps}`}
+            meta="In the notebook's order"
+            note={`Step ${fg.inject_at} is the activation printed just before the new memories were added; new memories start at ${fg.new_memory_start_activation}. Change is the notebook's own column, from step ${fg.inject_at} to step ${fg.steps}.`}
+          >
+            <div className="scroll">
+              <table className="thumb-table">
+                <thead>
+                  <tr>
+                    <th>Memory</th>
+                    <th>Group</th>
+                    <th className="num">
+                      <N>α</N>
+                    </th>
+                    <th className="num">Step {fg.inject_at}</th>
+                    <th className="num">Step {fg.steps}</th>
+                    <th className="num">Change</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {forgettingMemories.map((m) => (
+                    <tr key={m.label} className={m.status === "DEAD" ? "gone" : undefined}>
+                      <td>
+                        <span className="thumb-name">
+                          <Thumb m={m} />
+                          <span>
+                            {m.name}
+                            {m.label_in_run !== m.label && (
+                              <span className="muted small">
+                                {" "}
+                                <code>{m.label_in_run}</code>
+                              </span>
+                            )}
+                          </span>
+                        </span>
+                      </td>
+                      <td>{m.group === "old" ? "Old" : "New"}</td>
+                      <td className="num">{m.decay_rate_printed.toFixed(2)}</td>
+                      <td className="num">{m.group === "old" ? m.at_250.toFixed(6) : `${m.at_250} (added)`}</td>
+                      <td className={`num big${m.group === "new" ? " ember-text" : ""}`}>{m.final.toFixed(6)}</td>
+                      <td className="num">
+                        {m.group === "old" ? `${forgetting.old_change_250_to_500_pct_printed[m.label].toFixed(1)}%` : "—"}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </Card>
+        </div>
+      </div>
+    </Section>
+  );
+}
+
+function OldMemoriesSection({ num }: { num: number }) {
+  return (
+    <Section
+      id="old"
+      label="Old memories"
+      num={num}
+      headline={`The old photos fall ${Math.round(photoDrops[0])}% to ${Math.round(photoDrops[1])}% after step ${fg.inject_at}.`}
+      lead={`That is the printed change from just before the new memories arrived to step ${fg.steps}; the random vector falls ${-pctChange[randomVec.label]}%. The run has no copy without the new memories, so the change also holds whatever decay would have happened anyway. The figure shows when it happens.`}
+    >
+      <div className="grid">
+        <div className="indent stack">
+          <ul className="points" data-reveal>
+            <li>
+              <b>Activations, figure top left.</b> Before step {fg.inject_at} the old memories fall slowly. After it they bend down
+              sharply: the random vector drops to 0 almost at once, and within about 100 steps the photos are close to 0 on the panel's
+              scale. The four photos end between {f4(oldPhotoFinal[0])} and {f4(oldPhotoFinal[1])}.
+            </li>
+            <li>
+              <b>Replay weights, top right.</b> At step {fg.inject_at} the old memories' weights drop from between 0.15 and 0.24 to between 0
+              and 0.11, then climb back to between 0.08 and 0.11 by step {fg.steps}. Read off the panel; the notebook doesn't print them.
+            </li>
+            <li>
+              <b>Inhibition.</b> Summed activation goes from {sumBefore.toFixed(3)} just before step {fg.inject_at} to {sumAfter.toFixed(3)}{" "}
+              just after, about {Math.round(sumAfter / sumBefore)} times. The inhibition term <N>δ</N>(1ᵀa) is proportional to that sum and
+              takes the same amount off every memory, so it weighs most on the ones that are already small. The run didn't log the forces,
+              so how much each term contributed isn't recorded.
+            </li>
+          </ul>
+        </div>
+      </div>
+    </Section>
+  );
+}
+
+function NewVsOldSection({ num }: { num: number }) {
+  return (
+    <Section
+      id="new-old"
+      label="New against old"
+      num={num}
+      headline={`New memories end higher, but they are ${fg.steps - fg.inject_at} steps younger.`}
+      lead={`At step ${fg.steps} every new memory is above every old one. The new ones started at ${fg.new_memory_start_activation} and have had ${fg.steps - fg.inject_at} steps to decay; the old ones have had ${fg.steps}.`}
+    >
+      <div className="grid">
+        <div className="indent stack">
+          <div className="grid-2">
+            {[pairOld, pairNew].map((m, i) => (
+              <Card
+                key={m.label}
+                label={m.group === "old" ? "Old, from step 0" : `New, from step ${fg.inject_at}`}
+                meta={<>Same <N>α</N> = {m.decay_rate_printed.toFixed(2)}</>}
+                delay={i}
+              >
+                <div className="pair-memory">
+                  <Thumb m={m} />
+                  <span>{m.name}</span>
+                </div>
+                <div className={`stat-value${m.group === "new" ? " ember" : ""}`}>{f4(m.final)}</div>
+                <div className="stat-sub">
+                  At step {fg.steps}, after {fg.steps - m.born} steps.
+                </div>
+              </Card>
+            ))}
+          </div>
+          <p className="muted" data-reveal>
+            Same decay rate, and the younger one ends {(pairNew.final / pairOld.final).toFixed(1)} times higher. Without a run that adds
+            the same five memories at step 0, being younger and arriving late can't be told apart. In the figure the two slowest new
+            memories are still falling at step {fg.steps}.
+          </p>
+        </div>
+      </div>
+    </Section>
+  );
+}
+
+function VerdictLineSection({ num }: { num: number }) {
+  return (
+    <Section
+      id="verdict-line"
+      label="The printed verdict"
+      num={num}
+      headline="The one old memory lost is the random vector."
+      lead={
+        <>
+          The notebook ends with “{forgetting.verdict_printed.split(".")[0]}.” and “Total old-memory activation:{" "}
+          {forgetting.old_total_printed.at_250} → {forgetting.old_total_printed.final} ({forgetting.old_total_printed.change_pct.toFixed(1)}
+          %)”. Both include the random vector.
+        </>
+      }
+    >
+      <div className="grid">
+        <div className="indent stack">
+          <ul className="points" data-reveal>
+            <li>
+              <b>The memory that died isn't a photo.</b> It is the random vector the notebook used when the horse link failed. Every old
+              memory that is a photo ends above {fg.alive_threshold}.
+            </li>
+            <li>
+              <b>A random vector has almost nothing in common with the photos.</b> In 1,280 dimensions its cosine similarity with any fixed
+              vector is close to 0, with a spread of about 1/√1280 ≈ {(1 / Math.sqrt(1280)).toFixed(3)}. Its replay score therefore gets
+              almost nothing from the new memories. In the figure its replay weight falls to about 0 at step {fg.inject_at} and stays the
+              lowest, and its activation drops to 0 almost at once.
+            </li>
+            <li>
+              <b>The test needs a photo there to say anything about forgetting a horse.</b> With a working link, that slot would hold a
+              real I-JEPA embedding; how it would end wasn't run.
+            </li>
+          </ul>
+        </div>
+      </div>
+    </Section>
+  );
+}
+
+function BeyondFigureSection({ num }: { num: number }) {
+  return (
+    <Section id="figure" label="Figure" num={num} headline="The run, step by step.">
+      <div className="grid">
+        <div className="indent stack">
+          <Card
+            label="Figure · Five old memories, five new at step 250"
+            meta="Colab output"
+            note={
+              <>
+                The notebook's own figure. Top left: activations; solid lines are old memories, dashed lines new, and the red line is step{" "}
+                {fg.inject_at}. Top right: replay weights. Bottom left: each old memory at step {fg.inject_at} and step {fg.steps}. Bottom
+                right: every memory at step {fg.steps}. Its labels are from that run: <code>labrador</code> is the beagle,{" "}
+                <code>bulldog</code> the French bulldog, <code>coffee</code> the armchair, and <code>horse</code> the random vector.
+              </>
+            }
+          >
+            <div className="plate">
+              <img
+                src={figures.forgetting}
+                alt="Four panels. Top left: the five old activations fall slowly, then drop to near zero soon after step 250, when five new memories start at 1 and decay. Top right: old memories' replay weights drop sharply at step 250 and recover to about 0.1; new ones start between 0.12 and 0.22 and settle near 0.1. Bottom left: old memories at step 250 and step 500. Bottom right: all ten at step 500, the five new ones highest."
+              />
+            </div>
+          </Card>
+        </div>
+      </div>
+    </Section>
+  );
+}
+
+function BeyondFindingsSection({ num }: { num: number }) {
+  return (
+    <Section id="findings" label="Findings" num={num} headline="What it shows, and what it doesn't.">
+      <div className="grid">
+        <div className="indent two-col">
+          <div data-reveal>
+            <div className="label">Shows</div>
+            <ul className="points">
+              <li>
+                Adding five memories at activation {fg.new_memory_start_activation} changes the old ones' course at once: their replay
+                weights drop and their activations fall to near zero soon after step {fg.inject_at}.
+              </li>
+              <li>All four old photo memories are still above {fg.alive_threshold} at step {fg.steps}.</li>
+              <li>At step {fg.steps} every new memory is above every old one.</li>
+            </ul>
+          </div>
+          <div data-reveal>
+            <div className="label">Doesn't show</div>
+            <ul className="points">
+              <li>How much of the old memories' drop the new memories cause: there is no run without them.</li>
+              <li>Whether the new memories end higher because of replay or because they are younger.</li>
+              <li>Forgetting of a real horse photo: that slot held a random vector.</li>
+              <li>Not tested: new memories starting below 1, or extra replay for old memories after new ones arrive.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </Section>
+  );
+}
+
+function BeyondCodeSection({ num }: { num: number }) {
+  return (
+    <Section id="run-code" label="The code" num={num} headline="Where these numbers come from.">
+      <div className="grid">
+        <div className="indent stack">
+          <ul className="points" data-reveal>
+            <li>
+              <b>The executed notebook.</b>{" "}
+              <a href={NOTEBOOKS.forgetting}>notebooks/colab/normalised/beyond_paper/5_5_forgetting_test.ipynb</a>, with its code, printed
+              output and figure as they ran in Colab.
+            </li>
+            <li>
+              <b>Recorded copies.</b> Printed output in{" "}
+              <a href={file("results/forgetting_5_plus_5_output.txt")}>results/forgetting_5_plus_5_output.txt</a>, numbers in{" "}
+              <a href={file("results/forgetting_5_plus_5.json")}>results/forgetting_5_plus_5.json</a>.
+            </li>
+          </ul>
+          <div className="btn-row">
+            <a className="btn btn-primary" href={NOTEBOOKS.forgetting}>
               Open the Colab notebook on GitHub
             </a>
             <a className="btn btn-text" href="#/normalised">
