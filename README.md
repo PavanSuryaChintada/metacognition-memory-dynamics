@@ -134,6 +134,47 @@ This sweep printed no numbers. Both sweeps show the same three regimes. In both,
   - It ran at execution 9, before the successful run at execution 12. The `three_regimes.png` it re-displays came from an earlier failed run and has empty axes.
   - That image is left out of `results/`.
 
+## Architecture
+
+```mermaid
+flowchart TB
+    subgraph ENC["1 · Encode — encoder.py"]
+        URL["Image URL (Unsplash)"] -->|"requests + Pillow"| IMG["RGB image"]
+        IMG -->|"transformers: AutoProcessor<br/>+ I-JEPA ViT-H/14, mean-pool patches"| EMB["1280-d embedding"]
+    end
+
+    subgraph DYN["2 · Memory dynamics — memory.py"]
+        STORE["store()<br/>a_i = 1, decay rate α_i"] --> STEP["step() × 500<br/>decay + diffusion + inhibition + replay"]
+        STEP --> RET["retrieve()<br/>score = cos(q, x_i) · a_i"]
+        STEP --> EN["energy()<br/>E(a)"]
+    end
+
+    subgraph OUT["3 · Outputs — plotting.py, run_experiments.py"]
+        CACHE["embeddings.pt"]
+        FIG["Figures (matplotlib)"]
+        MET["metrics.json"]
+    end
+
+    RNG["NumPy RandomState(seed)<br/>decay rates + replay coin flip"]
+
+    EMB --> STORE
+    EMB -->|"torch.save"| CACHE
+    CACHE -.->|"--embeddings: skip the model"| STORE
+    RNG --> STORE
+    RNG --> STEP
+    STEP --> FIG
+    EN --> FIG
+    STEP --> MET
+    RET --> MET
+```
+
+| Part | File | Libraries | Job |
+|---|---|---|---|
+| Encoder | [`memory_dynamics/encoder.py`](memory_dynamics/encoder.py) | requests, Pillow, transformers, torch | Image URL → 1280-d I-JEPA embedding |
+| Memory | [`memory_dynamics/memory.py`](memory_dynamics/memory.py) | torch, NumPy | Stores embeddings; runs the equation, retrieval and energy |
+| Plotting | [`memory_dynamics/plotting.py`](memory_dynamics/plotting.py) | matplotlib | Trajectory, energy, activation and regime figures |
+| Runner | [`run_experiments.py`](run_experiments.py) | argparse, json + the above | Runs single run → sweep A → sweep B and writes `outputs/` |
+
 ## Repository layout
 
 ```
