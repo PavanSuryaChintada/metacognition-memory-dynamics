@@ -1,0 +1,61 @@
+# Printed output of notebooks/replay_tracking.py (second Colab run), copied word for word.
+# Labels are the ones used in that run: labrador = the beagle photo, cute_dog = the French bulldog.
+
+Loading weights: 100%
+ 517/517 [00:00<00:00, 6667.25it/s]
+
+Encoding images with I-JEPA (full 1280-d, mean pooled)...
+  Stored: labrador (decay=0.87, dim=1280)
+  Stored: cat (decay=1.45, dim=1280)
+  Stored: person (decay=1.23, dim=1280)
+  Stored: cute_dog (decay=1.10, dim=1280)
+
+Running simulation: η=0.8, β=3.0, p=0.3, steps=500
+Embedding dim: 1280
+Replay fired 154 times out of 500 steps
+
+============================================================
+SIMILARITY MATRIX (cosine similarity, full 1280-d)
+============================================================
+                    labrador           cat        person      cute_dog
+      labrador        1.0000        0.3188        0.3005        0.3701
+           cat        0.3188        1.0000        0.4488        0.4276
+        person        0.3005        0.4488        1.0000        0.4673
+      cute_dog        0.3701        0.4276        0.4673        1.0000
+
+============================================================
+FINAL ACTIVATIONS (step 500)
+============================================================
+        labrador: 0.000000  (α=0.87)
+             cat: 0.000000  (α=1.45)
+          person: 0.137944  (α=1.23)
+        cute_dog: 0.000000  (α=1.10)
+
+  Winner: person (0.137944)
+
+============================================================
+REPLAY WEIGHT ANALYSIS
+============================================================
+
+Total replay events: 154
+
+Early F(a) (first 10%):
+        labrador: mean=0.0000
+             cat: mean=0.0000
+          person: mean=1.0000
+        cute_dog: mean=0.0000
+
+Late F(a) (last 10%):
+        labrador: mean=0.0000
+             cat: mean=0.0000
+          person: mean=1.0000
+        cute_dog: mean=0.0000
+
+============================================================
+MEAN FORCE BREAKDOWN
+============================================================
+        Memory      Decay  Diffusion    Inhibit     Replay        Net
+      labrador   -0.13657    0.00137   -0.06559    0.00000   -0.20079
+           cat   -0.15419    0.01930   -0.06559    0.00000   -0.20047
+        person   -0.32114   -0.03209   -0.06559    0.24640   -0.17241
+      cute_dog   -0.14586    0.01142   -0.06559    0.00000   -0.20003
