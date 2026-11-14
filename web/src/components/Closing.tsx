@@ -55,6 +55,9 @@ export function Closing() {
                 <a href="#/paper">Run C, paper scale</a>
               </li>
               <li>
+                <a href="#/beyond">Beyond the paper</a>
+              </li>
+              <li>
                 <a href="#model">The model</a>
               </li>
               <li>
@@ -81,10 +84,10 @@ export function Closing() {
                 <a href={NOTEBOOKS.normalised10}>Run B, 10 memories</a>
               </li>
               <li>
-                <a href={NOTEBOOKS.forgetting}>Run B, forgetting test</a>
+                <a href={NOTEBOOKS.forgetting}>Beyond the paper, test 1</a>
               </li>
               <li>
-                <a href={NOTEBOOKS.forgettingFixes}>Run B, gentler new memories</a>
+                <a href={NOTEBOOKS.forgettingFixes}>Beyond the paper, test 2</a>
               </li>
               <li>
                 <a href={NOTEBOOKS.paperScale}>Run C, paper scale</a>

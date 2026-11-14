@@ -1,7 +1,5 @@
 import {
   figures,
-  fixes,
-  forgetting,
   memories,
   nameOf,
   normalised,
@@ -17,16 +15,15 @@ import { Card, Section } from "../components/Layout";
 import { RunIntro } from "../components/RunIntro";
 import { MiniBars, Outcome } from "../components/Memories";
 import { N } from "../components/ui";
-import { BeyondView, Timeline } from "./BeyondPaper";
 
 const pct = (v: number) => `${(v * 100).toFixed(1)}%`;
 /** Lower-case a memory name mid-sentence, keeping "French" capitalised. */
 const lc = (name: string) => (name.startsWith("French") ? name : name.toLowerCase());
 const CARD_SCALE = 0.05; // the 4- and 10-memory cards share this bar scale
 
-type View = 4 | 10 | "beyond" | "beyond-fix";
+type View = 4 | 10;
 
-/** Run B: replay scores from embeddings scaled to length 1, run with 4 and with 10 memories, plus tests beyond the paper. */
+/** Run B: replay scores from embeddings scaled to length 1, run with 4 and with 10 memories. */
 export function RunNormalised({ view }: { view: View }) {
   return (
     <>
@@ -43,8 +40,7 @@ export function RunNormalised({ view }: { view: View }) {
             </p>
             <p>
               It was run twice: with the four photos used everywhere else on this site, and with ten photos. Each run also repeats the
-              raw version side by side, so every comparison below is within one script. A third box holds tests beyond the paper:
-              new memories added partway through a run, and gentler ways of adding them. Pick one.
+              raw version side by side, so every comparison below is within one script. Pick one.
             </p>
           </>
         }
@@ -52,7 +48,7 @@ export function RunNormalised({ view }: { view: View }) {
         formulaNote="X̂ is X with every embedding scaled to length 1, so X̂ᵀX̂ holds cosine similarities. Only F(a) uses it; diffusion already used cosine similarity in both runs."
       />
       <ExperimentCards view={view} />
-      {view === 4 ? <FourMemories /> : view === 10 ? <TenMemoriesView /> : <BeyondView test={view === "beyond-fix" ? 2 : 1} />}
+      {view === 4 ? <FourMemories /> : <TenMemoriesView />}
     </>
   );
 }
@@ -61,7 +57,6 @@ export function RunNormalised({ view }: { view: View }) {
 
 function ExperimentCards({ view }: { view: View }) {
   const tenLate = ten.final_activations.normalised;
-  const beyond = view === "beyond" || view === "beyond-fix";
   return (
     <section className="section" id="experiments">
       <div className="wrap">
@@ -112,41 +107,10 @@ function ExperimentCards({ view }: { view: View }) {
               </div>
             </dl>
           </a>
-          <a
-            className={`run-card experiment-card${beyond ? " on" : ""}`}
-            href="#/normalised/beyond"
-            aria-current={beyond ? "page" : undefined}
-          >
-            <div className="run-card-head">
-              <span className="label">Experiment 3</span>
-              {beyond && <span className="tag new">Showing</span>}
-            </div>
-            <h2 className="run-title">Tests beyond the paper</h2>
-            <p className="run-desc">
-              Two tests: five memories at step 0 and five more added at step {forgetting.setup.inject_at}, then the same with the new
-              ones added more gently.
-            </p>
-            <Timeline />
-            <dl className="run-stats">
-              <div>
-                <dt>Old activation kept</dt>
-                <dd>
-                  {fixes.retention_pct_printed.raw}% → {fixes.retention_pct_printed.mean}%{" "}
-                  <span className="dd-sub">new ones start at 1 → at the mean</span>
-                </dd>
-              </div>
-              <div>
-                <dt>Old memories left</dt>
-                <dd>
-                  {fixes.survivors.mean.old} of 5 <span className="dd-sub">in every arm of test 2</span>
-                </dd>
-              </div>
-            </dl>
-          </a>
         </div>
         <p className="run-cards-note muted small">
-          In the first two cards, bars show the normalised arm's activation at step 500 on the same scale, 0 to {CARD_SCALE}. Same η, β,
-          p and seed in both; the first four photos and their decay rates are the same.
+          Bars show the normalised arm's activation at step 500 on the same scale, 0 to {CARD_SCALE}, in both cards. Same η, β, p and
+          seed in both; the first four photos and their decay rates are the same.
         </p>
       </div>
     </section>

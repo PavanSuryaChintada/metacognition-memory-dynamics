@@ -1,7 +1,7 @@
 import type { CSSProperties, ReactNode } from "react";
 import { REPO } from "../data/results";
 import { useHeaderOnDark } from "../hooks";
-import { isRunB, isRunC, type Route } from "../router";
+import { isBeyond, isRunB, isRunC, type Route } from "../router";
 
 /** The project mark: three memories fading, one held by replay. */
 export function Mark({ size = 26 }: { size?: number }) {
@@ -41,6 +41,9 @@ export function Header({ route }: { route: Route }) {
               </a>
               <a href="#/paper" aria-current={isRunC(route) ? "page" : undefined}>
                 Run C
+              </a>
+              <a href="#/beyond" aria-current={isBeyond(route) ? "page" : undefined}>
+                Beyond
               </a>
             </>
           ) : (

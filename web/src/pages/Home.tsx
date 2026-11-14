@@ -38,7 +38,7 @@ function Hero() {
         <p className="hero-sub rise" style={d(2)}>
           Ghosh, Jaiswal and Gupta model memory as activations that decay, spread across a similarity graph, and get reinforced by
           replay. Their experiments use random vectors. Here the same equations run on I-JEPA embeddings of real photographs,
-          twice, with one difference in how replay scores the memories, and once more at the paper's own scale.
+          twice, with one difference in how replay scores the memories, and once more at the paper's own scale. Two more tests go beyond the paper: new memories added partway through a run.
         </p>
         <div className="actions rise" style={d(3)}>
           <a className="btn btn-primary" href="#runs">
@@ -267,13 +267,13 @@ const NOTEBOOK_ROWS: { path: string; href: string; what: string; output?: string
   {
     path: "colab/normalised/beyond_paper/5_5_forgetting_test.ipynb",
     href: NOTEBOOKS.forgetting,
-    what: "Run B, beyond the paper: five memories from step 0, five more added at step 250. The horse photo's link was dead, so a random vector stands in for it.",
+    what: "Beyond the paper, test 1: five memories from step 0, five more added at step 250. The horse photo's link was dead, so a random vector stands in for it.",
     output: "results/forgetting_5_plus_5_output.txt",
   },
   {
     path: "colab/normalised/beyond_paper/5_5forgetting_test_fix.ipynb",
     href: NOTEBOOKS.forgettingFixes,
-    what: "Run B, beyond the paper: the same test with a photo in every slot, run three ways: new memories start at 1, at the mean activation, or warm up over 50 steps.",
+    what: "Beyond the paper, test 2: the same test with a photo in every slot, run three ways: new memories start at 1, at the mean activation, or warm up over 50 steps.",
     output: "results/forgetting_fixes_output.txt",
   },
   {

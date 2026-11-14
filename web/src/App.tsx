@@ -4,8 +4,9 @@ import { Home } from "./pages/Home";
 import { RunUnnormalised } from "./pages/RunUnnormalised";
 import { RunNormalised } from "./pages/RunNormalised";
 import { RunPaperScale } from "./pages/RunPaperScale";
+import { RunBeyond } from "./pages/RunBeyond";
 import { useRevealAll } from "./hooks";
-import { isRunB, isRunC, useRoute } from "./router";
+import { isBeyond, isRunB, isRunC, useRoute } from "./router";
 
 /** Overview with the two run cards, plus one page per run, switched by the URL hash. */
 export function App() {
@@ -14,17 +15,15 @@ export function App() {
   return (
     <>
       <Header route={route} />
-      <main key={isRunB(route) ? "normalised" : isRunC(route) ? "paper" : route}>
+      <main key={isRunB(route) ? "normalised" : isRunC(route) ? "paper" : isBeyond(route) ? "beyond" : route}>
         {route === "unnormalised" ? (
           <RunUnnormalised />
         ) : isRunC(route) ? (
           <RunPaperScale view={route === "paper-tuned" ? 2 : 1} />
         ) : isRunB(route) ? (
-          <RunNormalised
-            view={
-              route === "normalised-10" ? 10 : route === "normalised-beyond" ? "beyond" : route === "normalised-beyond-fix" ? "beyond-fix" : 4
-            }
-          />
+          <RunNormalised view={route === "normalised-10" ? 10 : 4} />
+        ) : isBeyond(route) ? (
+          <RunBeyond test={route === "beyond-fix" ? 2 : 1} />
         ) : (
           <Home />
         )}

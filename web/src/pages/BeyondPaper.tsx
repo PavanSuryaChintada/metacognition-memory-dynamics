@@ -7,7 +7,7 @@ import { N } from "../components/ui";
 /** Lower-case a memory name mid-sentence, keeping "French" capitalised. */
 const lc = (name: string) => (name.startsWith("French") ? name : name.toLowerCase());
 
-/** Experiment 3 on run B: two cards, one per test, and the chosen test's sections below. */
+/** Tests beyond the paper: two cards, one per test, and the chosen test's sections below. */
 export function BeyondView({ test }: { test: 1 | 2 }) {
   return (
     <>
@@ -24,7 +24,7 @@ function BeyondTestCards({ test }: { test: 1 | 2 }) {
     <section className="section" id="beyond-tests">
       <div className="wrap">
         <div className="run-cards beyond-cards">
-          <a className={`run-card experiment-card${test === 1 ? " on" : ""}`} href="#/normalised/beyond" aria-current={test === 1 ? "page" : undefined}>
+          <a className={`run-card experiment-card${test === 1 ? " on" : ""}`} href="#/beyond" aria-current={test === 1 ? "page" : undefined}>
             <div className="run-card-head">
               <span className="label">Test 1</span>
               {test === 1 && <span className="tag new">Showing</span>}
@@ -51,7 +51,7 @@ function BeyondTestCards({ test }: { test: 1 | 2 }) {
               </div>
             </dl>
           </a>
-          <a className={`run-card experiment-card${test === 2 ? " on" : ""}`} href="#/normalised/beyond/fix" aria-current={test === 2 ? "page" : undefined}>
+          <a className={`run-card experiment-card${test === 2 ? " on" : ""}`} href="#/beyond/fix" aria-current={test === 2 ? "page" : undefined}>
             <div className="run-card-head">
               <span className="label">Test 2</span>
               {test === 2 && <span className="tag new">Showing</span>}
@@ -84,7 +84,7 @@ function BeyondTestCards({ test }: { test: 1 | 2 }) {
 }
 
 /** The notebook's retention for each arm, on a 0 to 100% scale. */
-function RetentionBars() {
+export function RetentionBars() {
   return (
     <ul className="ret-bars" aria-label="Old activation kept from step 250 to step 500, by arm">
       {fixes.arms.map((a) => (
@@ -187,7 +187,7 @@ function TestSection({ num }: { num: number }) {
       label="The test"
       num={num}
       headline="Five memories, then five more halfway through."
-      lead={`Experiments 1 and 2 store all of their memories at step 0. Here five are stored at step 0 and run for ${fg.inject_at} steps. Then five new ones are added at activation ${fg.new_memory_start_activation}, and all ten run on to step ${fg.steps}.`}
+      lead={`The other runs on this site store all of their memories at step 0. Here five are stored at step 0 and run for ${fg.inject_at} steps. Then five new ones are added at activation ${fg.new_memory_start_activation}, and all ten run on to step ${fg.steps}.`}
     >
       <div className="grid">
         <div className="indent stack">
@@ -512,7 +512,7 @@ function BeyondCodeSection({ num }: { num: number }) {
             <a className="btn btn-primary" href={NOTEBOOKS.forgetting}>
               Open the Colab notebook on GitHub
             </a>
-            <a className="btn btn-text" href="#/normalised/beyond/fix">
+            <a className="btn btn-text" href="#/beyond/fix">
               Next: test 2, adding new memories gently <span aria-hidden="true">→</span>
             </a>
           </div>
@@ -1022,7 +1022,7 @@ function FixCodeSection({ num }: { num: number }) {
             <a className="btn btn-primary" href={NOTEBOOKS.forgettingFixes}>
               Open the Colab notebook on GitHub
             </a>
-            <a className="btn btn-text" href="#/normalised/beyond">
+            <a className="btn btn-text" href="#/beyond">
               <span aria-hidden="true">←</span> Test 1
             </a>
           </div>
