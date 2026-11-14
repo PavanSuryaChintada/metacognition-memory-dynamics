@@ -22,9 +22,9 @@ export function RunIntro({
   explanation: ReactNode;
   formula: string;
   formulaNote: ReactNode;
-  finals: Record<string, number>;
-  outcomeLabel: string;
-  outcomeMeta: string;
+  finals?: Record<string, number>;
+  outcomeLabel?: string;
+  outcomeMeta?: string;
 }) {
   return (
     <section className="run-intro" id="top">
@@ -51,9 +51,11 @@ export function RunIntro({
             </Card>
           </div>
         </div>
-        <div className="rise" style={d(5)}>
-          <Outcome finals={finals} label={outcomeLabel} meta={outcomeMeta} />
-        </div>
+        {finals && outcomeLabel && outcomeMeta && (
+          <div className="rise" style={d(5)}>
+            <Outcome finals={finals} label={outcomeLabel} meta={outcomeMeta} />
+          </div>
+        )}
       </div>
     </section>
   );

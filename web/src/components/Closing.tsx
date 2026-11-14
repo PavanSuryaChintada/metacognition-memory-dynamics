@@ -1,5 +1,4 @@
-import { AUTHOR, AUTHOR_GITHUB, REPO } from "../data/results";
-import { file } from "../data/derived";
+import { AUTHOR, AUTHOR_GITHUB, NOTEBOOKS, REPO } from "../data/results";
 import { useEnterProgress } from "../hooks";
 import { Mark } from "./Layout";
 
@@ -9,7 +8,7 @@ function Statement() {
   const lines = [
     "Same memories, same seed, same equations.",
     "Raw replay scores: one memory takes every replay.",
-    "Unit-length scores: all four stay, in decay-rate order.",
+    "Unit-length scores: every memory stays, four of four and ten of ten.",
   ];
   return (
     <p className="statement" ref={ref}>
@@ -35,8 +34,8 @@ export function Closing() {
       <div className="wrap">
         <Statement />
         <p className="sub">
-          Everything here comes from three recorded Colab runs: the notebook, the replay-tracking run and the raw-versus-normalised
-          comparison.
+          Everything here comes from four recorded Colab runs: the original notebook, the replay-tracking run, and the
+          raw-versus-normalised comparisons with 4 and 10 memories.
         </p>
 
         <div className="footer-cols">
@@ -67,13 +66,19 @@ export function Closing() {
                 <a href={REPO}>GitHub repository</a>
               </li>
               <li>
-                <a href={file("notebooks/metacognition.ipynb")}>Colab notebook</a>
+                <a href={NOTEBOOKS.original}>Original notebook</a>
               </li>
               <li>
-                <a href={file("notebooks/replay_tracking.py")}>Replay-tracking run</a>
+                <a href={NOTEBOOKS.unnormalised4}>Run A, replay tracking</a>
               </li>
               <li>
-                <a href={file("notebooks/normalised_replay.py")}>Raw vs normalised run</a>
+                <a href={NOTEBOOKS.normalised4}>Run B, 4 memories</a>
+              </li>
+              <li>
+                <a href={NOTEBOOKS.normalised10}>Run B, 10 memories</a>
+              </li>
+              <li>
+                <a href={`${REPO}/tree/main/notebooks/colab`}>All Colab notebooks</a>
               </li>
               <li>
                 <a href={`${REPO}/tree/main/results`}>Recorded results</a>

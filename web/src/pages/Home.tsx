@@ -1,4 +1,5 @@
-import { recorded, REPO } from "../data/results";
+import { NOTEBOOKS, recorded, REPO, ten } from "../data/results";
+import { file } from "../data/derived";
 import { Card, Chapter, Section } from "../components/Layout";
 import { HeroArt } from "../components/HeroArt";
 import { RunCards } from "../components/RunCards";
@@ -36,7 +37,7 @@ function Hero() {
         </h1>
         <p className="hero-sub rise" style={d(2)}>
           Ghosh, Jaiswal and Gupta model memory as activations that decay, spread across a similarity graph, and get reinforced by
-          replay. Their experiments use random vectors. Here the same equations run on I-JEPA embeddings of four real photographs,
+          replay. Their experiments use random vectors. Here the same equations run on I-JEPA embeddings of real photographs,
           twice, with one difference in how replay scores the memories.
         </p>
         <div className="actions rise" style={d(3)}>
@@ -179,7 +180,9 @@ function PaperSection() {
                   <tr>
                     <td>Memories N</td>
                     <td data-label="Paper">200</td>
-                    <td data-label="These runs">{recorded.memories.length}</td>
+                    <td data-label="These runs">
+                      {recorded.memories.length}; {ten.memories.length} in the second run B experiment
+                    </td>
                   </tr>
                   <tr>
                     <td>What the graph encodes</td>
@@ -187,7 +190,7 @@ function PaperSection() {
                       Nothing. Cosine similarity between independent random vectors centres on 0 with a spread of about 1/√64 ≈ 0.13,
                       so roughly half the edges are cut to zero.
                     </td>
-                    <td data-label="These runs">How alike I-JEPA finds the photos. Measured: every pair between 0.30 and 0.47, so no edge is zero.</td>
+                    <td data-label="These runs">How alike I-JEPA finds the photos. Measured for the four photos: every pair between 0.30 and 0.47, so no edge is zero.</td>
                   </tr>
                   <tr>
                     <td>Replay scores</td>
@@ -236,57 +239,96 @@ function PaperSection() {
   );
 }
 
+const NOTEBOOK_ROWS: { path: string; href: string; what: string; output?: string }[] = [
+  {
+    path: "metacognition.ipynb",
+    href: NOTEBOOKS.original,
+    what: "Run A: one run of 500 steps, retrieval, and the three regime sweeps.",
+    output: "results/notebook_output.txt",
+  },
+  {
+    path: "colab/unnormalised/metacognition_4_memories.ipynb",
+    href: NOTEBOOKS.unnormalised4,
+    what: "Run A again, then replay tracking in the cell headed TRUE RUN 1 REPRODUCTION WITH F(a) TRACKING. The exploratory cells before that one use other settings and aren't used on this site.",
+    output: "results/replay_tracking_output.txt",
+  },
+  {
+    path: "colab/normalised/normalised_metacognition.ipynb",
+    href: NOTEBOOKS.normalised4,
+    what: "Run B with 4 memories: raw and normalised replay side by side.",
+    output: "results/normalised_output.txt",
+  },
+  {
+    path: "colab/normalised/metacognition_10_mem.ipynb",
+    href: NOTEBOOKS.normalised10,
+    what: "Run B with 10 memories: raw and normalised replay side by side.",
+    output: "results/normalised_10_memories_output.txt",
+  },
+  {
+    path: "colab/_facebook_ijepa_vith14_1k.ipynb",
+    href: NOTEBOOKS.ijepaSample,
+    what: "Encoder check: loads I-JEPA and prints the cosine similarity of a dog photo with a cat (0.3244) and with another dog (0.3804).",
+  },
+  {
+    path: "colab/facebook_vjepa2_vitl_fpc64_256.ipynb",
+    href: NOTEBOOKS.vjepaSample,
+    what: "Video encoder trial: V-JEPA 2 returns an embedding of shape [1, 8192, 1024], then the classification step stops with an error because the model id it asks for isn't on Hugging Face. Not used here.",
+  },
+];
+
+/** A path that may wrap after each slash, never inside a name. */
+const breakAtSlashes = (path: string) =>
+  path.split("/").flatMap((seg, i, all) => (i < all.length - 1 ? [`${seg}/`, <wbr key={i} />] : [seg]));
+
 function ReproduceSection() {
   return (
     <Section
       id="reproduce"
-      label="Reproduce"
+      label="Notebooks"
       num={5}
-      headline="Run it yourself."
-      lead="Three recorded Colab runs, all with the same photos, decay rates and seed. Each one's printed output is kept word for word in results/."
+      headline="Every Colab run, as it ran."
+      lead="Each notebook is on GitHub with its code, printed output and figures exactly as they ran in Colab. The printed output of each run used on this site is also kept word for word in results/."
     >
       <div className="grid">
         <div className="indent stack">
           <div className="card" data-reveal>
-            <table>
-              <thead>
-                <tr>
-                  <th>Run</th>
-                  <th>Code</th>
-                  <th>Recorded output</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>The notebook (run A)</td>
-                  <td>
-                    <code>notebooks/metacognition.ipynb</code>
-                  </td>
-                  <td>
-                    <code>results/notebook_output.txt</code>
-                  </td>
-                </tr>
-                <tr>
-                  <td>Replay tracking (run A)</td>
-                  <td>
-                    <code>notebooks/replay_tracking.py</code>
-                  </td>
-                  <td>
-                    <code>results/replay_tracking_output.txt</code>
-                  </td>
-                </tr>
-                <tr>
-                  <td>Raw vs normalised (run B)</td>
-                  <td>
-                    <code>notebooks/normalised_replay.py</code>
-                  </td>
-                  <td>
-                    <code>results/normalised_output.txt</code>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+            <div className="scroll">
+              <table className="notebooks">
+                <thead>
+                  <tr>
+                    <th>Notebook</th>
+                    <th>What it runs</th>
+                    <th>Recorded output</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {NOTEBOOK_ROWS.map((r) => (
+                    <tr key={r.path}>
+                      <td>
+                        <a href={r.href}>
+                          <code>{breakAtSlashes(r.path)}</code>
+                        </a>
+                      </td>
+                      <td>{r.what}</td>
+                      <td>
+                        {r.output ? (
+                          <a href={file(r.output)}>
+                            <code>{r.output.replace("results/", "")}</code>
+                          </a>
+                        ) : (
+                          <span className="muted">In the notebook</span>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
+          <p className="muted" data-reveal>
+            Paths are under <code>notebooks/</code>. The repository also has a script that reruns the original notebook's experiments
+            locally:
+          </p>
           <pre data-reveal>
             <code>
               {"pip install -r requirements.txt\n"}

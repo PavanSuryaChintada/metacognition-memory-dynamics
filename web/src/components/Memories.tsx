@@ -11,7 +11,19 @@ function prefersReducedMotion() {
  * once from its start value to its recorded end value; the in-between is a transition, not
  * data. Memories that end at exactly 0 turn grey.
  */
-export function Outcome({ finals, label, meta }: { finals: Record<string, number>; label: string; meta: string }) {
+type Item = { label: string; name: string; thumb: string; decay_rate: number };
+
+export function Outcome({
+  finals,
+  label,
+  meta,
+  items = memories,
+}: {
+  finals: Record<string, number>;
+  label: string;
+  meta: string;
+  items?: Item[];
+}) {
   const [done, setDone] = useState(prefersReducedMotion);
   useEffect(() => {
     if (done) return;
@@ -21,8 +33,8 @@ export function Outcome({ finals, label, meta }: { finals: Record<string, number
 
   return (
     <Card className="outcome-card" label={label} meta={meta}>
-      <ol className="outcome" aria-label={label}>
-        {memories.map((m) => {
+      <ol className={`outcome${items.length > 4 ? " outcome-many" : ""}`} aria-label={label}>
+        {items.map((m) => {
           const v = finals[m.label] ?? 0;
           const alive = v > 0;
           const state = done ? (alive ? "survived" : "forgotten") : alive ? "survived" : undefined;
@@ -53,10 +65,10 @@ export function Outcome({ finals, label, meta }: { finals: Record<string, number
 }
 
 /** Compact version for the run cards: thumbnails with bars on a shared scale. */
-export function MiniBars({ finals, scale }: { finals: Record<string, number>; scale: number }) {
+export function MiniBars({ finals, scale, items = memories }: { finals: Record<string, number>; scale: number; items?: Item[] }) {
   return (
-    <ol className="mini-bars" aria-label={`Activation at step 500, bars scaled 0 to ${scale}`}>
-      {memories.map((m) => {
+    <ol className={`mini-bars${items.length > 4 ? " mini-bars-many" : ""}`} aria-label={`Activation at step 500, bars scaled 0 to ${scale}`}>
+      {items.map((m) => {
         const v = finals[m.label] ?? 0;
         return (
           <li key={m.label} className={v > 0 ? "alive" : "gone"}>

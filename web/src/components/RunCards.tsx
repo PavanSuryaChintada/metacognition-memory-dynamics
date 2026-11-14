@@ -1,4 +1,4 @@
-import { normalised } from "../data/results";
+import { normalised, ten } from "../data/results";
 import { lateShareRange, normalisedFinals, unnormalisedFinals, winnerShare } from "../data/derived";
 import { MiniBars } from "./Memories";
 import { Tex } from "./Tex";
@@ -28,7 +28,12 @@ export function RunCards() {
         <dl className="run-stats">
           <div>
             <dt>Memories left</dt>
-            <dd>1 of 4</dd>
+            <dd>
+              1 of 4{" "}
+              <span className="dd-sub">
+                {ten.survivors_above_0_001.unnormalised} of {ten.memories.length} with ten photos
+              </span>
+            </dd>
           </div>
           <div>
             <dt>Replay to one memory</dt>
@@ -51,13 +56,18 @@ export function RunCards() {
         </div>
         <p className="run-desc">
           The same run, with each embedding scaled to length 1 inside the replay operator only. Replay spreads across all four
-          memories, and every one of them stays, in order of decay rate.
+          memories, and every one of them stays, in order of decay rate. Repeated with ten photos: all ten stay.
         </p>
         <MiniBars finals={normalisedFinals} scale={SCALE} />
         <dl className="run-stats">
           <div>
             <dt>Memories left</dt>
-            <dd>{normalised.survivors_above_0_001.normalised} of 4</dd>
+            <dd>
+              {normalised.survivors_above_0_001.normalised} of 4{" "}
+              <span className="dd-sub">
+                {ten.survivors_above_0_001.normalised} of {ten.memories.length} with ten photos
+              </span>
+            </dd>
           </div>
           <div>
             <dt>Replay share each</dt>

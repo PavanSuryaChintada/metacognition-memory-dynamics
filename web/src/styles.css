@@ -703,6 +703,9 @@ td.big {
   color: var(--ink);
   font-weight: 560;
 }
+.points a {
+  overflow-wrap: anywhere;
+}
 .two-col {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1469,6 +1472,68 @@ tr.win td {
   margin: 2px 0 0;
 }
 
+/* Run B: the two experiments, 4 and 10 memories */
+.run-cards.experiment-cards {
+  margin-top: 0;
+}
+.run-card.experiment-card.on {
+  border-color: var(--ink);
+}
+.experiment-cards + .run-cards-note {
+  margin-top: 14px;
+}
+.mini-bars.mini-bars-many {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 8px;
+  row-gap: 12px;
+}
+.outcome.outcome-many {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 16px;
+  row-gap: 26px;
+}
+.outcome.outcome-many .outcome-value strong {
+  font-size: 19px;
+}
+.btn-row {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.rank-table tr.swap td {
+  background: rgba(228, 86, 31, 0.06);
+}
+.dd-sub {
+  display: block;
+  margin-top: 2px;
+  font-size: 12.5px;
+  font-weight: 450;
+  letter-spacing: 0;
+  color: var(--muted);
+}
+
+/* Home: the Colab notebooks table */
+.notebooks td:first-child {
+  width: 34%;
+}
+.notebooks td:last-child code {
+  white-space: nowrap;
+}
+.notebooks a code {
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-color: rgba(10, 10, 10, 0.25);
+  text-underline-offset: 3px;
+}
+.notebooks a:hover code {
+  text-decoration-color: currentColor;
+}
+.notebooks td:nth-child(2) {
+  color: var(--ink-2);
+  min-width: 14em;
+}
+
 /* Run pages: intro */
 .run-intro {
   padding: clamp(3rem, 8vh, 5rem) 0 0;
@@ -1614,6 +1679,7 @@ td.ember-text {
     border-top: 1px solid var(--line);
   }
   .outcome,
+  .outcome.outcome-many,
   .memories {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -1625,6 +1691,21 @@ td.ember-text {
 @media (max-width: 520px) {
   body {
     font-size: 16px;
+  }
+  .notebooks thead {
+    display: none;
+  }
+  .notebooks tr {
+    display: block;
+    border-top: 1px solid var(--line);
+    padding: 12px 0;
+  }
+  .notebooks td,
+  .notebooks td:first-child {
+    display: block;
+    width: auto;
+    border-top: 0;
+    padding: 3px 0;
   }
   .compare thead {
     display: none;

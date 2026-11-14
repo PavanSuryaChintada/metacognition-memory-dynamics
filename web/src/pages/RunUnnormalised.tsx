@@ -1,4 +1,4 @@
-import { figures, memories, nameOf, recorded } from "../data/results";
+import { figures, memories, nameOf, NOTEBOOKS, recorded } from "../data/results";
 import {
   drive,
   file,
@@ -270,13 +270,16 @@ function RunCodeSection({ num }: { num: number }) {
         <div className="indent stack">
           <ul className="points" data-reveal>
             <li>
-              <b>The notebook run.</b> <a href={file("notebooks/metacognition.ipynb")}>notebooks/metacognition.ipynb</a>, printed output
-              in <a href={file("results/notebook_output.txt")}>results/notebook_output.txt</a>, numbers in{" "}
+              <b>The notebook run.</b> <a href={NOTEBOOKS.original}>notebooks/metacognition.ipynb</a>, printed output in{" "}
+              <a href={file("results/notebook_output.txt")}>results/notebook_output.txt</a>, numbers in{" "}
               <a href={file("results/metrics.json")}>results/metrics.json</a>.
             </li>
             <li>
-              <b>Replay tracking.</b> <a href={file("notebooks/replay_tracking.py")}>notebooks/replay_tracking.py</a>, printed output in{" "}
-              <a href={file("results/replay_tracking_output.txt")}>results/replay_tracking_output.txt</a>.
+              <b>Replay tracking.</b> <a href={NOTEBOOKS.unnormalised4}>notebooks/colab/unnormalised/metacognition_4_memories.ipynb</a>,
+              the cell headed TRUE RUN 1 REPRODUCTION WITH F(a) TRACKING. Printed output in{" "}
+              <a href={file("results/replay_tracking_output.txt")}>results/replay_tracking_output.txt</a>, numbers in{" "}
+              <a href={file("results/replay_tracking.json")}>results/replay_tracking.json</a>. The exploratory cells before it use other
+              settings and aren't used on this site.
             </li>
           </ul>
           <a className="btn btn-primary" href="#/normalised" style={{ alignSelf: "flex-start" }}>

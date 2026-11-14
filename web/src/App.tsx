@@ -13,8 +13,14 @@ export function App() {
   return (
     <>
       <Header route={route} />
-      <main key={route}>
-        {route === "unnormalised" ? <RunUnnormalised /> : route === "normalised" ? <RunNormalised /> : <Home />}
+      <main key={route === "normalised-10" ? "normalised" : route}>
+        {route === "unnormalised" ? (
+          <RunUnnormalised />
+        ) : route === "normalised" || route === "normalised-10" ? (
+          <RunNormalised view={route === "normalised-10" ? 10 : 4} />
+        ) : (
+          <Home />
+        )}
       </main>
       <Closing />
     </>

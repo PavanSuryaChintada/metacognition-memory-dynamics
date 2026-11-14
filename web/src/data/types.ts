@@ -38,6 +38,15 @@ export type NormalisedComparison = {
   survivors_above_0_001: Arms<number>;
 };
 
+/** Shape of results/normalised_10_memories.json: the 10-memory raw vs normalised run. */
+export type TenMemories = {
+  setup: { steps: number; seed: number; eta: number; beta: number; replay_prob: number };
+  memories: { label: string; label_in_run: string; decay_rate_printed: number; url: string }[];
+  final_activations: { unnormalised: Record<string, number>; normalised: Record<string, number> };
+  survivors_above_0_001: { unnormalised: number; normalised: number };
+  order_by_decay_as_printed: string[];
+};
+
 /** Shape of results/metrics.json: the numbers the Colab run printed. */
 export type Recorded = {
   source: string;

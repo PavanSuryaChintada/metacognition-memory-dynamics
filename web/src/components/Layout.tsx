@@ -36,7 +36,7 @@ export function Header({ route }: { route: Route }) {
               <a href="#/unnormalised" aria-current={route === "unnormalised" ? "page" : undefined}>
                 Run A
               </a>
-              <a href="#/normalised" aria-current={route === "normalised" ? "page" : undefined}>
+              <a href="#/normalised" aria-current={route === "normalised" || route === "normalised-10" ? "page" : undefined}>
                 Run B
               </a>
             </>
