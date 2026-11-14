@@ -1597,6 +1597,73 @@ tr.win td {
   margin-bottom: 14px;
 }
 
+/* Experiment 3: the two test cards */
+.run-cards.beyond-cards {
+  margin-top: 0;
+}
+.ret-bars {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+  font-size: 12.5px;
+}
+.ret-bars li {
+  display: grid;
+  grid-template-columns: 112px minmax(0, 1fr) 46px;
+  align-items: center;
+  gap: 10px;
+}
+.ret-name {
+  color: var(--muted);
+}
+.ret-track {
+  position: relative;
+  height: 8px;
+  border-radius: 2px;
+  background: var(--track);
+  overflow: hidden;
+}
+.ret-fill {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  border-radius: 2px;
+  background: rgba(10, 10, 10, 0.55);
+}
+.ret-bars li.fix .ret-fill {
+  background: var(--ember);
+}
+.ret-value {
+  text-align: right;
+  font-weight: 560;
+  font-variant-numeric: tabular-nums;
+}
+.group-strip {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+}
+.group-strip ul {
+  list-style: none;
+  margin: 10px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+}
+.group-strip li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+@media (max-width: 860px) {
+  .group-strip {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
 /* Home: the Colab notebooks table */
 .notebooks td:first-child {
   width: 34%;

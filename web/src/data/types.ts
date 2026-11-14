@@ -80,6 +80,32 @@ export type ForgettingTest = {
   old_total_printed: { at_250: number; final: number; change_pct: number };
 };
 
+type Arm3<T> = { raw: T; mean: T; warmup: T };
+
+/** Shape of results/forgetting_fixes.json: the forgetting test run three ways. */
+export type ForgettingFixes = {
+  setup: {
+    steps: number;
+    inject_at: number;
+    seed: number;
+    eta: number;
+    beta: number;
+    replay_prob: number;
+    gamma: number;
+    delta: number;
+    h: number;
+    alive_threshold: number;
+    warmup_steps: number;
+  };
+  arms: { id: "raw" | "mean" | "warmup"; name: string; printed: string; how: string }[];
+  memories: { label: string; label_in_run: string; group: "old" | "new"; decay_rate_printed: number; final: Arm3<number> }[];
+  survivors: Arm3<{ old: number; new: number }>;
+  retention_pct_printed: Arm3<number>;
+  summary_printed: { max_old: Arm3<number>; max_new: Arm3<number>; old_new_ratio: Arm3<number> };
+  best_printed: string;
+  old_sum_at_250_derived: number;
+};
+
 /** Shape of results/metrics.json: the numbers the Colab run printed. */
 export type Recorded = {
   source: string;

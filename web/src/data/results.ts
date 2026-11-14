@@ -7,11 +7,13 @@ import tenRun from "../../../results/normalised_10_memories.json";
 import tenFigure from "../../../results/figures/normalised_10_memories.png";
 import forgettingRun from "../../../results/forgetting_5_plus_5.json";
 import forgettingFigure from "../../../results/figures/forgetting_5_plus_5.png";
+import fixesRun from "../../../results/forgetting_fixes.json";
+import fixesFigure from "../../../results/figures/forgetting_fixes.png";
 import demoFigure from "../../../results/figures/dynamics_demo.png";
 import sweepAFigure from "../../../results/figures/three_regimes_sweep_a.png";
 import sweepBFigure from "../../../results/figures/three_regimes_sweep_b.png";
 import softmaxFigure from "../../../results/figures/softmax_results.png";
-import type { ForgettingTest, NormalisedComparison, Recorded, ReplayTracking, TenMemories } from "./types";
+import type { ForgettingFixes, ForgettingTest, NormalisedComparison, Recorded, ReplayTracking, TenMemories } from "./types";
 
 export const recorded = metrics as Recorded;
 /** The second Colab run, which logged the softmax replay weights at every step. */
@@ -22,6 +24,8 @@ export const normalised = normalisedRun as NormalisedComparison;
 export const ten = tenRun as TenMemories;
 /** A test beyond the paper: five memories at step 0, five more added at step 250. */
 export const forgetting = forgettingRun as ForgettingTest;
+/** The same test run three ways: new memories start at 1, at the mean, or warm up. */
+export const fixes = fixesRun as ForgettingFixes;
 export const figures = {
   demo: demoFigure,
   sweepA: sweepAFigure,
@@ -30,6 +34,7 @@ export const figures = {
   normalised: normalisedFigure,
   ten: tenFigure,
   forgetting: forgettingFigure,
+  fixes: fixesFigure,
 };
 
 /**
@@ -57,6 +62,7 @@ export const PHOTOS: Record<string, { name: string; thumb: string }> = {
   armchair: { name: "Armchair", thumb: "/memories/armchair.jpg" },
   car: { name: "Car", thumb: "/memories/car.jpg" },
   puppy: { name: "Puppy", thumb: "/memories/puppy.jpg" },
+  tabby_cat: { name: "Tabby cat", thumb: "/memories/tabby_cat.jpg" },
 };
 
 export const nameOf = (label: string) => PHOTOS[label]?.name ?? label;
@@ -81,6 +87,9 @@ export const forgettingMemories = forgetting.memories.map((m) => ({
   thumb: m.no_photo ? undefined : PHOTOS[m.label].thumb,
 }));
 
+/** The fix test's ten memories, every one a photo. */
+export const fixMemories = fixes.memories.map((m) => ({ ...m, ...PHOTOS[m.label] }));
+
 /** The ten memories of the 10-memory run, with names, thumbnails and printed decay rates. */
 export const tenMemories = ten.memories.map((m) => ({
   label: m.label,
@@ -97,6 +106,7 @@ export const NOTEBOOKS = {
   normalised4: nb("colab/normalised/normalised_metacognition.ipynb"),
   normalised10: nb("colab/normalised/metacognition_10_mem.ipynb"),
   forgetting: nb("colab/normalised/beyond_paper/5_5_forgetting_test.ipynb"),
+  forgettingFixes: nb("colab/normalised/beyond_paper/5_5forgetting_test_fix.ipynb"),
   ijepaSample: nb("colab/_facebook_ijepa_vith14_1k.ipynb"),
   vjepaSample: nb("colab/facebook_vjepa2_vitl_fpc64_256.ipynb"),
 };

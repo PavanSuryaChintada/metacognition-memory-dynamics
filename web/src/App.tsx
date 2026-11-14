@@ -17,7 +17,11 @@ export function App() {
         {route === "unnormalised" ? (
           <RunUnnormalised />
         ) : isRunB(route) ? (
-          <RunNormalised view={route === "normalised-10" ? 10 : route === "normalised-beyond" ? "beyond" : 4} />
+          <RunNormalised
+            view={
+              route === "normalised-10" ? 10 : route === "normalised-beyond" ? "beyond" : route === "normalised-beyond-fix" ? "beyond-fix" : 4
+            }
+          />
         ) : (
           <Home />
         )}
