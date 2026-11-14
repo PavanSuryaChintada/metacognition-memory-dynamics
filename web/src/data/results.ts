@@ -25,3 +25,5 @@ export const memories = recorded.memories.map((m) => ({
 }));
 
 export const REPO = "https://github.com/PavanSuryaChintada/metacognition-memory-dynamics";
+export const AUTHOR = "Pavan Surya Chintada";
+export const AUTHOR_GITHUB = "https://github.com/PavanSuryaChintada";

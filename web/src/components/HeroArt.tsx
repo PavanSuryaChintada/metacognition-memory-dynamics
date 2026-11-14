@@ -1,4 +1,5 @@
 import { memories } from "../data/results";
+import { reducedMotion } from "../hooks";
 
 /**
  * Background construction lines: column guides across the hero, and in the right
@@ -47,7 +48,14 @@ export function HeroArt() {
         {curves
           .filter((c) => c.survivor)
           .map((c) => (
-            <circle key={c.key} className="dot" cx={x1} cy={c.end} r={3.5} />
+            <g key={c.key}>
+              <circle className="dot" cx={x1} cy={c.end} r={3.5} />
+              {!reducedMotion() && (
+                <circle className="traveller" r={2.6}>
+                  <animateMotion path={c.d} dur="7s" begin="2.6s" repeatCount="indefinite" />
+                </circle>
+              )}
+            </g>
           ))}
       </g>
     </svg>

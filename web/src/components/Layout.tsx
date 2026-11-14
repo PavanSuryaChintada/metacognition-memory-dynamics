@@ -1,18 +1,35 @@
-import type { ReactNode } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import { REPO } from "../data/results";
+import { useHeaderOnDark } from "../hooks";
+
+/** The project mark: three memories fading, one held by replay. */
+export function Mark({ size = 26 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 32 32" aria-hidden="true" className="mark">
+      <path d="M4 7c5 0 7 17 24 17" fill="none" stroke="currentColor" strokeOpacity=".35" strokeWidth="1.6" strokeLinecap="round" />
+      <path d="M4 7c5 0 6 13 24 13" fill="none" stroke="currentColor" strokeOpacity=".55" strokeWidth="1.6" strokeLinecap="round" />
+      <path d="M4 7c4 0 5 7 24 7" fill="none" stroke="var(--ember)" strokeWidth="2.4" strokeLinecap="round" />
+      <circle cx="28" cy="14" r="2.6" fill="var(--ember)" />
+    </svg>
+  );
+}
 
 export function Header() {
+  const dark = useHeaderOnDark();
   return (
-    <header className="site-header">
-      <div className="wrap">
+    <header className={`site-header${dark ? " on-dark" : ""}`}>
+      <div className="wrap header-row">
         <a href="#top" className="wordmark">
-          Memory Dynamics <small>on I-JEPA</small>
+          Memory Dynamics
+        </a>
+        <a href="#top" className="header-mark" aria-label="Back to top">
+          <Mark />
         </a>
         <nav className="site-nav" aria-label="Sections">
-          <a href="#paper">Paper</a>
           <a href="#model">Model</a>
+          <a href="#how-it-runs">How it runs</a>
           <a href="#results">Results</a>
-          <a href="#theory">Theory</a>
+          <a href="#paper">Paper</a>
           <a href={REPO} className="keep">
             GitHub
           </a>
@@ -23,10 +40,17 @@ export function Header() {
 }
 
 /** A giant chapter word, as a divider between groups of sections. */
-export function Chapter({ id, children }: { id?: string; children: ReactNode }) {
+export function Chapter({ id, children, sub }: { id?: string; children: ReactNode; sub?: ReactNode }) {
   return (
     <div className="wrap chapter-head" id={id}>
-      <h2 className="chapter">{children}</h2>
+      <h2 className="chapter" data-reveal>
+        {children}
+      </h2>
+      {sub && (
+        <div className="chapter-sub" data-reveal style={{ "--d": 1 } as CSSProperties}>
+          {sub}
+        </div>
+      )}
     </div>
   );
 }
@@ -49,11 +73,11 @@ export function Section({
 }) {
   return (
     <section className="section" id={id}>
-      <div className="wrap grid section-head">
+      <div className="wrap grid section-head" data-reveal>
         <span className="label">{label}</span>
         <div className="headline-wrap">
           <h3 className="headline">{headline}</h3>
-          {lead && <p className="lead">{lead}</p>}
+          {lead && <div className="lead">{lead}</div>}
         </div>
         <span className="num">({String(num).padStart(2, "0")})</span>
       </div>
@@ -71,6 +95,7 @@ export function Card({
   numbers,
   note,
   className = "",
+  delay = 0,
 }: {
   label: ReactNode;
   meta?: ReactNode;
@@ -79,9 +104,10 @@ export function Card({
   numbers?: ReactNode;
   note?: ReactNode;
   className?: string;
+  delay?: number;
 }) {
   return (
-    <figure className={`card ${className}`} style={{ margin: 0 }}>
+    <figure className={`card ${className}`} style={{ margin: 0, "--d": delay } as CSSProperties} data-reveal>
       <div className="card-head">
         <div>
           <div className="label">{label}</div>

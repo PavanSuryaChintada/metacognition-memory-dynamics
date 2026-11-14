@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { useSeen } from "../hooks";
 
 type Point = { name: string; drive: number; norm: number };
 
@@ -12,6 +13,7 @@ const fmt = (v: number) => String(v);
  */
 export function DriveChart({ exact, approx, start }: { exact: Point[]; approx: Point[]; start: number }) {
   const ref = useRef<HTMLDivElement>(null);
+  const [seenRef, seen] = useSeen<SVGSVGElement>(0.4);
   const [width, setWidth] = useState(880);
   useEffect(() => {
     const el = ref.current;
@@ -39,7 +41,7 @@ export function DriveChart({ exact, approx, start }: { exact: Point[]; approx: P
           <i className="key-ring" /> First sweep, read off its figure
         </span>
       </div>
-      <svg width={width} height={height} role="img" aria-label="Final activation size against replay drive, log scales. It rises from 0.0048 at drive 0.0025 to 0.5003 at 0.8 and 5.7369 at 9.">
+      <svg ref={seenRef} className={seen ? "is-drawn" : undefined} width={width} height={height} role="img" aria-label="Final activation size against replay drive, log scales. It rises from 0.0048 at drive 0.0025 to 0.5003 at 0.8 and 5.7369 at 9.">
         {TICKS.map((t) => (
           <g key={`y${t}`}>
             <line className="gridline" x1={m.l} x2={m.l + W} y1={ly(t)} y2={ly(t)} />
@@ -71,7 +73,7 @@ export function DriveChart({ exact, approx, start }: { exact: Point[]; approx: P
             <title>{`${p.name}, first sweep: η·p = ${p.drive}, ‖a‖ ≈ ${p.norm} (read off the figure)`}</title>
           </circle>
         ))}
-        <path d={path} fill="none" stroke="var(--ember)" strokeWidth={2} strokeLinejoin="round" />
+        <path d={path} pathLength={1} className="drive-line" fill="none" stroke="var(--ember)" strokeWidth={2} strokeLinejoin="round" />
         {exact.map((p) => {
           const x = lx(p.drive);
           const flip = x > width - m.r - 70; // near the right edge: label on the left
@@ -80,7 +82,7 @@ export function DriveChart({ exact, approx, start }: { exact: Point[]; approx: P
           const anchor = flip ? "end" : "start";
           const above = flip || low;
           return (
-            <g key={p.name}>
+            <g key={p.name} className="drive-point" style={{ transitionDelay: `${0.5 + exact.indexOf(p) * 0.45}s` }}>
               <circle cx={x} cy={ly(p.norm)} r={5} fill="var(--ember)" stroke="var(--bg)" strokeWidth={2}>
                 <title>{`${p.name}: η·p = ${p.drive}, ‖a‖ = ${p.norm}`}</title>
               </circle>
