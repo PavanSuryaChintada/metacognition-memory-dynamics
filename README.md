@@ -5,6 +5,8 @@ Implementation of the dynamical memory framework from
 (Ghosh, Jaiswal, Gupta — MetaCognition Labs) using real I-JEPA
 embeddings from Hugging Face instead of synthetic Gaussians.
 
+The same results are also written up as a single-page website in [`web/`](web/); see [Website](#website).
+
 ## What This Implements
 
 The core memory evolution equation:
@@ -118,6 +120,40 @@ The same four memories were run under three settings of replay strength $\eta$ a
 
 This sweep printed no numbers. Both sweeps show the same three regimes. In both, the level where ‖a‖ settles rises with the replay drive η·p.
 
+## Comparison with the paper
+
+The paper's experiments (section 5.1) and this run share every parameter except the embeddings.
+
+| | Paper, section 5 | This project |
+|---|---|---|
+| Embeddings | Random draws from a standard Gaussian | I-JEPA ViT-H/14 features of real photos, mean-pooled over patches |
+| Dimension $d$ | 64 | 1,280 |
+| Memories $N$ | 200 | 4 |
+| Run length and seeds | 3,000 steps, averaged over 10 seeds | 500 steps, one seed (42) |
+| Parameters | $\gamma = 0.2$, $\delta = 0.1$, $\beta = 3$, $h = 0.01$, $\alpha \sim U[0.5, 1.5]$, $S_t \sim \mathrm{Bernoulli}(p)$ | Same |
+| Similarity graph | Cosine between independent random vectors: centred on 0, spread about $1/\sqrt{64} \approx 0.13$, so roughly half the edges are clipped to 0 | Cosine between image features; the run pins down one pair, beagle–person ≈ 0.30 |
+| Regimes | Collapse, balanced and runaway (Figures 1 and 3) | The same three (Results §3) |
+| Energy | Falls steadily with replay off (Figure 4) | With replay on, falls from about 3.13 to 0.015, then wobbles |
+
+The paper names this gap itself, in section 6.6:
+
+> "The experiments presented in this work focus on synthetic memory patterns. Applying the framework to realistic embeddings derived from language models or multimodal agents would provide a more direct evaluation of its practical relevance."
+
+This run is a small first step at that: one image model, four photos, one seed.
+
+**Boundedness check (paper section 3.2).**
+
+- The proof shows a trajectory never leaves $\|a\| \le \max(\|a(0)\|,\ \eta/\lambda_{\min}(R))$, with $R = A + \gamma L + \delta\mathbf{1}\mathbf{1}^\top$.
+- $L$ and $\mathbf{1}\mathbf{1}^\top$ are positive semidefinite, so $\lambda_{\min}(R) \ge \min_i \alpha_i = 0.875$. That gives a bound from the recorded decay rates alone, without knowing the graph.
+
+| Regime | η | Bound on ‖a‖ | Largest ‖a‖ in the figure |
+|---|---|---|---|
+| Collapse | 0.05 | 2.00 | ≈ 2.0, at the start |
+| Balanced | 2 | 2.29 | ≈ 2.0, at the start |
+| Runaway | 10 | 11.43 | ≈ 6.1 |
+
+Every run stays inside its bound. "Runaway" is replay-dominated but bounded, which is what section 3.2 says must happen whatever replay does.
+
 ## Observations and caveats
 
 - **Winner-take-all at moderate replay.** In the single run (η·p = 0.24), three of four memories went to exactly 0.
@@ -192,13 +228,17 @@ This sweep printed no numbers. Both sweeps show the same three regimes. In both,
 │   └── plotting.py            # figures
 ├── notebooks/
 │   └── metacognition.ipynb    # original Colab notebook, outputs intact
-└── results/                   # recorded output of the notebook run
-    ├── figures/
-    │   ├── dynamics_demo.png
-    │   ├── three_regimes_sweep_a.png
-    │   └── three_regimes_sweep_b.png
-    ├── metrics.json
-    └── notebook_output.txt    # printed output, verbatim
+├── results/                   # recorded output of the notebook run
+│   ├── figures/
+│   │   ├── dynamics_demo.png
+│   │   ├── three_regimes_sweep_a.png
+│   │   └── three_regimes_sweep_b.png
+│   ├── metrics.json
+│   └── notebook_output.txt    # printed output, verbatim
+├── web/                       # website: Vite + React + TypeScript
+│   ├── src/                   # page, components, styles
+│   └── public/memories/       # thumbnails of the four photos
+└── vercel.json                # tells Vercel to build web/
 ```
 
 ## Reproducing
@@ -230,6 +270,27 @@ Other flags:
 
 - Sweep B's printed numbers came from the notebook's extra re-run, so they will not match.
 - Embeddings computed on other hardware or library versions can differ in the last few digits. Winner-take-all dynamics can amplify that.
+
+## Website
+
+[`web/`](web/) is a single-page write-up of everything above: the model, the architecture, the paper comparison and every recorded result.
+
+- **No copied numbers.** It imports `results/metrics.json` and the three Colab figures straight from `results/`, so the page always shows the recorded run.
+- **Built with** Vite, React and TypeScript. The charts are hand-written SVG and the maths uses KaTeX. There are no other runtime dependencies.
+
+Run it locally:
+
+```bash
+cd web
+npm install
+npm run dev        # http://localhost:5173
+npm run build      # type-checks, then writes web/dist
+```
+
+Deploy it on Vercel:
+
+1. Import this repository at vercel.com/new.
+2. Keep the defaults. The root `vercel.json` already sets the install command, the build command and the `web/dist` output.
 
 ## References
 
