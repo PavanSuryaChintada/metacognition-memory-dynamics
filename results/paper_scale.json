@@ -1,0 +1,56 @@
+{
+  "source": "notebooks/colab/paper/paper_scale_real_jepa.ipynb, executed in Colab. Values copied from its printed output in results/paper_scale_output.txt; the figure is results/figures/paper_scale.png.",
+  "setup": {
+    "model": "facebook/ijepa_vith14_1k",
+    "embedding_dim": 1280,
+    "images": "First 200 images of the CIFAR-100 test set, 32x32, resized to 224x224 (bilinear) before encoding; mean-pooled over patches",
+    "n": 200,
+    "steps": 3000,
+    "h": 0.01,
+    "beta": 3.0,
+    "gamma": 0.2,
+    "delta": 0.1,
+    "eta": 0.8,
+    "replay_prob": 0.3,
+    "seed": 42,
+    "decay_rates": "evenly spaced from 0.5 to 1.5 (torch.linspace(0.5, 1.5, 200))",
+    "replay": "normalised: unit-length embeddings in F(a); the diffusion graph also uses cosine similarity",
+    "alive_threshold": 0.001
+  },
+  "embedding_norms": { "min": 18.7, "max": 30.2, "mean": 23.3 },
+  "cosine_off_diagonal": { "min": 0.2589, "max": 0.9573, "mean": 0.6812, "std": 0.1062 },
+  "progress": [
+    { "step": 500, "alive": 0, "max": "0.0000", "mean": "0.0000" },
+    { "step": 1000, "alive": 0, "max": "0.0001", "mean": "0.0001" },
+    { "step": 1500, "alive": 0, "max": "0.0001", "mean": "0.0001" },
+    { "step": 2000, "alive": 0, "max": "0.0001", "mean": "0.0001" },
+    { "step": 2500, "alive": 0, "max": "0.0000", "mean": "0.0000" },
+    { "step": 3000, "alive": 0, "max": "0.0001", "mean": "0.0001" }
+  ],
+  "survivors": 0,
+  "max_activation": 0.000081,
+  "mean_activation": 0.000079,
+  "spearman_rho_decay_vs_activation": 0.9877,
+  "spearman_p": "1.12e-161",
+  "top10": [
+    { "rank": 1, "label": "mountain", "decay": 0.5, "activation": 0.000081 },
+    { "rank": 2, "label": "mushroom", "decay": 0.5151, "activation": 0.000081 },
+    { "rank": 3, "label": "forest", "decay": 0.505, "activation": 0.000081 },
+    { "rank": 4, "label": "seal", "decay": 0.5101, "activation": 0.000081 },
+    { "rank": 5, "label": "tulip", "decay": 0.5251, "activation": 0.000081 },
+    { "rank": 6, "label": "camel", "decay": 0.5302, "activation": 0.000081 },
+    { "rank": 7, "label": "sea", "decay": 0.5201, "activation": 0.000081 },
+    { "rank": 8, "label": "butterfly", "decay": 0.5352, "activation": 0.000081 },
+    { "rank": 9, "label": "cloud", "decay": 0.5402, "activation": 0.000081 },
+    { "rank": 10, "label": "sea", "decay": 0.5503, "activation": 0.000081 }
+  ],
+  "verdict_printed": "Does the balanced regime hold with real embeddings? YES — decay rate predicts survival/ranking",
+  "notes": [
+    "The notebook's YES comes from the test rho > 0.5 alone; it doesn't look at survivors, and there are none.",
+    "The top ten are equal to the six printed decimals, so their order comes from differences smaller than 0.000001.",
+    "The closing 'Paper's setup / Paper's result' lines are text written into the notebook, not computed.",
+    "Summing the equation over all memories, diffusion drops out (the graph is symmetric) and the replay weights add up to 1: d(sum a)/dt = -sum(alpha_i a_i) - delta*N*sum(a) + eta*S(t). With N = 200 and delta = 0.1, inhibition is 20 per unit of total activation, against decay of 0.5 to 1.5.",
+    "From that equation, the long-run time average of the total is about eta*p/(mean alpha + delta*N) = 0.24/21 = 0.0114, about 0.000057 per memory; with replay at every step it could not stay above about 0.8/21/200 = 0.00019 per memory. All 200 above 0.001 needs a total of 0.2.",
+    "Replay entropy is not printed; the figure shows it at its maximum, ln 200 = 5.30, i.e. replay spread evenly."
+  ]
+}
