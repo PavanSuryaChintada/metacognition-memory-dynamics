@@ -1252,8 +1252,19 @@ pre .comment {
 .squares span.alive {
   background: var(--ember);
 }
-.outcome-table tr.win td {
+tr.win td {
   color: var(--ember-deep);
+}
+/* Measured similarity: tint grows with the value; the diagonal (always 1) recedes. */
+.sim-table td[style] {
+  background: color-mix(in oklab, var(--ember) calc(var(--t) * 20%), transparent);
+}
+.sim-table td.diag {
+  color: var(--faint);
+}
+.sim-table td,
+.sim-table th {
+  padding-left: 10px;
 }
 .drive-line {
   stroke-dasharray: 1;

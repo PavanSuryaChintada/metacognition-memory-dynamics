@@ -9,6 +9,7 @@ import { Flow } from "./components/Flow";
 import { Pipeline } from "./components/Pipeline";
 import { DriveChart } from "./components/DriveChart";
 import { Tex } from "./components/Tex";
+import { ReplaySection } from "./components/ReplaySection";
 import { useEnterProgress, useRevealAll } from "./hooks";
 
 const run = recorded.single_run;
@@ -40,6 +41,7 @@ export function App() {
         <HowItRunsSection />
         <Chapter id="results">Results</Chapter>
         <SingleRunSection />
+        <ReplaySection num={5} />
         <RetrievalSection />
         <RegimesSection />
         <TheorySection />
@@ -297,7 +299,7 @@ function RetrievalSection() {
     <Section
       id="retrieval"
       label="Retrieval"
-      num={5}
+      num={6}
       headline="The exact match ranks last."
       lead="After the run the memory is queried with the beagle photo, the same image as memory 1. Score is cosine similarity times current activation."
     >
@@ -327,7 +329,8 @@ function RetrievalSection() {
             The beagle's cosine similarity to the query is 1, but its activation is 0, so it scores 0. Once activations collapse,
             only the surviving memory can score above zero, whatever the query. Ranks 2 and 3 are tied at 0, so their order means
             nothing. The top score also gives one similarity for free: beagle and person embeddings have a cosine similarity of{" "}
-            {top.score.toFixed(4)} / {run.final_activations[top.label].toFixed(4)} ≈ {impliedCosine.toFixed(2)}.
+            {top.score.toFixed(4)} / {run.final_activations[top.label].toFixed(4)} ≈ {impliedCosine.toFixed(2)}. The replay-tracking run
+            measured it directly: 0.3005.
           </p>
         </div>
       </div>
@@ -340,7 +343,7 @@ function RegimesSection() {
     <Section
       id="regimes"
       label="Regimes"
-      num={6}
+      num={7}
       headline="Three regimes, ordered by replay."
       lead="Section 4 of the paper predicts collapse, a balanced state and runaway reinforcement as replay gets stronger. The same four memories were run under three settings of η and p, twice."
     >
@@ -349,7 +352,7 @@ function RegimesSection() {
           <Card
             label={
               <>
-                Figure 3 · Final <N>‖a‖</N> against replay drive
+                Figure 4 · Final <N>‖a‖</N> against replay drive
               </>
             }
             meta="Log scales · seed 42 · 500 steps"
@@ -408,7 +411,7 @@ function RegimesSection() {
             />
           </Card>
           <Card
-            label="Figure 4 · Final settings"
+            label="Figure 5 · Final settings"
             meta="Colab output"
             note={`The printed values come from a second run of each setting with fresh random draws, so the Balanced curve here ends near 0.47 while the table says ${sweepB[1].final_norm}.`}
           >
@@ -419,7 +422,7 @@ function RegimesSection() {
               />
             </div>
           </Card>
-          <Card label="Figure 5 · First sweep" meta="Colab output" note="Slightly different settings. No numbers were printed, so its points in Figure 3 are read off this figure.">
+          <Card label="Figure 6 · First sweep" meta="Colab output" note="Slightly different settings. No numbers were printed, so its points in Figure 4 are read off this figure.">
             <div className="plate">
               <img
                 src={figures.sweepA}
@@ -451,7 +454,7 @@ function TheorySection() {
     <Section
       id="theory"
       label="Theory"
-      num={7}
+      num={8}
       headline="Inside the paper's bounds."
       lead={
         <>
@@ -464,7 +467,7 @@ function TheorySection() {
     >
       <div className="grid">
         <div className="indent stack">
-          <Card label="Boundedness · section 3.2" meta="Largest ‖a‖ read off Figure 4">
+          <Card label="Boundedness · section 3.2" meta="Largest ‖a‖ read off Figure 5">
             <table>
               <thead>
                 <tr>
@@ -525,7 +528,7 @@ function PaperSection() {
     <Section
       id="paper"
       label="The paper"
-      num={8}
+      num={9}
       headline="Same equations, real embeddings."
       lead="The paper proves its results for any embeddings, then illustrates them with synthetic data. Everything here that isn't about the embeddings is the same."
     >
@@ -564,7 +567,7 @@ function PaperSection() {
                       so roughly half the edges are cut to zero.
                     </td>
                     <td data-label="This project">
-                      How alike I-JEPA finds the photos. The run pins down one pair: beagle and person, about {impliedCosine.toFixed(2)}.
+                      How alike I-JEPA finds the photos. Measured in the replay-tracking run: every pair between 0.30 and 0.47, so no edge is zero.
                     </td>
                   </tr>
                   <tr>
@@ -623,7 +626,7 @@ function PaperSection() {
 
 function FindingsSection() {
   return (
-    <Section id="findings" label="Findings" num={9} headline="What it shows, and what it doesn't.">
+    <Section id="findings" label="Findings" num={10} headline="What it shows, and what it doesn't.">
       <div className="grid">
         <div className="indent two-col">
           <div data-reveal>
@@ -632,7 +635,8 @@ function FindingsSection() {
               <li>The paper's dynamics run unchanged on real 1,280-dimensional I-JEPA embeddings.</li>
               <li>They produce the collapse, balanced and runaway regimes the paper predicts.</li>
               <li>Every trajectory stays inside the paper's boundedness bound.</li>
-              <li>In this run, replay concentrated on a single memory, and not the one that decays slowest.</li>
+              <li>Replay put all of its weight on one memory, the person, from the first replay event to the last, and not on the one that decays slowest.</li>
+              <li>Every pair of photos has a cosine similarity between 0.30 and 0.47 in I-JEPA's embedding space.</li>
               <li>Retrieval weighted by activation returns whatever survived, even over an exact match.</li>
             </ul>
           </div>
@@ -640,13 +644,14 @@ function FindingsSection() {
             <div className="label">Doesn't show</div>
             <ul className="points">
               <li>
-                Whether similar memories help each other survive. The photos were a beagle, a cat, a person and a French bulldog, and
-                the run didn't record how similar they are to each other.
+                Whether similar memories help each other survive. Only one memory ever received replay, so this setup can't show
+                it.
               </li>
               <li>Anything statistical. One seed and four memories, where the paper uses 10 seeds and 200 memories.</li>
               <li>
-                Why replay chose the person photo. The run didn't record the replay scores, the embedding lengths or the similarity
-                between memories, so the reason can't be read off these results.
+                Why the person's replay score is the highest. Cosine similarity alone doesn't explain it: the French bulldog has the
+                largest total similarity to the others (1.27, against the person's 1.22). The score also depends on each embedding's
+                length, which wasn't printed.
               </li>
             </ul>
           </div>
@@ -661,7 +666,7 @@ function ReproduceSection() {
     <Section
       id="reproduce"
       label="Reproduce"
-      num={10}
+      num={11}
       headline="Run it yourself."
       lead={
         <>
@@ -762,6 +767,9 @@ function DarkClose() {
               </li>
               <li>
                 <a href={file("results/notebook_output.txt")}>Printed output</a>
+              </li>
+              <li>
+                <a href={file("notebooks/replay_tracking.py")}>Replay-tracking run</a>
               </li>
             </ul>
           </div>

@@ -118,6 +118,49 @@ The same four memories were run under three settings of replay strength $\eta$ a
 
 This sweep printed no numbers. Both sweeps show the same three regimes. In both, the level where ‖a‖ settles rises with the replay drive η·p.
 
+### 4. Replay tracking (second Colab run)
+
+A second Colab run, [`notebooks/replay_tracking.py`](notebooks/replay_tracking.py), repeated the single run with the same images, seed and settings. At every step it logged the softmax replay weights $F(a)$, the pre-softmax scores and each force.
+
+- **Printed output:** [`results/replay_tracking_output.txt`](results/replay_tracking_output.txt), copied word for word.
+- **Numbers:** [`results/replay_tracking.json`](results/replay_tracking.json).
+- **Labels:** that run's output and figure use `labrador` for the beagle and `cute_dog` for the French bulldog.
+
+![Replay tracking: activations, replay weights, replay share, forces, energy and pre-softmax scores](results/figures/softmax_results.png)
+
+- **It reproduces the first run.** The person ends at 0.137944; the notebook printed 0.13794458.
+- **Replay went to one memory.**
+  - Replay fired at 154 of the 500 steps.
+  - Printed to 4 decimals, the person's replay weight is 1.0000, averaged over the first 10% of events and again over the last 10%. The other three get 0.0000.
+  - The figure shows the same split at every replay event.
+- **The person's pre-softmax score is the highest at every replay event** (bottom-right panel). Near the start it is about 640, against about 625 for the next, read off the panel. Multiplied by β = 3, a gap that size leaves the others a vanishing share.
+
+Measured cosine similarity between the 1,280-number embeddings:
+
+| | beagle | cat | person | French bulldog |
+|---|---|---|---|---|
+| beagle | 1.0000 | 0.3188 | 0.3005 | 0.3701 |
+| cat | 0.3188 | 1.0000 | 0.4488 | 0.4276 |
+| person | 0.3005 | 0.4488 | 1.0000 | 0.4673 |
+| French bulldog | 0.3701 | 0.4276 | 0.4673 | 1.0000 |
+
+- Every pair is between 0.30 and 0.47, so no edge of the graph is zero.
+- The French bulldog's closest match is the person (0.47), not the beagle (0.37).
+- Beagle–person is 0.3005, which matches the 0.30 implied by the retrieval score in §2.
+
+Mean force on each memory over the 500 steps:
+
+| Memory | Decay | Diffusion | Inhibition | Replay | Net |
+|---|---|---|---|---|---|
+| beagle | −0.13657 | +0.00137 | −0.06559 | 0 | −0.20079 |
+| cat | −0.15419 | +0.01930 | −0.06559 | 0 | −0.20047 |
+| person | −0.32114 | −0.03209 | −0.06559 | +0.24640 | −0.17241 |
+| French bulldog | −0.14586 | +0.01142 | −0.06559 | 0 | −0.20003 |
+
+- **Inhibition is identical for every memory**, as the model says it should be.
+- **Only the person receives replay.** Its decay is the largest because its activation stays highest.
+- **Diffusion moves a little activation from the person to the other three.**
+
 ## Comparison with the paper
 
 The paper's experiments (section 5.1) and this run share every parameter except the embeddings.
@@ -129,7 +172,7 @@ The paper's experiments (section 5.1) and this run share every parameter except 
 | Memories $N$ | 200 | 4 |
 | Run length and seeds | 3,000 steps, averaged over 10 seeds | 500 steps, one seed (42) |
 | Parameters | $\gamma = 0.2$, $\delta = 0.1$, $\beta = 3$, $h = 0.01$, $\alpha \sim U[0.5, 1.5]$, $S_t \sim \mathrm{Bernoulli}(p)$ | Same |
-| Similarity graph | Cosine between independent random vectors: centred on 0, spread about $1/\sqrt{64} \approx 0.13$, so roughly half the edges are clipped to 0 | Cosine between image features; the run pins down one pair, beagle–person ≈ 0.30 |
+| Similarity graph | Cosine between independent random vectors: centred on 0, spread about $1/\sqrt{64} \approx 0.13$, so roughly half the edges are clipped to 0 | Cosine between image features, measured: every pair between 0.30 and 0.47, so no edge is zero (Results §4) |
 | Regimes | Collapse, balanced and runaway (Figures 1 and 3) | The same three (Results §3) |
 | Energy | Falls steadily with replay off (Figure 4) | With replay on, falls from about 3.13 to 0.015, then wobbles |
 
@@ -154,13 +197,13 @@ Every run stays inside its bound. "Runaway" is replay-dominated but bounded, whi
 
 ## Observations and caveats
 
-- **Winner-take-all at moderate replay.** In the single run (η·p = 0.24), three of four memories went to exactly 0.
+- **Winner-take-all at moderate replay.** In the single run (η·p = 0.24), three of four memories went to exactly 0, and the replay-tracking run shows replay's weight went entirely to the survivor (Results §4).
   - It is unknown whether the Balanced regime keeps several memories alive or just one, because the notebook did not print per-memory activations for the sweeps.
-  - `run_experiments.py` now records them in `metrics.json`.
 - **Retrieval reflects survival, not similarity.** Weighting by activation means a collapsed memory cannot be retrieved even by an exact-match query (see Results §2).
-- **Why replay picked the person photo is an open question.**
-  - The replay score $s = X X^\top a$ uses raw, unnormalised embeddings, so memories with larger norms, or more central positions in embedding space, get larger scores. $\beta = 3$ then sharpens the softmax.
-  - Two things to check: the per-image embedding norms, and a version of $F(a)$ that uses normalised $X$.
+- **Why the person's replay score is the highest is still open.**
+  - The replay-tracking run shows it had the highest pre-softmax score at every replay event.
+  - Cosine similarity alone doesn't explain that: the French bulldog has the largest total similarity to the others (1.27, against the person's 1.22).
+  - The score $s = X X^\top a$ uses raw, unnormalised embeddings, so it also depends on each embedding's length, and the lengths weren't printed.
 - **$E$ only descends while replay is weak.** It plateaus in the single run and rises in the Runaway regime. That is expected, since replay is not part of $E$.
 - **Small sample.** These are qualitative demonstrations of the regimes, not measurements: four images, one query, one seed.
 - **The first attempt failed.** Notebook cell 0 used Wikimedia URLs without a User-Agent header. Every download failed, and the run stopped with `RuntimeError: stack expects a non-empty TensorList`. Cell 2 switched to Unsplash URLs and a browser User-Agent.
@@ -225,14 +268,18 @@ Every run stays inside its bound. "Runaway" is replay-dominated but bounded, whi
 │   ├── encoder.py             # I-JEPA image -> 1280-d embedding
 │   └── plotting.py            # figures
 ├── notebooks/
-│   └── metacognition.ipynb    # original Colab notebook, outputs intact
+│   ├── metacognition.ipynb    # original Colab notebook, outputs intact
+│   └── replay_tracking.py     # second Colab run: logs replay weights and forces
 ├── results/                   # recorded output of the notebook run
 │   ├── figures/
 │   │   ├── dynamics_demo.png
 │   │   ├── three_regimes_sweep_a.png
-│   │   └── three_regimes_sweep_b.png
+│   │   ├── three_regimes_sweep_b.png
+│   │   └── softmax_results.png  # replay-tracking run
 │   ├── metrics.json
-│   └── notebook_output.txt    # printed output, verbatim
+│   ├── notebook_output.txt    # printed output, verbatim
+│   ├── replay_tracking.json   # numbers from the replay-tracking run
+│   └── replay_tracking_output.txt  # its printed output, verbatim
 ├── web/                       # website: Vite + React + TypeScript
 │   ├── src/                   # page, components, styles
 │   └── public/memories/       # thumbnails of the four photos

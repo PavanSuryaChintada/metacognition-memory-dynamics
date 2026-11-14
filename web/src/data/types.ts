@@ -1,3 +1,20 @@
+type Forces = { decay: number; diffusion: number; inhibition: number; replay: number; net: number };
+
+/** Shape of results/replay_tracking.json: the second Colab run, with replay weights logged. */
+export type ReplayTracking = {
+  setup: { seed: number; steps: number; eta: number; beta: number; replay_prob: number };
+  labels: string[];
+  labels_in_run: string[];
+  replay_events: number;
+  cosine_similarity: number[][];
+  final_activations: Record<string, number>;
+  replay_weight_mean: {
+    first_10pct_of_events: Record<string, number>;
+    last_10pct_of_events: Record<string, number>;
+  };
+  mean_forces: Record<string, Forces>;
+};
+
 /** Shape of results/metrics.json: the numbers the Colab run printed. */
 export type Recorded = {
   source: string;
