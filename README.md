@@ -46,7 +46,7 @@ Four Unsplash images, each encoded once and stored as a memory. All runs share t
 
 ## Results
 
-Sections 1 to 3 come from the notebook run in [`notebooks/metacognition.ipynb`](notebooks/metacognition.ipynb). Sections 4 to 7 come from the later Colab runs in [`notebooks/colab/`](notebooks/colab/). For sections 1 to 3:
+Sections 1 to 3 come from the notebook run in [`notebooks/metacognition.ipynb`](notebooks/metacognition.ipynb). Sections 4 to 8 come from the later Colab runs in [`notebooks/colab/`](notebooks/colab/). For sections 1 to 3:
 
 - The printed output is in [`results/notebook_output.txt`](results/notebook_output.txt), copied verbatim.
 - Every value is collected in [`results/metrics.json`](results/metrics.json).
@@ -265,7 +265,47 @@ Every run above stores all of its memories at step 0. [`notebooks/colab/normalis
 - **The printed verdict counts the random vector.** The notebook ends with "CATASTROPHIC FORGETTING: 1 old memories died after injection" and "Total old-memory activation: 0.2898 → 0.0348 (−88.0%)". The memory that died is the random vector.
   - In 1,280 dimensions, a random vector's cosine similarity with any fixed vector is close to 0, with a spread of about 0.028.
   - So its replay score gets almost nothing from the new memories.
-- **Not tested:** new memories starting below 1, or extra replay for old memories after new ones arrive.
+- **Starting new memories lower** is tested in §8.
+
+### 8. Beyond the paper: adding new memories gently (sixth Colab run)
+
+[`notebooks/colab/normalised/beyond_paper/5_5forgetting_test_fix.ipynb`](notebooks/colab/normalised/beyond_paper/5_5forgetting_test_fix.ipynb) runs the §7 test three ways. Steps 0 to 249 are identical in every arm; only how the five new memories enter at step 250 changes. Same settings and seed as §7.
+
+| Arm | How each new memory starts | Old activation kept (printed) | Old ÷ new at step 500 (printed) |
+|---|---|---|---|
+| Start at 1 | at activation 1, as in §7 | 14.6% | 0.32 |
+| Start at the mean | at the mean activation when it is added (one line: `init_val = self.activations.mean().item()`) | 21.3% | 0.98 |
+| Warm up | at 0.001, then gains target/50 per step for 50 steps, target being the mean when it is added | 21.2% | 0.96 |
+
+- **Printed output:** [`results/forgetting_fixes_output.txt`](results/forgetting_fixes_output.txt), copied word for word.
+- **Numbers:** [`results/forgetting_fixes.json`](results/forgetting_fixes.json).
+- **Labels:**
+  - `horse` is the spaniel puppy photo that the other runs label `puppy`.
+  - `puppy` is a new photo of a tabby cat.
+  - As before, `labrador` is the beagle, `bulldog` the French bulldog and `coffee` the armchair.
+  - Every slot is a photo; there is no random vector.
+
+![Three ways to add the new memories](results/figures/forgetting_fixes.png)
+
+- **No memory drops below 0.001 in any arm**, even when new memories start at 1. §7's one loss was the random vector.
+- **Starting at the mean keeps 46% more of the old activation:** an old sum of 0.0604 at step 500, against 0.0414 when starting at 1.
+  - Warm up ends within 0.0008 of starting at the mean for every memory.
+  - Old and new end at about the same level.
+- **Why starting lower helps:** the inhibition term $-\delta(\mathbf{1}^\top a)\mathbf{1}$ takes δ times the summed activation off every memory.
+  - The old memories' sum just before step 250 is not printed. Each arm's printed retention puts it at about 0.284, the same in every arm.
+  - Starting at 1 takes the sum to about 5.284, ×18.6.
+  - Starting at the mean doubles it, to about 0.568.
+  - Warming up barely changes it at first.
+  - In the figure, starting at 1, the old memories drop to near 0 within about 60 steps. In the other two arms they fall smoothly.
+- **Most of the old activation still goes, and decay alone explains that.**
+  - Over steps 250 to 500, decay on its own multiplies a memory by (1 − 0.01α)^250: about 0.19 for α = 0.66, down to 0.03 for α = 1.45.
+  - So with decay alone, the old sum would keep between 2.6% and 19.1%.
+  - Starting at the mean keeps 21.3%, so the loss that remains is no bigger than ordinary decay. It isn't shown to be a capacity limit.
+- **Not tested:**
+  - a run with no new memories at all;
+  - scaling δ as δ/N;
+  - boosting old memories' replay (the notebook's header lists it, but it isn't run);
+  - other seeds.
 
 ## Comparison with the paper
 
@@ -382,7 +422,8 @@ Every run stays inside its bound. "Runaway" is replay-dominated but bounded, whi
 │       │   ├── normalised_metacognition.ipynb   # raw vs normalised, 4 memories
 │       │   ├── metacognition_10_mem.ipynb       # raw vs normalised, 10 memories
 │       │   └── beyond_paper/
-│       │       └── 5_5_forgetting_test.ipynb    # 5 memories + 5 added at step 250
+│       │       ├── 5_5_forgetting_test.ipynb    # 5 memories + 5 added at step 250
+│       │       └── 5_5forgetting_test_fix.ipynb # the same, three ways to add them
 │       ├── _facebook_ijepa_vith14_1k.ipynb      # I-JEPA encoder check
 │       └── facebook_vjepa2_vitl_fpc64_256.ipynb # V-JEPA 2 trial, not used
 ├── results/                   # recorded output of every run used
@@ -393,7 +434,8 @@ Every run stays inside its bound. "Runaway" is replay-dominated but bounded, whi
 │   │   ├── softmax_results.png           # replay-tracking run
 │   │   ├── normalised.png                # raw vs normalised, 4 memories
 │   │   ├── normalised_10_memories.png    # raw vs normalised, 10 memories
-│   │   └── forgetting_5_plus_5.png       # forgetting test
+│   │   ├── forgetting_5_plus_5.png       # forgetting test
+│   │   └── forgetting_fixes.png          # the same, three ways
 │   ├── metrics.json
 │   ├── notebook_output.txt    # printed output, verbatim
 │   ├── replay_tracking.json   # numbers from the replay-tracking run
@@ -403,7 +445,9 @@ Every run stays inside its bound. "Runaway" is replay-dominated but bounded, whi
 │   ├── normalised_10_memories.json         # numbers from the 10-memory run
 │   ├── normalised_10_memories_output.txt   # its printed output, verbatim
 │   ├── forgetting_5_plus_5.json            # numbers from the forgetting test
-│   └── forgetting_5_plus_5_output.txt      # its printed output, verbatim
+│   ├── forgetting_5_plus_5_output.txt      # its printed output, verbatim
+│   ├── forgetting_fixes.json               # numbers from the three-way test
+│   └── forgetting_fixes_output.txt         # its printed output, verbatim
 ├── web/                       # website: Vite + React + TypeScript
 │   ├── src/                   # pages, components, styles
 │   └── public/memories/       # thumbnails of the photos
@@ -421,6 +465,7 @@ Every run was executed in Google Colab. The notebooks are kept with their code a
 | [`notebooks/colab/normalised/normalised_metacognition.ipynb`](notebooks/colab/normalised/normalised_metacognition.ipynb) | Raw vs normalised replay, 4 memories | Results §5 |
 | [`notebooks/colab/normalised/metacognition_10_mem.ipynb`](notebooks/colab/normalised/metacognition_10_mem.ipynb) | Raw vs normalised replay, 10 memories | Results §6 |
 | [`notebooks/colab/normalised/beyond_paper/5_5_forgetting_test.ipynb`](notebooks/colab/normalised/beyond_paper/5_5_forgetting_test.ipynb) | Beyond the paper: five memories at step 0, five more added at step 250, normalised replay | Results §7 |
+| [`notebooks/colab/normalised/beyond_paper/5_5forgetting_test_fix.ipynb`](notebooks/colab/normalised/beyond_paper/5_5forgetting_test_fix.ipynb) | Beyond the paper: the same test run three ways (new memories start at 1, at the mean, or warm up) | Results §8 |
 | [`notebooks/colab/_facebook_ijepa_vith14_1k.ipynb`](notebooks/colab/_facebook_ijepa_vith14_1k.ipynb) | Encoder check: cosine similarity of a dog photo with a cat (0.3244) and with another dog (0.3804) | Not used |
 | [`notebooks/colab/facebook_vjepa2_vitl_fpc64_256.ipynb`](notebooks/colab/facebook_vjepa2_vitl_fpc64_256.ipynb) | V-JEPA 2 video trial: gets an embedding of shape [1, 8192, 1024], then the classification step stops with `OSError` because the model id `facebook/vjepa2-vitl-fpc64-256-ssv2` isn't on Hugging Face | Not used |
 
@@ -456,7 +501,7 @@ Other flags:
 
 ## Website
 
-[`web/`](web/) is the website for everything above. The overview page shows what stays the same in every run: the model, the memories, the architecture and the paper's setup. Its hero holds two cards, one per run (unnormalised replay and normalised replay), and each opens a page with that run's explanation and every recorded result. The normalised-replay page has three experiment cards: 4 memories, 10 memories, and tests beyond the paper. Every page links the Colab notebook its numbers come from.
+[`web/`](web/) is the website for everything above. The overview page shows what stays the same in every run: the model, the memories, the architecture and the paper's setup. Its hero holds two cards, one per run (unnormalised replay and normalised replay), and each opens a page with that run's explanation and every recorded result. The normalised-replay page has three experiment cards: 4 memories, 10 memories, and tests beyond the paper, which opens two more cards, one per test. Every page links the Colab notebook its numbers come from.
 
 - **No copied numbers.** It imports the JSON files and Colab figures straight from `results/`, so the pages always show the recorded runs.
 - **Built with** Vite, React and TypeScript. The charts are hand-written SVG and the maths uses KaTeX. There are no other runtime dependencies.
