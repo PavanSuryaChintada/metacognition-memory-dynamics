@@ -41,7 +41,7 @@ def plot_regimes(runs, path):
     fig, axes = plt.subplots(1, len(runs), figsize=(5 * len(runs), 4))
     for ax, run in zip(axes, runs):
         ax.plot(run["history"], color="dodgerblue", linewidth=1.5)
-        ax.set_title(f"{run['name']} (̷={run['eta']}, p={run['replay_prob']})")
+        ax.set_title(f"{run['name']} (η={run['eta']}, p={run['replay_prob']})")
         ax.set_xlabel("Time step")
         ax.set_ylabel("||a(t)||")
         ax.grid(True, linestyle="--", alpha=0.6)

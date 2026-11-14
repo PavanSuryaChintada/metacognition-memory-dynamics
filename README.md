@@ -49,7 +49,7 @@ Four Unsplash images, each encoded once and stored as a memory. All runs share t
 All numbers below come from the notebook run in [`notebooks/metacognition.ipynb`](notebooks/metacognition.ipynb):
 
 - The printed output is in [`results/notebook_output.txt`](results/notebook_output.txt), copied verbatim.
-- Every value is colected in [`results/metrics.json`](results/metrics.json).
+- Every value is collected in [`results/metrics.json`](results/metrics.json).
 
 ### 1. Single run (η = 0.8, p = 0.3)
 
@@ -162,7 +162,7 @@ pip install -r requirements.txt
 python run_experiments.py
 ```
 
-The first run donwloads the I-JEPA ViT-H/14 checkpoint (about 2.5 GB) and the four images. It saves the embeddings to `outputs/embeddings.pt`. To re-run only the dynamics without loading the model:
+The first run downloads the I-JEPA ViT-H/14 checkpoint (about 2.5 GB) and the four images. It saves the embeddings to `outputs/embeddings.pt`. To re-run only the dynamics without loading the model:
 
 ```bash
 python run_experiments.py --embeddings outputs/embeddings.pt
