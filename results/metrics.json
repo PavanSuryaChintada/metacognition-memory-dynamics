@@ -24,12 +24,12 @@
         {"label": "beagle", "score": 0.0000}
       ]
     },
-    "figure": "figures/dynamics_demo.png"
+    "figure": "figures/metacognition/dynamics_demo.png"
   },
   "regimes": {
     "sweep_a": {
       "cell": 3,
-      "figure": "figures/three_regimes_sweep_a.png",
+      "figure": "figures/metacognition/three_regimes_sweep_a.png",
       "note": "No numbers were printed for this sweep. approx_final_norm values are read off the figure.",
       "runs": [
         {"name": "Collapse", "eta": 0.1, "replay_prob": 0.1, "approx_final_norm": 0.01},
@@ -39,7 +39,7 @@
     },
     "sweep_b": {
       "cell": 5,
-      "figure": "figures/three_regimes_sweep_b.png",
+      "figure": "figures/metacognition/three_regimes_sweep_b.png",
       "note": "Printed numbers come from a second set of runs that cell 5 made after plotting, with fresh random draws, so they differ slightly from the plotted curves' end points.",
       "runs": [
         {"name": "Collapse", "eta": 0.05, "replay_prob": 0.05, "final_norm": 0.0048, "final_energy": 0.000014},

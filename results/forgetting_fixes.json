@@ -1,5 +1,5 @@
 {
-  "source": "notebooks/colab/normalised/beyond_paper/5_5forgetting_test_fix.ipynb, executed in Colab. Values copied from its printed output in results/forgetting_fixes_output.txt; the figure is results/figures/forgetting_fixes.png.",
+  "source": "notebooks/colab/normalised/beyond_paper/5_5forgetting_test_fix.ipynb, executed in Colab. Values copied from its printed output in results/forgetting_fixes_output.txt; the figure is results/figures/colab/normalised/beyond_paper/forgetting_fixes.png.",
   "setup": {
     "model": "facebook/ijepa_vith14_1k",
     "embedding_dim": 1280,

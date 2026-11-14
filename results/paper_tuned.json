@@ -1,0 +1,322 @@
+{
+  "source": "notebooks/colab/paper/paper_scale_tuned.ipynb, executed in Colab. Values copied from its printed output in results/paper_tuned_output.txt; the figures are results/figures/colab/paper/paper_tuned_sweep.png and results/figures/colab/paper/paper_tuned_comparison.png.",
+  "setup": {
+    "n": 200,
+    "steps": 3000,
+    "h": 0.01,
+    "beta": 3.0,
+    "eta": 0.8,
+    "replay_prob": 0.3,
+    "seed": 42,
+    "alive_threshold": 0.001,
+    "gammas": [
+      0.2,
+      0.05,
+      0.02,
+      0.01,
+      0.005
+    ],
+    "deltas": [
+      0.1,
+      0.05,
+      0.01,
+      0.005,
+      0.001
+    ],
+    "paper": {
+      "gamma": 0.2,
+      "delta": 0.1
+    },
+    "images": "The same first 200 CIFAR-100 test images as test 1, encoded again with I-JEPA",
+    "mean_cosine": 0.6812
+  },
+  "grid": [
+    {
+      "gamma": 0.2,
+      "delta": 0.1,
+      "alive": 0,
+      "rho": 0.9877,
+      "max": 8.1e-05
+    },
+    {
+      "gamma": 0.2,
+      "delta": 0.05,
+      "alive": 0,
+      "rho": 0.9863,
+      "max": 0.000145
+    },
+    {
+      "gamma": 0.2,
+      "delta": 0.01,
+      "alive": 0,
+      "rho": 0.985,
+      "max": 0.000469
+    },
+    {
+      "gamma": 0.2,
+      "delta": 0.005,
+      "alive": 0,
+      "rho": 0.9847,
+      "max": 0.000686
+    },
+    {
+      "gamma": 0.2,
+      "delta": 0.001,
+      "alive": 200,
+      "rho": 0.9847,
+      "max": 0.001121
+    },
+    {
+      "gamma": 0.05,
+      "delta": 0.1,
+      "alive": 0,
+      "rho": 0.9886,
+      "max": 8.4e-05
+    },
+    {
+      "gamma": 0.05,
+      "delta": 0.05,
+      "alive": 0,
+      "rho": 0.9879,
+      "max": 0.000151
+    },
+    {
+      "gamma": 0.05,
+      "delta": 0.01,
+      "alive": 0,
+      "rho": 0.987,
+      "max": 0.000492
+    },
+    {
+      "gamma": 0.05,
+      "delta": 0.005,
+      "alive": 0,
+      "rho": 0.987,
+      "max": 0.00072
+    },
+    {
+      "gamma": 0.05,
+      "delta": 0.001,
+      "alive": 200,
+      "rho": 0.9869,
+      "max": 0.001182
+    },
+    {
+      "gamma": 0.02,
+      "delta": 0.1,
+      "alive": 0,
+      "rho": 0.9889,
+      "max": 8.9e-05
+    },
+    {
+      "gamma": 0.02,
+      "delta": 0.05,
+      "alive": 0,
+      "rho": 0.9887,
+      "max": 0.000161
+    },
+    {
+      "gamma": 0.02,
+      "delta": 0.01,
+      "alive": 0,
+      "rho": 0.988,
+      "max": 0.000529
+    },
+    {
+      "gamma": 0.02,
+      "delta": 0.005,
+      "alive": 0,
+      "rho": 0.9879,
+      "max": 0.000777
+    },
+    {
+      "gamma": 0.02,
+      "delta": 0.001,
+      "alive": 181,
+      "rho": 0.988,
+      "max": 0.001283
+    },
+    {
+      "gamma": 0.01,
+      "delta": 0.1,
+      "alive": 0,
+      "rho": 0.9889,
+      "max": 9.5e-05
+    },
+    {
+      "gamma": 0.01,
+      "delta": 0.05,
+      "alive": 0,
+      "rho": 0.9888,
+      "max": 0.000173
+    },
+    {
+      "gamma": 0.01,
+      "delta": 0.01,
+      "alive": 0,
+      "rho": 0.9884,
+      "max": 0.000575
+    },
+    {
+      "gamma": 0.01,
+      "delta": 0.005,
+      "alive": 0,
+      "rho": 0.9883,
+      "max": 0.000849
+    },
+    {
+      "gamma": 0.01,
+      "delta": 0.001,
+      "alive": 162,
+      "rho": 0.9884,
+      "max": 0.001412
+    },
+    {
+      "gamma": 0.005,
+      "delta": 0.1,
+      "alive": 0,
+      "rho": 0.9886,
+      "max": 0.000103
+    },
+    {
+      "gamma": 0.005,
+      "delta": 0.05,
+      "alive": 0,
+      "rho": 0.9887,
+      "max": 0.000189
+    },
+    {
+      "gamma": 0.005,
+      "delta": 0.01,
+      "alive": 0,
+      "rho": 0.9882,
+      "max": 0.000637
+    },
+    {
+      "gamma": 0.005,
+      "delta": 0.005,
+      "alive": 0,
+      "rho": 0.9882,
+      "max": 0.000946
+    },
+    {
+      "gamma": 0.005,
+      "delta": 0.001,
+      "alive": 143,
+      "rho": 0.9883,
+      "max": 0.001583
+    }
+  ],
+  "best_printed": {
+    "gamma": 0.05,
+    "delta": 0.001,
+    "alive": 200,
+    "rho": 0.9869,
+    "max": 0.001182,
+    "min_alive": 0.001015,
+    "mean_alive": 0.001109
+  },
+  "selection_rule": "most survivors, then the higher Spearman rho",
+  "top10_best": [
+    {
+      "rank": 1,
+      "label": "mountain",
+      "decay": 0.5,
+      "activation": 0.001182
+    },
+    {
+      "rank": 2,
+      "label": "mushroom",
+      "decay": 0.5151,
+      "activation": 0.001182
+    },
+    {
+      "rank": 3,
+      "label": "forest",
+      "decay": 0.505,
+      "activation": 0.001181
+    },
+    {
+      "rank": 4,
+      "label": "seal",
+      "decay": 0.5101,
+      "activation": 0.00118
+    },
+    {
+      "rank": 5,
+      "label": "tulip",
+      "decay": 0.5251,
+      "activation": 0.00118
+    },
+    {
+      "rank": 6,
+      "label": "camel",
+      "decay": 0.5302,
+      "activation": 0.001178
+    },
+    {
+      "rank": 7,
+      "label": "sea",
+      "decay": 0.5201,
+      "activation": 0.001177
+    },
+    {
+      "rank": 8,
+      "label": "butterfly",
+      "decay": 0.5352,
+      "activation": 0.001177
+    },
+    {
+      "rank": 9,
+      "label": "cloud",
+      "decay": 0.5402,
+      "activation": 0.001176
+    },
+    {
+      "rank": 10,
+      "label": "skunk",
+      "decay": 0.5553,
+      "activation": 0.001175
+    }
+  ],
+  "survival_by_decay_bin_best": [
+    {
+      "from": 0.5,
+      "to": 0.7,
+      "survived": 40,
+      "of": 40
+    },
+    {
+      "from": 0.7,
+      "to": 0.9,
+      "survived": 40,
+      "of": 40
+    },
+    {
+      "from": 0.9,
+      "to": 1.1,
+      "survived": 40,
+      "of": 40
+    },
+    {
+      "from": 1.1,
+      "to": 1.3,
+      "survived": 40,
+      "of": 40
+    },
+    {
+      "from": 1.3,
+      "to": 1.5,
+      "survived": 39,
+      "of": 39
+    }
+  ],
+  "notes": [
+    "simulate() resets the seed at the start of every run, so replay fires at the same steps in all 25 runs; only gamma and delta differ.",
+    "The gamma=0.2, delta=0.1 cell is test 1's setup and reproduces its numbers: 0 alive, rho 0.9877, max 0.000081.",
+    "The last decay bin prints 39/39 because the highest rate, 1.5, sits on the bin's upper edge and the bins exclude it.",
+    "From the total-activation equation (see paper_scale.json), the long-run average per memory is eta*p/(mean alpha + delta*N)/N: 0.000057, 0.00011, 0.0004, 0.0006 and 0.0010 for delta = 0.1, 0.05, 0.01, 0.005, 0.001. At delta = 0.001 it sits on the 0.001 line.",
+    "With random replay timing the per-memory average moves about 0.00012 (one standard deviation) around that level at delta = 0.001, so whether every memory is above the line depends on the step.",
+    "The closing 'CONCLUSION' and 'INTERVIEW TAKEAWAY' text is written into the notebook, not computed."
+  ]
+}

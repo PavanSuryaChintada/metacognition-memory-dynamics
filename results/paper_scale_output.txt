@@ -1,6 +1,6 @@
 # Printed output of notebooks/colab/paper/paper_scale_real_jepa.ipynb (run C: the paper's N = 200 and T = 3000 with
 # real images: the first 200 CIFAR-100 test images, upscaled from 32x32 to 224x224 and encoded with I-JEPA; normalised
-# replay), copied word for word from the executed notebook. The figure is results/figures/paper_scale.png.
+# replay), copied word for word from the executed notebook. The figure is results/figures/colab/paper/paper_scale.png.
 
 Loading I-JEPA ViT-H/14...
 Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.

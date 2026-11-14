@@ -1,5 +1,5 @@
 {
-  "source": "The cell headed TRUE RUN 1 REPRODUCTION WITH F(a) TRACKING (the ninth cell) in notebooks/colab/unnormalised/metacognition_4_memories.ipynb, executed in Colab. Values copied from its printed output in results/replay_tracking_output.txt; the figure is results/figures/softmax_results.png.",
+  "source": "The cell headed TRUE RUN 1 REPRODUCTION WITH F(a) TRACKING (the ninth cell) in notebooks/colab/unnormalised/metacognition_4_memories.ipynb, executed in Colab. Values copied from its printed output in results/replay_tracking_output.txt; the figure is results/figures/colab/unnormalised/softmax_results.png.",
   "setup": {
     "model": "facebook/ijepa_vith14_1k",
     "embedding_dim": 1280,

@@ -1,5 +1,5 @@
 {
-  "source": "notebooks/colab/normalised/beyond_paper/5_5_forgetting_test.ipynb, executed in Colab. Values copied from its printed output in results/forgetting_5_plus_5_output.txt; the figure is results/figures/forgetting_5_plus_5.png.",
+  "source": "notebooks/colab/normalised/beyond_paper/5_5_forgetting_test.ipynb, executed in Colab. Values copied from its printed output in results/forgetting_5_plus_5_output.txt; the figure is results/figures/colab/normalised/beyond_paper/forgetting_5_plus_5.png.",
   "setup": {
     "model": "facebook/ijepa_vith14_1k",
     "embedding_dim": 1280,

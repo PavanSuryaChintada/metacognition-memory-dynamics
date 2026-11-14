@@ -1,6 +1,6 @@
 # Printed output of notebooks/colab/normalised/beyond_paper/5_5forgetting_test_fix.ipynb (the forgetting test run
 # three ways: new memories start at 1, at the mean activation, or warm up over 50 steps), copied word for word from
-# the executed notebook. The figure is results/figures/forgetting_fixes.png. Labels are the ones used in that run:
+# the executed notebook. The figure is results/figures/colab/normalised/beyond_paper/forgetting_fixes.png. Labels are the ones used in that run:
 # labrador = the beagle photo, bulldog = the French bulldog, coffee = the armchair, horse = the spaniel puppy photo
 # that the other runs label puppy, and puppy = a photo of a tabby cat.
 

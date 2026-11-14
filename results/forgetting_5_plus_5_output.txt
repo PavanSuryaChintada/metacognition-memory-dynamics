@@ -1,6 +1,6 @@
 # Printed output of notebooks/colab/normalised/beyond_paper/5_5_forgetting_test.ipynb (5 memories at step 0,
 # 5 more added at step 250, normalised replay), copied word for word from the executed notebook. The figure is
-# results/figures/forgetting_5_plus_5.png. Labels are the ones used in that run: labrador = the beagle photo,
+# results/figures/colab/normalised/beyond_paper/forgetting_5_plus_5.png. Labels are the ones used in that run: labrador = the beagle photo,
 # bulldog = the French bulldog, coffee = a photo of an armchair on a cliff by the sea. The horse photo's URL
 # returned 404, so "horse" is a random vector (torch.randn(1280)) the script used in its place, not a photo.
 

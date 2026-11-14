@@ -1,5 +1,5 @@
 {
-  "source": "notebooks/colab/normalised/normalised_metacognition.ipynb, executed in Colab. Values copied from its printed output in results/normalised_output.txt; the figure is results/figures/normalised.png.",
+  "source": "notebooks/colab/normalised/normalised_metacognition.ipynb, executed in Colab. Values copied from its printed output in results/normalised_output.txt; the figure is results/figures/colab/normalised/normalised.png.",
   "setup": {
     "model": "facebook/ijepa_vith14_1k",
     "embedding_dim": 1280,
