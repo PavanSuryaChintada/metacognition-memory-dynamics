@@ -612,7 +612,7 @@ Other flags:
 
 ## Website
 
-[`web/`](web/) is the website for everything above. The overview page shows what stays the same in every run: the model, the memories, the architecture and the paper's setup. Its hero holds three cards, one per run (unnormalised replay, normalised replay, and the paper's scale, which opens two test cards), and each opens a page with that run's explanation and every recorded result. The normalised-replay page has three experiment cards: 4 memories, 10 memories, and tests beyond the paper, which opens two more cards, one per test. Every page links the Colab notebook its numbers come from.
+[`web/`](web/) is the website for everything above. The overview page shows what stays the same in every run: the model, the memories, the architecture and the paper's setup. Its hero holds four cards: unnormalised replay, normalised replay, the paper's scale (which opens two test cards), and tests beyond the paper (which also opens two), and each opens a page with that run's explanation and every recorded result. The normalised-replay page has two experiment cards: 4 memories and 10 memories. Every page links the Colab notebook its numbers come from.
 
 - **No copied numbers.** It imports the JSON files and Colab figures straight from `results/`, so the pages always show the recorded runs.
 - **Built with** Vite, React and TypeScript. The charts are hand-written SVG and the maths uses KaTeX. There are no other runtime dependencies.
