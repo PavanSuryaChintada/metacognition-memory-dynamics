@@ -1,0 +1,42 @@
+# Printed output of notebooks/colab/normalised/metacognition_10_mem.ipynb (raw vs normalised, 10 memories),
+# copied word for word from the executed notebook. Labels are the ones used in that run: labrador = the beagle
+# photo, bulldog = the French bulldog, coffee = a photo of an armchair on a cliff by the sea.
+
+Loading I-JEPA...
+
+Encoding 10 images...
+  ✓ labrador: decay=0.87
+  ✓ cat: decay=1.45
+  ✓ person: decay=1.23
+  ✓ bulldog: decay=1.10
+  ✓ horse: decay=0.66
+  ✓ kitten: decay=0.66
+  ✓ landscape: decay=0.56
+  ✓ coffee: decay=1.37
+  ✓ car: decay=1.10
+  ✓ puppy: decay=1.21
+
+Total memories: 10
+
+Running ORIGINAL (unnormalized)...
+Running NORMALIZED...
+
+============================================================
+COMPARISON WITH 10 MEMORIES
+============================================================
+
+Memory            α     Original   Normalized
+--------------------------------------------
+  landscape     0.56       0.1851       0.0170
+  kitten        0.66         DEAD       0.0150
+  horse         0.66         DEAD       0.0153
+  labrador      0.87         DEAD       0.0122
+  bulldog       1.10         DEAD       0.0108
+  car           1.10         DEAD       0.0106
+  puppy         1.21         DEAD       0.0098
+  person        1.23         DEAD       0.0102
+  coffee        1.37         DEAD       0.0091
+  cat           1.45         DEAD       0.0093
+
+Survivors: Original=1/10, Normalized=10/10
+Decay rate predicts activation ranking (normalized): YES

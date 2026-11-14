@@ -1,0 +1,118 @@
+{
+  "source": "notebooks/colab/normalised/metacognition_10_mem.ipynb, executed in Colab. Values copied from its printed output in results/normalised_10_memories_output.txt; the figure is results/figures/normalised_10_memories.png.",
+  "setup": {
+    "model": "facebook/ijepa_vith14_1k",
+    "embedding_dim": 1280,
+    "steps": 500,
+    "seed": 42,
+    "eta": 0.8,
+    "beta": 3.0,
+    "replay_prob": 0.3,
+    "gamma": 0.2,
+    "delta": 0.1,
+    "h": 0.01
+  },
+  "memories": [
+    {
+      "label": "beagle",
+      "label_in_run": "labrador",
+      "decay_rate_printed": 0.87,
+      "url": "https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=400"
+    },
+    {
+      "label": "cat",
+      "label_in_run": "cat",
+      "decay_rate_printed": 1.45,
+      "url": "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=400"
+    },
+    {
+      "label": "person",
+      "label_in_run": "person",
+      "decay_rate_printed": 1.23,
+      "url": "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=400"
+    },
+    {
+      "label": "french_bulldog",
+      "label_in_run": "bulldog",
+      "decay_rate_printed": 1.1,
+      "url": "https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?w=400"
+    },
+    {
+      "label": "horse",
+      "label_in_run": "horse",
+      "decay_rate_printed": 0.66,
+      "url": "https://images.unsplash.com/photo-1553284965-83fd3e82fa5a?w=400"
+    },
+    {
+      "label": "kitten",
+      "label_in_run": "kitten",
+      "decay_rate_printed": 0.66,
+      "url": "https://images.unsplash.com/photo-1518791841217-8f162f1e1131?w=400"
+    },
+    {
+      "label": "landscape",
+      "label_in_run": "landscape",
+      "decay_rate_printed": 0.56,
+      "url": "https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=400"
+    },
+    {
+      "label": "armchair",
+      "label_in_run": "coffee",
+      "decay_rate_printed": 1.37,
+      "url": "https://images.unsplash.com/photo-1519125323398-675f0ddb6308?w=400"
+    },
+    {
+      "label": "car",
+      "label_in_run": "car",
+      "decay_rate_printed": 1.1,
+      "url": "https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=400"
+    },
+    {
+      "label": "puppy",
+      "label_in_run": "puppy",
+      "decay_rate_printed": 1.21,
+      "url": "https://images.unsplash.com/photo-1560807707-8cc77767d783?w=400"
+    }
+  ],
+  "final_activations": {
+    "unnormalised": {
+      "landscape": 0.1851
+    },
+    "normalised": {
+      "beagle": 0.0122,
+      "cat": 0.0093,
+      "person": 0.0102,
+      "french_bulldog": 0.0108,
+      "horse": 0.0153,
+      "kitten": 0.015,
+      "landscape": 0.017,
+      "armchair": 0.0091,
+      "car": 0.0106,
+      "puppy": 0.0098
+    }
+  },
+  "survivors_above_0_001": {
+    "unnormalised": 1,
+    "normalised": 10
+  },
+  "notes": [
+    "In the raw (unnormalised) arm the script prints DEAD for any memory at or below 0.001, so those nine values are known only to be at most 0.001.",
+    "order_by_decay_as_printed is the row order of the script's table, which sorts with np.argsort on the unrounded decay rates; it places kitten before horse and French bulldog before car, which print the same rate at 2 decimals.",
+    "The script's 'Decay rate predicts activation ranking: YES' allows a slack of 0.001 between neighbours. In the table's decay order, three neighbouring pairs end the other way round at 4 decimals: kitten 0.0150 below horse 0.0153 (both print 0.66), puppy (1.21) 0.0098 below person (1.23) 0.0102, and armchair (1.37) 0.0091 below cat (1.45) 0.0093.",
+    "Replay weights are not printed. The figure shows the raw arm's whole replay weight on the landscape at every replay event, and the normalised arm's weights starting uneven and settling near 0.10 each.",
+    "The label 'coffee' is on a photo of an armchair on a cliff by the sea; this file calls it armchair. 'labrador' is the beagle and 'bulldog' the French bulldog, as in the 4-memory runs.",
+    "As in the 4-memory comparison, the seed is reset after the decay rates are drawn, so both arms share their replay coin flips."
+  ],
+  "order_by_decay_as_printed": [
+    "landscape",
+    "kitten",
+    "horse",
+    "beagle",
+    "french_bulldog",
+    "car",
+    "puppy",
+    "person",
+    "armchair",
+    "cat"
+  ]
+}
