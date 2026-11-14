@@ -6,3 +6,7 @@ venv/
 
 # run_experiments.py writes here by default; results/ holds the recorded notebook run
 outputs/
+
+# website
+web/node_modules/
+web/dist/
