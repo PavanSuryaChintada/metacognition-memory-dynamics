@@ -5,7 +5,7 @@ Implementation of the dynamical memory framework from
 (Ghosh, Jaiswal, Gupta — MetaCognition Labs) using real I-JEPA
 embeddings from Hugging Face instead of synthetic Gaussians.
 
-The same results are also written up as a single-page website in [`web/`](web/); see [Website](#website).
+The same results are also written up as a website in [`web/`](web/); see [Website](#website). Every Colab notebook behind them is in [`notebooks/`](notebooks/), with its outputs as it ran; see [Colab notebooks](#colab-notebooks).
 
 ## What This Implements
 
@@ -46,7 +46,7 @@ Four Unsplash images, each encoded once and stored as a memory. All runs share t
 
 ## Results
 
-All numbers below come from the notebook run in [`notebooks/metacognition.ipynb`](notebooks/metacognition.ipynb):
+Sections 1 to 3 come from the notebook run in [`notebooks/metacognition.ipynb`](notebooks/metacognition.ipynb). Sections 4 to 6 come from the later Colab runs in [`notebooks/colab/`](notebooks/colab/). For sections 1 to 3:
 
 - The printed output is in [`results/notebook_output.txt`](results/notebook_output.txt), copied verbatim.
 - Every value is collected in [`results/metrics.json`](results/metrics.json).
@@ -120,7 +120,7 @@ This sweep printed no numbers. Both sweeps show the same three regimes. In both,
 
 ### 4. Replay tracking (second Colab run)
 
-A second Colab run, [`notebooks/replay_tracking.py`](notebooks/replay_tracking.py), repeated the single run with the same images, seed and settings. At every step it logged the softmax replay weights $F(a)$, the pre-softmax scores and each force.
+A second Colab run repeated the single run with the same images, seed and settings. At every step it logged the softmax replay weights $F(a)$, the pre-softmax scores and each force. It is the cell headed `TRUE RUN 1 REPRODUCTION WITH F(a) TRACKING` in [`notebooks/colab/unnormalised/metacognition_4_memories.ipynb`](notebooks/colab/unnormalised/metacognition_4_memories.ipynb). The earlier cells in that notebook repeat the original notebook's runs, and two exploratory cells just before it use other settings; their output isn't used here.
 
 - **Printed output:** [`results/replay_tracking_output.txt`](results/replay_tracking_output.txt), copied word for word.
 - **Numbers:** [`results/replay_tracking.json`](results/replay_tracking.json).
@@ -163,7 +163,7 @@ Mean force on each memory over the 500 steps:
 
 ### 5. Raw vs normalised replay (third Colab run)
 
-[`notebooks/normalised_replay.py`](notebooks/normalised_replay.py) runs the single run twice on the same encoded photos. The only difference is inside the replay operator:
+[`notebooks/colab/normalised/normalised_metacognition.ipynb`](notebooks/colab/normalised/normalised_metacognition.ipynb) runs the single run twice on the same encoded photos. The only difference is inside the replay operator:
 
 - **Raw arm:** scores memories with the raw embeddings, $s = X X^\top a$, as the paper writes $F(a)$.
 - **Normalised arm:** scales each embedding to length 1 first, so the scores are sums of cosine similarities weighted by activation.
@@ -187,9 +187,45 @@ Its printed output is in [`results/normalised_output.txt`](results/normalised_ou
 - **Memories above 0.001 at step 500:** 1 of 4 in the raw arm, 4 of 4 in the normalised arm.
 - **Decay order:** in the normalised arm the final activations follow the decay rates, with the slowest-decaying memory highest.
 - **Same replay timing:** the seed is reset before each arm, so replay fired at the same 154 steps in both.
-- **Why the raw arm ends at 0.146975, not the notebook's 0.137944:** that reset comes after the decay rates are drawn, so the coin flips start four draws earlier than in the notebook.
+- **Why the raw arm ends at 0.146975, not the original notebook's 0.137944:** that reset comes after the decay rates are drawn, so the coin flips start four draws earlier than in the original notebook.
 - **A change to the model, not a code fix:** the paper writes $F(a)$ with raw embeddings.
-- **The script as shared can't be exactly what ran.** Its loop right after printing "Late Replay Weights" unpacks two-item tuples into three names, which raises `ValueError`. The recorded output continues past it, so the code that ran differed there. The file notes this.
+
+### 6. Raw vs normalised replay with 10 memories (fourth Colab run)
+
+[`notebooks/colab/normalised/metacognition_10_mem.ipynb`](notebooks/colab/normalised/metacognition_10_mem.ipynb) repeats §5 with ten photos: the four above plus a horse, a kitten, a landscape, an armchair, a car and a puppy. The settings are the same as §5: η = 0.8, β = 3, p = 0.3, 500 steps, seed 42.
+
+- **Printed output:** [`results/normalised_10_memories_output.txt`](results/normalised_10_memories_output.txt), copied word for word.
+- **Numbers:** [`results/normalised_10_memories.json`](results/normalised_10_memories.json).
+- **Labels:** that run's output and figure use `labrador` for the beagle, `bulldog` for the French bulldog and `coffee` for the photo of an armchair on a cliff by the sea.
+
+![Raw replay (top row) and normalised replay (bottom row) with 10 memories](results/figures/normalised_10_memories.png)
+
+In the order the notebook prints them, which is by unrounded decay rate:
+
+| Memory | Decay rate α | Raw arm | Normalised arm |
+|---|---|---|---|
+| landscape | 0.56 | 0.1851 | 0.0170 |
+| kitten | 0.66 | ≤ 0.001 | 0.0150 |
+| horse | 0.66 | ≤ 0.001 | 0.0153 |
+| beagle | 0.87 | ≤ 0.001 | 0.0122 |
+| French bulldog | 1.10 | ≤ 0.001 | 0.0108 |
+| car | 1.10 | ≤ 0.001 | 0.0106 |
+| puppy | 1.21 | ≤ 0.001 | 0.0098 |
+| person | 1.23 | ≤ 0.001 | 0.0102 |
+| armchair | 1.37 | ≤ 0.001 | 0.0091 |
+| cat | 1.45 | ≤ 0.001 | 0.0093 |
+
+- **Memories above 0.001 at step 500:** 1 of 10 in the raw arm, 10 of 10 in the normalised arm.
+- **The raw arm keeps only the landscape.** Here that is also the memory with the slowest decay. In the figure its replay weight is 1 at every replay event. In the 4-memory run the raw arm kept the person instead, which did not have the slowest decay.
+- **Normalised replay weights even out.** In the figure they start between about 0.02 and 0.27 and settle near 0.10 each. The notebook doesn't print them, so these values are read off the figure.
+- **Decay order is close, not exact.** Three neighbouring pairs end the other way round:
+  - kitten 0.0150 below horse 0.0153 (both print α = 0.66);
+  - puppy 0.0098 below person 0.0102;
+  - armchair 0.0091 below cat 0.0093.
+
+  The notebook prints "Decay rate predicts activation ranking (normalized): YES" because its check allows 0.001 of slack between neighbours, and every gap here is smaller than that.
+- **"DEAD" in the printed table means at or below 0.001.** The raw arm's other nine values are only known to be at most 0.001.
+- **Same replay timing in both arms**, as in §5: the seed is reset after the decay rates are drawn.
 
 ## Comparison with the paper
 
@@ -235,7 +271,7 @@ Every run stays inside its bound. "Runaway" is replay-dominated but bounded, whi
   - Cosine similarity alone doesn't explain that: the French bulldog has the largest total similarity to the others (1.27, against the person's 1.22).
   - The score $s = X X^\top a$ uses raw, unnormalised embeddings, so it also depends on each embedding's length, and the lengths weren't printed.
 - **$E$ only descends while replay is weak.** It plateaus in the single run and rises in the Runaway regime. That is expected, since replay is not part of $E$.
-- **Small sample.** These are qualitative demonstrations of the regimes, not measurements: four images, one query, one seed.
+- **Small sample.** These are qualitative demonstrations of the regimes, not measurements: four images (ten in §6), one query, one seed.
 - **The first attempt failed.** Notebook cell 0 used Wikimedia URLs without a User-Agent header. Every download failed, and the run stopped with `RuntimeError: stack expects a non-empty TensorList`. Cell 2 switched to Unsplash URLs and a browser User-Agent.
 - **Cell 4 shows a stale figure.**
   - It ran at execution 9, before the successful run at execution 12. The `three_regimes.png` it re-displays came from an earlier failed run and has empty axes.
@@ -299,26 +335,48 @@ Every run stays inside its bound. "Runaway" is replay-dominated but bounded, whi
 │   └── plotting.py            # figures
 ├── notebooks/
 │   ├── metacognition.ipynb    # original Colab notebook, outputs intact
-│   ├── replay_tracking.py     # second Colab run: logs replay weights and forces
-│   └── normalised_replay.py   # third Colab run: raw vs normalised replay scores
-├── results/                   # recorded output of the notebook run
+│   └── colab/                 # every later Colab run, as executed
+│       ├── unnormalised/
+│       │   └── metacognition_4_memories.ipynb   # run A again + replay tracking
+│       ├── normalised/
+│       │   ├── normalised_metacognition.ipynb   # raw vs normalised, 4 memories
+│       │   └── metacognition_10_mem.ipynb       # raw vs normalised, 10 memories
+│       ├── _facebook_ijepa_vith14_1k.ipynb      # I-JEPA encoder check
+│       └── facebook_vjepa2_vitl_fpc64_256.ipynb # V-JEPA 2 trial, not used
+├── results/                   # recorded output of every run used
 │   ├── figures/
 │   │   ├── dynamics_demo.png
 │   │   ├── three_regimes_sweep_a.png
 │   │   ├── three_regimes_sweep_b.png
-│   │   ├── softmax_results.png  # replay-tracking run
-│   │   └── normalised.png       # raw vs normalised run
+│   │   ├── softmax_results.png           # replay-tracking run
+│   │   ├── normalised.png                # raw vs normalised, 4 memories
+│   │   └── normalised_10_memories.png    # raw vs normalised, 10 memories
 │   ├── metrics.json
 │   ├── notebook_output.txt    # printed output, verbatim
 │   ├── replay_tracking.json   # numbers from the replay-tracking run
 │   ├── replay_tracking_output.txt  # its printed output, verbatim
-│   ├── normalised_replay.json # numbers from the raw vs normalised run
-│   └── normalised_output.txt  # its printed output, verbatim
+│   ├── normalised_replay.json # numbers from the 4-memory raw vs normalised run
+│   ├── normalised_output.txt  # its printed output, verbatim
+│   ├── normalised_10_memories.json         # numbers from the 10-memory run
+│   └── normalised_10_memories_output.txt   # its printed output, verbatim
 ├── web/                       # website: Vite + React + TypeScript
-│   ├── src/                   # page, components, styles
-│   └── public/memories/       # thumbnails of the four photos
+│   ├── src/                   # pages, components, styles
+│   └── public/memories/       # thumbnails of the photos
 └── vercel.json                # tells Vercel to build web/
 ```
+
+## Colab notebooks
+
+Every run was executed in Google Colab. The notebooks are kept with their code and outputs exactly as they ran, so GitHub shows each one with its printed output and figures.
+
+| Notebook | What it runs | Used in |
+|---|---|---|
+| [`notebooks/metacognition.ipynb`](notebooks/metacognition.ipynb) | The original run: single run, retrieval, regime sweeps | Results §1–3 |
+| [`notebooks/colab/unnormalised/metacognition_4_memories.ipynb`](notebooks/colab/unnormalised/metacognition_4_memories.ipynb) | The original runs again, then replay tracking (cell headed `TRUE RUN 1 REPRODUCTION WITH F(a) TRACKING`). Two exploratory cells before it use other settings and aren't used | Results §4 |
+| [`notebooks/colab/normalised/normalised_metacognition.ipynb`](notebooks/colab/normalised/normalised_metacognition.ipynb) | Raw vs normalised replay, 4 memories | Results §5 |
+| [`notebooks/colab/normalised/metacognition_10_mem.ipynb`](notebooks/colab/normalised/metacognition_10_mem.ipynb) | Raw vs normalised replay, 10 memories | Results §6 |
+| [`notebooks/colab/_facebook_ijepa_vith14_1k.ipynb`](notebooks/colab/_facebook_ijepa_vith14_1k.ipynb) | Encoder check: cosine similarity of a dog photo with a cat (0.3244) and with another dog (0.3804) | Not used |
+| [`notebooks/colab/facebook_vjepa2_vitl_fpc64_256.ipynb`](notebooks/colab/facebook_vjepa2_vitl_fpc64_256.ipynb) | V-JEPA 2 video trial: gets an embedding of shape [1, 8192, 1024], then the classification step stops with `OSError` because the model id `facebook/vjepa2-vitl-fpc64-256-ssv2` isn't on Hugging Face | Not used |
 
 ## Reproducing
 
@@ -352,7 +410,7 @@ Other flags:
 
 ## Website
 
-[`web/`](web/) is the website for everything above. The overview page shows what stays the same in every run: the model, the memories, the architecture and the paper's setup. Its hero holds two cards, one per run (unnormalised replay and normalised replay), and each opens a page with that run's explanation and every recorded result.
+[`web/`](web/) is the website for everything above. The overview page shows what stays the same in every run: the model, the memories, the architecture and the paper's setup. Its hero holds two cards, one per run (unnormalised replay and normalised replay), and each opens a page with that run's explanation and every recorded result. The normalised-replay page has two experiment cards, 4 memories and 10 memories. Every page links the Colab notebook its numbers come from.
 
 - **No copied numbers.** It imports the JSON files and Colab figures straight from `results/`, so the pages always show the recorded runs.
 - **Built with** Vite, React and TypeScript. The charts are hand-written SVG and the maths uses KaTeX. There are no other runtime dependencies.
