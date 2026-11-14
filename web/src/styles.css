@@ -1634,6 +1634,68 @@ tr.win td {
   margin-top: 10px;
 }
 
+/* Run C: survivors for each γ and δ */
+.sgrid {
+  display: grid;
+  gap: 3px;
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+.sg-row {
+  display: grid;
+  grid-template-columns: 40px repeat(5, minmax(0, 1fr));
+  gap: 3px;
+  align-items: center;
+}
+.sg-head span,
+.sg-rowhead {
+  color: var(--muted);
+  text-align: center;
+  font-size: 10.5px;
+}
+.sg-corner {
+  white-space: nowrap;
+}
+.sg-cell {
+  display: grid;
+  place-items: center;
+  height: 24px;
+  border-radius: 2px;
+  background: color-mix(in oklab, var(--ember) calc(var(--t) * 80%), var(--track));
+  color: var(--ink);
+}
+.sg-cell.none {
+  color: var(--faint);
+}
+.sg-cell b {
+  font-weight: 560;
+}
+.sg-cell.paper {
+  outline: 1.5px dashed var(--ink);
+  outline-offset: -3px;
+}
+.sgrid-large {
+  gap: 4px;
+  font-size: 15px;
+}
+.sgrid-large .sg-row {
+  grid-template-columns: 56px repeat(5, minmax(0, 1fr));
+  gap: 4px;
+}
+.sgrid-large .sg-head span,
+.sgrid-large .sg-rowhead {
+  font-size: 12.5px;
+}
+.sgrid-large .sg-cell {
+  height: 58px;
+  align-content: center;
+  gap: 2px;
+}
+.sgrid-large .sg-cell small {
+  font-size: 10.5px;
+  color: var(--muted);
+}
+
 /* Experiment 3: the two test cards */
 .run-cards.beyond-cards {
   margin-top: 0;

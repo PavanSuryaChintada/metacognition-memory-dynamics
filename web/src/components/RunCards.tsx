@@ -1,6 +1,7 @@
-import { normalised, paperScale, ten } from "../data/results";
+import { normalised, paperScale, paperTuned, ten } from "../data/results";
 import { lateShareRange, normalisedFinals, unnormalisedFinals, winnerShare } from "../data/derived";
 import { MiniBars } from "./Memories";
+import { SurvivorGrid } from "./SurvivorGrid";
 import { Tex } from "./Tex";
 import { d } from "./ui";
 
@@ -110,20 +111,23 @@ export function RunCards() {
         </div>
         <p className="run-desc">
           Run B's replay at the paper's size: {paperScale.setup.n} CIFAR-100 images through I-JEPA for {paperScale.setup.steps.toLocaleString("en")}{" "}
-          steps. Inhibition grows with the number of memories, and none of them stays above {paperScale.setup.alive_threshold}.
+          steps. With the paper's δ none stays above {paperScale.setup.alive_threshold}; a sweep of γ and δ finds where they do.
         </p>
-        <ThresholdMeter />
+        <SurvivorGrid />
         <dl className="run-stats">
           <div>
             <dt>Memories left</dt>
             <dd>
-              {paperScale.survivors} of {paperScale.setup.n}
+              {paperScale.survivors} → {paperTuned.best_printed.alive}{" "}
+              <span className="dd-sub">
+                δ = {paperScale.setup.delta} → {paperTuned.best_printed.delta}
+              </span>
             </dd>
           </div>
           <div>
             <dt>Order by decay</dt>
             <dd>
-              ρ = {paperScale.spearman_rho_decay_vs_activation.toFixed(2)} <span className="dd-sub">by margins under 0.000001</span>
+              ρ ≈ 0.99 <span className="dd-sub">in every run</span>
             </dd>
           </div>
         </dl>
@@ -133,8 +137,8 @@ export function RunCards() {
       </a>
       <p className="run-cards-note muted small">
         Runs A and B: bars show each memory's activation at step 500 on the same scale, 0 to {SCALE}, with the same photos, decay
-        rates, parameters and seed. Run C: the highest of its 200 memories at step {paperScale.setup.steps.toLocaleString("en")}, against
-        the 0.001 line.
+        rates, parameters and seed. Run C: memories above 0.001 at step {paperScale.setup.steps.toLocaleString("en")} for each γ (rows) and δ
+        (columns); the dashed cell is the paper's.
       </p>
     </div>
   );

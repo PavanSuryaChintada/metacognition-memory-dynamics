@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 
-export type Route = "home" | "unnormalised" | "normalised" | "normalised-10" | "normalised-beyond" | "normalised-beyond-fix" | "paper";
+export type Route = "home" | "unnormalised" | "normalised" | "normalised-10" | "normalised-beyond" | "normalised-beyond-fix" | "paper" | "paper-tuned";
 
 const parse = (hash: string): Route =>
   hash === "#/unnormalised"
@@ -15,9 +15,12 @@ const parse = (hash: string): Route =>
             ? "normalised-beyond-fix"
             : hash === "#/paper"
               ? "paper"
-              : "home";
+              : hash === "#/paper/tuned"
+                ? "paper-tuned"
+                : "home";
 
 export const isBeyond = (r: Route) => r === "normalised-beyond" || r === "normalised-beyond-fix";
+export const isRunC = (r: Route) => r === "paper" || r === "paper-tuned";
 export const isRunB = (r: Route) => r === "normalised" || r === "normalised-10" || isBeyond(r);
 
 /**
@@ -37,9 +40,10 @@ export function useRoute() {
   useEffect(() => {
     const from = prev.current;
     prev.current = route;
-    // switching between run B's views keeps the reader at the cards they clicked
-    if (from && from !== route && isRunB(from) && isRunB(route)) {
-      const target = isBeyond(from) && isBeyond(route) ? "beyond-tests" : "experiments";
+    // switching between views of the same run keeps the reader at the cards they clicked
+    const sameRun = from !== null && ((isRunB(from) && isRunB(route)) || (isRunC(from) && isRunC(route)));
+    if (from && from !== route && sameRun) {
+      const target = isRunC(route) ? "paper-tests" : isBeyond(from) && isBeyond(route) ? "beyond-tests" : "experiments";
       const raf = requestAnimationFrame(() => document.getElementById(target)?.scrollIntoView());
       return () => cancelAnimationFrame(raf);
     }

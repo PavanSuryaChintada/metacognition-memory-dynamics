@@ -1,10 +1,12 @@
-import { figures, NOTEBOOKS, paperScale } from "../data/results";
+import { figures, NOTEBOOKS, paperScale, paperTuned } from "../data/results";
 import { file } from "../data/derived";
 import { Card, Section } from "../components/Layout";
 import { RunIntro } from "../components/RunIntro";
 import { ThresholdMeter } from "../components/RunCards";
 import { Tex } from "../components/Tex";
 import { N } from "../components/ui";
+import { SurvivorGrid } from "../components/SurvivorGrid";
+import { PaperTunedView } from "./PaperTuned";
 
 const ps = paperScale.setup;
 const cos = paperScale.cosine_off_diagonal;
@@ -31,14 +33,14 @@ const totalAt3000 = paperScale.mean_activation * ps.n;
 const shareSpread = Math.exp(ps.beta * totalAt3000) - 1;
 const lineShare = paperScale.max_activation / ps.alive_threshold;
 
-/** Run C: the paper's N and T with 200 real images and normalised replay. */
-export function RunPaperScale() {
+/** Run C: the paper's N and T with 200 real images and normalised replay, in two tests. */
+export function RunPaperScale({ view }: { view: 1 | 2 }) {
   return (
     <>
       <RunIntro
         run="Run C"
         name="Paper scale"
-        headline={`${ps.n} memories, and none stays above ${ps.alive_threshold}.`}
+        headline="At the paper's scale, inhibition sets the level."
         explanation={
           <>
             <p>
@@ -47,15 +49,88 @@ export function RunPaperScale() {
               I-JEPA. Replay is normalised, as in run B.
             </p>
             <p>
-              Every memory falls below {ps.alive_threshold} within the first few dozen steps and stays there. The cause is in the
-              equation itself: inhibition takes <N>δ</N> times the total activation off every memory, so with {ps.n} memories the total
-              loses <N>δ</N>N = {Math.round(inhibitionPerUnit)} times itself per unit of time, against decay of 0.5 to 1.5.
+              Inhibition takes <N>δ</N> times the total activation off every memory, so with {ps.n} memories the total loses{" "}
+              <N>δ</N>N times itself per unit of time. Test 1 uses the paper's <N>δ</N> = {ps.delta}: that is{" "}
+              {Math.round(inhibitionPerUnit)}, against decay of 0.5 to 1.5, and none of the {ps.n} stays above {ps.alive_threshold}. Test 2
+              sweeps <N>γ</N> and <N>δ</N> to find where they do. Pick one.
             </p>
           </>
         }
         formula={String.raw`F(a) = \mathrm{softmax}\big(\beta\, \hat X^\top \hat X a\big)`}
         formulaNote="The same normalised replay as run B. What changes is the scale: 200 memories for 3,000 steps."
       />
+      <PaperTestCards view={view} />
+      {view === 1 ? <Test1View /> : <PaperTunedView />}
+    </>
+  );
+}
+
+const lowDelta = Math.min(...paperTuned.setup.deltas);
+const bestTuned = paperTuned.best_printed;
+
+function PaperTestCards({ view }: { view: 1 | 2 }) {
+  return (
+    <section className="section" id="paper-tests">
+      <div className="wrap">
+        <div className="run-cards beyond-cards">
+          <a className={`run-card experiment-card${view === 1 ? " on" : ""}`} href="#/paper" aria-current={view === 1 ? "page" : undefined}>
+            <div className="run-card-head">
+              <span className="label">Test 1</span>
+              {view === 1 && <span className="tag new">Showing</span>}
+            </div>
+            <h2 className="run-title">The paper's γ and δ</h2>
+            <p className="run-desc">
+              γ = {ps.gamma} and δ = {ps.delta}, as in the paper. Every memory collapses within the first few dozen steps and none stays
+              above {ps.alive_threshold}.
+            </p>
+            <ThresholdMeter />
+            <dl className="run-stats">
+              <div>
+                <dt>Memories left</dt>
+                <dd>
+                  {paperScale.survivors} of {ps.n}
+                </dd>
+              </div>
+              <div>
+                <dt>Order by decay</dt>
+                <dd>ρ = {paperScale.spearman_rho_decay_vs_activation.toFixed(3)}</dd>
+              </div>
+            </dl>
+          </a>
+          <a className={`run-card experiment-card${view === 2 ? " on" : ""}`} href="#/paper/tuned" aria-current={view === 2 ? "page" : undefined}>
+            <div className="run-card-head">
+              <span className="label">Test 2</span>
+              {view === 2 && <span className="tag new">Showing</span>}
+            </div>
+            <h2 className="run-title">Sweeping γ and δ</h2>
+            <p className="run-desc">
+              25 runs over five values of each. Only δ = {lowDelta} keeps memories above the line, and their average sits right on it.
+            </p>
+            <SurvivorGrid />
+            <dl className="run-stats">
+              <div>
+                <dt>Memories left</dt>
+                <dd>
+                  {bestTuned.alive} of {ps.n} <span className="dd-sub">δ = {lowDelta}, γ = 0.2 or {bestTuned.gamma}</span>
+                </dd>
+              </div>
+              <div>
+                <dt>Lowest memory</dt>
+                <dd>
+                  {bestTuned.min_alive.toFixed(6)} <span className="dd-sub">the line is {ps.alive_threshold}</span>
+                </dd>
+              </div>
+            </dl>
+          </a>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function Test1View() {
+  return (
+    <>
       <SetupSection num={1} />
       <ResultSection num={2} />
       <WhySection num={3} />
@@ -385,7 +460,7 @@ function FindingsSection({ num }: { num: number }) {
             <ul className="points">
               <li>That the embeddings' high similarity causes it: the total doesn't depend on the embeddings.</li>
               <li>What the paper's own setup, raw Gaussian embeddings, gives with these settings: not run here.</li>
-              <li>Whether a larger <N>η</N> or scaling <N>δ</N> with N keeps memories alive: not run.</li>
+              <li>Whether a larger <N>η</N> keeps memories alive: not run. Lower <N>δ</N> is test 2.</li>
               <li>Anything about other images or seeds: one set of 200 CIFAR-100 images, one seed.</li>
             </ul>
           </div>
@@ -414,8 +489,8 @@ function CodeSection({ num }: { num: number }) {
             <a className="btn btn-primary" href={NOTEBOOKS.paperScale}>
               Open the Colab notebook on GitHub
             </a>
-            <a className="btn btn-text" href="#runs">
-              <span aria-hidden="true">←</span> All runs
+            <a className="btn btn-text" href="#/paper/tuned">
+              Next: test 2, sweeping γ and δ <span aria-hidden="true">→</span>
             </a>
           </div>
         </div>

@@ -133,6 +133,29 @@ export type PaperScale = {
   verdict_printed: string;
 };
 
+/** Shape of results/paper_tuned.json: run C, test 2, a 5 x 5 sweep of gamma and delta. */
+export type PaperTuned = {
+  setup: {
+    n: number;
+    steps: number;
+    h: number;
+    beta: number;
+    eta: number;
+    replay_prob: number;
+    seed: number;
+    alive_threshold: number;
+    gammas: number[];
+    deltas: number[];
+    paper: { gamma: number; delta: number };
+    mean_cosine: number;
+  };
+  grid: { gamma: number; delta: number; alive: number; rho: number; max: number }[];
+  best_printed: { gamma: number; delta: number; alive: number; rho: number; max: number; min_alive: number; mean_alive: number };
+  selection_rule: string;
+  top10_best: { rank: number; label: string; decay: number; activation: number }[];
+  survival_by_decay_bin_best: { from: number; to: number; survived: number; of: number }[];
+};
+
 /** Shape of results/metrics.json: the numbers the Colab run printed. */
 export type Recorded = {
   source: string;

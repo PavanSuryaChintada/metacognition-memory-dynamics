@@ -283,6 +283,12 @@ const NOTEBOOK_ROWS: { path: string; href: string; what: string; output?: string
     output: "results/paper_scale_output.txt",
   },
   {
+    path: "colab/paper/paper_scale_tuned.ipynb",
+    href: NOTEBOOKS.paperTuned,
+    what: "Run C, test 2: the same 200 images and settings, run 25 times over five values of γ and five of δ.",
+    output: "results/paper_tuned_output.txt",
+  },
+  {
     path: "colab/_facebook_ijepa_vith14_1k.ipynb",
     href: NOTEBOOKS.ijepaSample,
     what: "Encoder check: loads I-JEPA and prints the cosine similarity of a dog photo with a cat (0.3244) and with another dog (0.3804).",

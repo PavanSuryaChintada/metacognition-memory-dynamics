@@ -2,20 +2,23 @@
 import metrics from "../../../results/metrics.json";
 import replayRun from "../../../results/replay_tracking.json";
 import normalisedRun from "../../../results/normalised_replay.json";
-import normalisedFigure from "../../../results/figures/normalised.png";
+import normalisedFigure from "../../../results/figures/colab/normalised/normalised.png";
 import tenRun from "../../../results/normalised_10_memories.json";
-import tenFigure from "../../../results/figures/normalised_10_memories.png";
+import tenFigure from "../../../results/figures/colab/normalised/normalised_10_memories.png";
 import forgettingRun from "../../../results/forgetting_5_plus_5.json";
-import forgettingFigure from "../../../results/figures/forgetting_5_plus_5.png";
+import forgettingFigure from "../../../results/figures/colab/normalised/beyond_paper/forgetting_5_plus_5.png";
 import fixesRun from "../../../results/forgetting_fixes.json";
-import fixesFigure from "../../../results/figures/forgetting_fixes.png";
+import fixesFigure from "../../../results/figures/colab/normalised/beyond_paper/forgetting_fixes.png";
 import paperScaleRun from "../../../results/paper_scale.json";
-import paperScaleFigure from "../../../results/figures/paper_scale.png";
-import demoFigure from "../../../results/figures/dynamics_demo.png";
-import sweepAFigure from "../../../results/figures/three_regimes_sweep_a.png";
-import sweepBFigure from "../../../results/figures/three_regimes_sweep_b.png";
-import softmaxFigure from "../../../results/figures/softmax_results.png";
-import type { ForgettingFixes, ForgettingTest, PaperScale, NormalisedComparison, Recorded, ReplayTracking, TenMemories } from "./types";
+import paperScaleFigure from "../../../results/figures/colab/paper/paper_scale.png";
+import paperTunedRun from "../../../results/paper_tuned.json";
+import tunedSweepFigure from "../../../results/figures/colab/paper/paper_tuned_sweep.png";
+import tunedCompareFigure from "../../../results/figures/colab/paper/paper_tuned_comparison.png";
+import demoFigure from "../../../results/figures/metacognition/dynamics_demo.png";
+import sweepAFigure from "../../../results/figures/metacognition/three_regimes_sweep_a.png";
+import sweepBFigure from "../../../results/figures/metacognition/three_regimes_sweep_b.png";
+import softmaxFigure from "../../../results/figures/colab/unnormalised/softmax_results.png";
+import type { ForgettingFixes, ForgettingTest, PaperScale, PaperTuned, NormalisedComparison, Recorded, ReplayTracking, TenMemories } from "./types";
 
 export const recorded = metrics as Recorded;
 /** The second Colab run, which logged the softmax replay weights at every step. */
@@ -30,6 +33,8 @@ export const forgetting = forgettingRun as ForgettingTest;
 export const fixes = fixesRun as ForgettingFixes;
 /** Run C: the paper's N = 200 and T = 3000 with real images. */
 export const paperScale = paperScaleRun as PaperScale;
+/** Run C, test 2: the same run over five values of gamma and five of delta. */
+export const paperTuned = paperTunedRun as PaperTuned;
 export const figures = {
   demo: demoFigure,
   sweepA: sweepAFigure,
@@ -40,6 +45,8 @@ export const figures = {
   forgetting: forgettingFigure,
   fixes: fixesFigure,
   paperScale: paperScaleFigure,
+  tunedSweep: tunedSweepFigure,
+  tunedCompare: tunedCompareFigure,
 };
 
 /**
@@ -113,6 +120,7 @@ export const NOTEBOOKS = {
   forgetting: nb("colab/normalised/beyond_paper/5_5_forgetting_test.ipynb"),
   forgettingFixes: nb("colab/normalised/beyond_paper/5_5forgetting_test_fix.ipynb"),
   paperScale: nb("colab/paper/paper_scale_real_jepa.ipynb"),
+  paperTuned: nb("colab/paper/paper_scale_tuned.ipynb"),
   ijepaSample: nb("colab/_facebook_ijepa_vith14_1k.ipynb"),
   vjepaSample: nb("colab/facebook_vjepa2_vitl_fpc64_256.ipynb"),
 };
