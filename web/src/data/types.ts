@@ -15,6 +15,29 @@ export type ReplayTracking = {
   mean_forces: Record<string, Forces>;
 };
 
+type Arms<T> = { unnormalised: T; normalised: T };
+
+/** Shape of results/normalised_replay.json: the third Colab run, raw vs unit-length replay scores. */
+export type NormalisedComparison = {
+  setup: {
+    steps: number;
+    seed: number;
+    eta: number;
+    beta: number;
+    replay_prob: number;
+    gamma: number;
+    delta: number;
+    h: number;
+  };
+  labels: string[];
+  labels_in_run: string[];
+  decay_rates_printed: number[];
+  replay_events: Arms<number>;
+  final_activations: Arms<Record<string, number>>;
+  replay_weight_mean_last_10pct: Arms<Record<string, number>>;
+  survivors_above_0_001: Arms<number>;
+};
+
 /** Shape of results/metrics.json: the numbers the Colab run printed. */
 export type Recorded = {
   source: string;

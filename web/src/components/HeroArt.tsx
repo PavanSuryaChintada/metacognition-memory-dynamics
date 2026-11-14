@@ -1,11 +1,11 @@
-import { memories } from "../data/results";
+import { memories, recorded } from "../data/results";
 import { reducedMotion } from "../hooks";
 
 /**
- * Background construction lines: column guides across the hero, and in the right
- * margin a small diagram with one hairline per memory, starting at activation 1 and
- * settling at that memory's recorded final value. Start and end are the run's real
- * numbers; the shape in between is schematic, so this is decoration, not a chart.
+ * Background construction lines: column guides across the hero, and in the right margin
+ * one hairline per memory showing decay alone, a(t) = exp(-alpha t), over the run's
+ * 500 steps (t from 0 to 5). These use only the inputs (the four decay rates), so the
+ * overview stays free of either run's results.
  */
 export function HeroArt() {
   const W = 1440;
@@ -19,17 +19,18 @@ export function HeroArt() {
   const top = 392;
   const base = 560;
   const span = base - top;
+  const tEnd = recorded.steps * recorded.base_params.h;
 
   const curves = memories.map((m) => {
-    const k = 3.2 + m.decay_rate * 2.4;
     const pts: string[] = [];
     for (let s = 0; s <= 80; s++) {
       const u = s / 80;
-      const a = m.final + (1 - m.final) * Math.exp(-k * u);
+      const a = Math.exp(-m.decay_rate * u * tEnd);
       pts.push(`${(x0 + u * (x1 - x0)).toFixed(1)},${(base - a * span).toFixed(1)}`);
     }
-    return { key: m.label, d: `M${pts.join("L")}`, survivor: m.final > 0, end: base - m.final * span };
+    return { key: m.label, d: `M${pts.join("L")}`, rate: m.decay_rate };
   });
+  const slowest = curves.reduce((a, b) => (b.rate < a.rate ? b : a));
 
   return (
     <svg className="hero-art" viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="xMidYMin slice" aria-hidden="true">
@@ -43,20 +44,13 @@ export function HeroArt() {
         <line className="guide strong" x1={x0} x2={x1} y1={base} y2={base} />
         <line className="guide" x1={x0 - 6} x2={x0} y1={top} y2={top} />
         {curves.map((c) => (
-          <path key={c.key} d={c.d} pathLength={1} className={`curve${c.survivor ? " survivor" : ""}`} />
+          <path key={c.key} d={c.d} pathLength={1} className="curve" />
         ))}
-        {curves
-          .filter((c) => c.survivor)
-          .map((c) => (
-            <g key={c.key}>
-              <circle className="dot" cx={x1} cy={c.end} r={3.5} />
-              {!reducedMotion() && (
-                <circle className="traveller" r={2.6}>
-                  <animateMotion path={c.d} dur="7s" begin="2.6s" repeatCount="indefinite" />
-                </circle>
-              )}
-            </g>
-          ))}
+        {!reducedMotion() && (
+          <circle className="traveller" r={2.6}>
+            <animateMotion path={slowest.d} dur="7s" begin="2.6s" repeatCount="indefinite" />
+          </circle>
+        )}
       </g>
     </svg>
   );

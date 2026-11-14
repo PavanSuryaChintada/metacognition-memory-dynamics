@@ -5,8 +5,8 @@ export const reducedMotion = () =>
 
 const clamp = (v: number, lo = 0, hi = 1) => Math.min(hi, Math.max(lo, v));
 
-/** Adds `is-in` to every [data-reveal] element the first time it scrolls into view. */
-export function useRevealAll() {
+/** Adds `is-in` to every [data-reveal] element the first time it scrolls into view. Re-runs when `page` changes. */
+export function useRevealAll(page?: unknown) {
   useEffect(() => {
     const els = [...document.querySelectorAll<HTMLElement>("[data-reveal]")];
     if (reducedMotion()) {
@@ -26,7 +26,7 @@ export function useRevealAll() {
     );
     els.forEach((el) => io.observe(el));
     return () => io.disconnect();
-  }, []);
+  }, [page]);
 }
 
 /** Calls fn on scroll and resize, at most once per frame. */

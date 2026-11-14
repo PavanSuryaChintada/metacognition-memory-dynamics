@@ -5,12 +5,10 @@ import { useIsNarrow, usePinnedProgress } from "../hooks";
 const ease = (t: number) => 1 - Math.pow(1 - t, 3);
 
 function MemoryCard({ m, i, style }: { m: (typeof memories)[number]; i: number; style?: CSSProperties }) {
-  const survived = m.final > 0;
   return (
     <article className="memory-card" style={style}>
       <div className="memory-card-head">
         <span className="label">({String(i + 1).padStart(2, "0")})</span>
-        {survived && <span className="tag">Survives</span>}
       </div>
       <img src={m.thumb} alt={m.name} width={480} height={360} loading="lazy" />
       <h4>{m.name}</h4>
@@ -20,8 +18,8 @@ function MemoryCard({ m, i, style }: { m: (typeof memories)[number]; i: number; 
           <dd>{m.decay_rate.toFixed(2)}</dd>
         </div>
         <div>
-          <dt>Activation at step 500</dt>
-          <dd>{survived ? m.final.toFixed(4) : "0"}</dd>
+          <dt>Starting activation</dt>
+          <dd>1</dd>
         </div>
       </dl>
     </article>

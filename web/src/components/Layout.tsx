@@ -1,6 +1,7 @@
 import type { CSSProperties, ReactNode } from "react";
 import { REPO } from "../data/results";
 import { useHeaderOnDark } from "../hooks";
+import type { Route } from "../router";
 
 /** The project mark: three memories fading, one held by replay. */
 export function Mark({ size = 26 }: { size?: number }) {
@@ -14,22 +15,39 @@ export function Mark({ size = 26 }: { size?: number }) {
   );
 }
 
-export function Header() {
+export function Header({ route }: { route: Route }) {
   const dark = useHeaderOnDark();
+  const onRun = route !== "home";
   return (
     <header className={`site-header${dark ? " on-dark" : ""}`}>
       <div className="wrap header-row">
         <a href="#top" className="wordmark">
           Memory Dynamics
         </a>
-        <a href="#top" className="header-mark" aria-label="Back to top">
+        <a href={onRun ? "#runs" : "#top"} className="header-mark" aria-label="Overview">
           <Mark />
         </a>
         <nav className="site-nav" aria-label="Sections">
-          <a href="#model">Model</a>
-          <a href="#how-it-runs">How it runs</a>
-          <a href="#results">Results</a>
-          <a href="#paper">Paper</a>
+          {onRun ? (
+            <>
+              <a href="#runs" className="keep">
+                All runs
+              </a>
+              <a href="#/unnormalised" aria-current={route === "unnormalised" ? "page" : undefined}>
+                Run A
+              </a>
+              <a href="#/normalised" aria-current={route === "normalised" ? "page" : undefined}>
+                Run B
+              </a>
+            </>
+          ) : (
+            <>
+              <a href="#runs">Runs</a>
+              <a href="#model">Model</a>
+              <a href="#how-it-runs">How it runs</a>
+              <a href="#paper">Paper</a>
+            </>
+          )}
           <a href={REPO} className="keep">
             GitHub
           </a>

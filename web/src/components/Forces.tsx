@@ -50,7 +50,6 @@ export function Plates({ active, spread }: { active: number; spread: number }) {
   const cx = 250;
   const gap = 78 + spread * 34;
   const y0 = 100;
-  const survivor = memories.findIndex((m) => m.final > 0);
 
   return (
     <svg className={`plates${active >= 0 ? " has-active" : ""}`} viewBox="0 0 520 560" role="img" aria-label="Four stacked plates, one per force acting on the four memories">
@@ -72,12 +71,12 @@ export function Plates({ active, spread }: { active: number; spread: number }) {
             {i === 2 && <path d={rhombus(cx, cy, W * 0.66, H * 0.66)} className="plate-pool" />}
             {dots.map(([x, y], k) => {
               const m = memories[k];
-              const lit = i === 3 && k === survivor;
+              const replayed = i === 3; // replay reinforces every memory in proportion to F(a)
               return (
                 <g key={k}>
                   {i === 0 && <ellipse cx={x} cy={y} rx={22 / m.decay_rate} ry={11 / m.decay_rate} className="plate-halo" />}
-                  {lit && <ellipse cx={x} cy={y} rx={16} ry={8} className="plate-pulse" />}
-                  <ellipse cx={x} cy={y} rx={6} ry={3.2} className={`plate-dot${lit ? " lit" : ""}`} />
+                  {replayed && <ellipse cx={x} cy={y} rx={16} ry={8} className="plate-pulse" />}
+                  <ellipse cx={x} cy={y} rx={6} ry={3.2} className="plate-dot" />
                 </g>
               );
             })}

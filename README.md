@@ -161,6 +161,36 @@ Mean force on each memory over the 500 steps:
 - **Only the person receives replay.** Its decay is the largest because its activation stays highest.
 - **Diffusion moves a little activation from the person to the other three.**
 
+### 5. Raw vs normalised replay (third Colab run)
+
+[`notebooks/normalised_replay.py`](notebooks/normalised_replay.py) runs the single run twice on the same encoded photos. The only difference is inside the replay operator:
+
+- **Raw arm:** scores memories with the raw embeddings, $s = X X^\top a$, as the paper writes $F(a)$.
+- **Normalised arm:** scales each embedding to length 1 first, so the scores are sums of cosine similarities weighted by activation.
+
+Its printed output is in [`results/normalised_output.txt`](results/normalised_output.txt), and the numbers are in [`results/normalised_replay.json`](results/normalised_replay.json).
+
+![Raw replay (top row) and normalised replay (bottom row)](results/figures/normalised.png)
+
+| Memory | Decay rate α | Raw arm | Normalised arm |
+|---|---|---|---|
+| beagle | 0.87 | 0 | 0.049097 |
+| French bulldog | 1.10 | 0 | 0.039555 |
+| person | 1.23 | 0.146975 | 0.035070 |
+| cat | 1.45 | 0 | 0.030218 |
+
+| Replay share, last 10% of events | beagle | cat | person | French bulldog |
+|---|---|---|---|---|
+| Raw arm | 0.0000 | 0.0000 | 1.0000 | 0.0000 |
+| Normalised arm | 0.2511 | 0.2466 | 0.2491 | 0.2532 |
+
+- **Memories above 0.001 at step 500:** 1 of 4 in the raw arm, 4 of 4 in the normalised arm.
+- **Decay order:** in the normalised arm the final activations follow the decay rates, with the slowest-decaying memory highest.
+- **Same replay timing:** the seed is reset before each arm, so replay fired at the same 154 steps in both.
+- **Why the raw arm ends at 0.146975, not the notebook's 0.137944:** that reset comes after the decay rates are drawn, so the coin flips start four draws earlier than in the notebook.
+- **A change to the model, not a code fix:** the paper writes $F(a)$ with raw embeddings.
+- **The script as shared can't be exactly what ran.** Its loop right after printing "Late Replay Weights" unpacks two-item tuples into three names, which raises `ValueError`. The recorded output continues past it, so the code that ran differed there. The file notes this.
+
 ## Comparison with the paper
 
 The paper's experiments (section 5.1) and this run share every parameter except the embeddings.
@@ -269,17 +299,21 @@ Every run stays inside its bound. "Runaway" is replay-dominated but bounded, whi
 │   └── plotting.py            # figures
 ├── notebooks/
 │   ├── metacognition.ipynb    # original Colab notebook, outputs intact
-│   └── replay_tracking.py     # second Colab run: logs replay weights and forces
+│   ├── replay_tracking.py     # second Colab run: logs replay weights and forces
+│   └── normalised_replay.py   # third Colab run: raw vs normalised replay scores
 ├── results/                   # recorded output of the notebook run
 │   ├── figures/
 │   │   ├── dynamics_demo.png
 │   │   ├── three_regimes_sweep_a.png
 │   │   ├── three_regimes_sweep_b.png
-│   │   └── softmax_results.png  # replay-tracking run
+│   │   ├── softmax_results.png  # replay-tracking run
+│   │   └── normalised.png       # raw vs normalised run
 │   ├── metrics.json
 │   ├── notebook_output.txt    # printed output, verbatim
 │   ├── replay_tracking.json   # numbers from the replay-tracking run
-│   └── replay_tracking_output.txt  # its printed output, verbatim
+│   ├── replay_tracking_output.txt  # its printed output, verbatim
+│   ├── normalised_replay.json # numbers from the raw vs normalised run
+│   └── normalised_output.txt  # its printed output, verbatim
 ├── web/                       # website: Vite + React + TypeScript
 │   ├── src/                   # page, components, styles
 │   └── public/memories/       # thumbnails of the four photos
@@ -318,9 +352,9 @@ Other flags:
 
 ## Website
 
-[`web/`](web/) is a single-page write-up of everything above: the model, the architecture, the paper comparison and every recorded result.
+[`web/`](web/) is the website for everything above. The overview page shows what stays the same in every run: the model, the memories, the architecture and the paper's setup. Its hero holds two cards, one per run (unnormalised replay and normalised replay), and each opens a page with that run's explanation and every recorded result.
 
-- **No copied numbers.** It imports `results/metrics.json` and the three Colab figures straight from `results/`, so the page always shows the recorded run.
+- **No copied numbers.** It imports the JSON files and Colab figures straight from `results/`, so the pages always show the recorded runs.
 - **Built with** Vite, React and TypeScript. The charts are hand-written SVG and the maths uses KaTeX. There are no other runtime dependencies.
 
 Run it locally:
