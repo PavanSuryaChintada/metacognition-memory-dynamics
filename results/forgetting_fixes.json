@@ -1,0 +1,56 @@
+{
+  "source": "notebooks/colab/normalised/beyond_paper/5_5forgetting_test_fix.ipynb, executed in Colab. Values copied from its printed output in results/forgetting_fixes_output.txt; the figure is results/figures/forgetting_fixes.png.",
+  "setup": {
+    "model": "facebook/ijepa_vith14_1k",
+    "embedding_dim": 1280,
+    "replay": "normalised",
+    "steps": 500,
+    "inject_at": 250,
+    "seed": 42,
+    "eta": 0.8,
+    "beta": 3.0,
+    "replay_prob": 0.3,
+    "gamma": 0.2,
+    "delta": 0.1,
+    "h": 0.01,
+    "alive_threshold": 0.001,
+    "warmup_steps": 50
+  },
+  "arms": [
+    { "id": "raw", "name": "Start at 1", "printed": "ORIGINAL (init=1.0)", "how": "Each new memory starts at activation 1, as in test 1." },
+    { "id": "mean", "name": "Start at the mean", "printed": "FIX 1: Init at mean", "how": "Each new memory starts at the mean activation at the moment it is added." },
+    { "id": "warmup", "name": "Warm up", "printed": "FIX 2: Gradual warmup", "how": "Each new memory starts at 0.001 and gains target/50 per step for 50 steps, where target is the mean activation at the moment it is added." }
+  ],
+  "memories": [
+    { "label": "beagle", "label_in_run": "labrador", "group": "old", "decay_rate_printed": 0.87, "final": { "raw": 0.008117, "mean": 0.012802, "warmup": 0.012774 } },
+    { "label": "cat", "label_in_run": "cat", "group": "old", "decay_rate_printed": 1.45, "final": { "raw": 0.009902, "mean": 0.009344, "warmup": 0.009338 } },
+    { "label": "person", "label_in_run": "person", "group": "old", "decay_rate_printed": 1.23, "final": { "raw": 0.008601, "mean": 0.010237, "warmup": 0.010221 } },
+    { "label": "puppy", "label_in_run": "horse", "group": "old", "decay_rate_printed": 1.1, "final": { "raw": 0.00745, "mean": 0.010467, "warmup": 0.010425 } },
+    { "label": "landscape", "label_in_run": "landscape", "group": "old", "decay_rate_printed": 0.66, "final": { "raw": 0.007336, "mean": 0.017559, "warmup": 0.017527 } },
+    { "label": "french_bulldog", "label_in_run": "bulldog", "group": "new", "decay_rate_printed": 0.66, "final": { "raw": 0.037728, "mean": 0.015065, "warmup": 0.015847 } },
+    { "label": "kitten", "label_in_run": "kitten", "group": "new", "decay_rate_printed": 0.56, "final": { "raw": 0.046205, "mean": 0.01624, "warmup": 0.0166 } },
+    { "label": "car", "label_in_run": "car", "group": "new", "decay_rate_printed": 1.37, "final": { "raw": 0.011544, "mean": 0.009235, "warmup": 0.009293 } },
+    { "label": "armchair", "label_in_run": "coffee", "group": "new", "decay_rate_printed": 1.1, "final": { "raw": 0.016631, "mean": 0.010689, "warmup": 0.010638 } },
+    { "label": "tabby_cat", "label_in_run": "puppy", "group": "new", "decay_rate_printed": 1.21, "final": { "raw": 0.016145, "mean": 0.010449, "warmup": 0.010436 } }
+  ],
+  "survivors": {
+    "raw": { "old": 5, "new": 5 },
+    "mean": { "old": 5, "new": 5 },
+    "warmup": { "old": 5, "new": 5 }
+  },
+  "retention_pct_printed": { "raw": 14.6, "mean": 21.3, "warmup": 21.2 },
+  "summary_printed": {
+    "max_old": { "raw": 0.0099, "mean": 0.0176, "warmup": 0.0175 },
+    "max_new": { "raw": 0.0462, "mean": 0.0162, "warmup": 0.0166 },
+    "old_new_ratio": { "raw": 0.32, "mean": 0.98, "warmup": 0.96 }
+  },
+  "best_printed": "FIX 1: Init at mean — 21% old memory retention",
+  "old_sum_at_250_derived": 0.284,
+  "notes": [
+    "Retention is the old memories' summed activation at step 500 divided by their sum just before step 250, as the notebook computes it.",
+    "The activations at step 250 are not printed. Steps 0 to 249 are the same in all three arms (same memories, seed reset before each arm), so the old memories' sum at step 250 is the same in all three: about 0.284, worked out from each arm's printed retention and old finals. The figure's bars agree.",
+    "This notebook changed two photo links from test 1. The memory labelled 'horse' uses the spaniel puppy photo the other runs label 'puppy'. The memory labelled 'puppy' uses a new photo, of a tabby cat. Every slot is a photo; there is no random vector.",
+    "The notebook's header comment lists a third fix, boosting old memories' replay for a while, but the notebook does not run it.",
+    "Decay rates are drawn in list order from seed 42, so each position gets the same rate as in test 1."
+  ]
+}

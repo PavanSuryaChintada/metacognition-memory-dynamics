@@ -1,0 +1,97 @@
+# Printed output of notebooks/colab/normalised/beyond_paper/5_5forgetting_test_fix.ipynb (the forgetting test run
+# three ways: new memories start at 1, at the mean activation, or warm up over 50 steps), copied word for word from
+# the executed notebook. The figure is results/figures/forgetting_fixes.png. Labels are the ones used in that run:
+# labrador = the beagle photo, bulldog = the French bulldog, coffee = the armchair, horse = the spaniel puppy photo
+# that the other runs label puppy, and puppy = a photo of a tabby cat.
+
+Loading I-JEPA...
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+WARNING:huggingface_hub.utils._http:Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+
+Encoding Phase 1...
+  ✓ labrador: decay=0.87
+  ✓ cat: decay=1.45
+  ✓ person: decay=1.23
+  ✓ horse: decay=1.10
+  ✓ landscape: decay=0.66
+
+Encoding Phase 2...
+  ✓ bulldog: decay=0.66
+  ✓ kitten: decay=0.56
+  ✓ car: decay=1.37
+  ✓ coffee: decay=1.10
+  ✓ puppy: decay=1.21
+
+============================================================
+  ORIGINAL (init=1.0)
+============================================================
+  Memory       Type       α      Final   Status
+  labrador     OLD     0.87   0.008117    ALIVE
+  cat          OLD     1.45   0.009902    ALIVE
+  person       OLD     1.23   0.008601    ALIVE
+  horse        OLD     1.10   0.007450    ALIVE
+  landscape    OLD     0.66   0.007336    ALIVE
+  bulldog      NEW     0.66   0.037728    ALIVE
+  kitten       NEW     0.56   0.046205    ALIVE
+  car          NEW     1.37   0.011544    ALIVE
+  coffee       NEW     1.10   0.016631    ALIVE
+  puppy        NEW     1.21   0.016145    ALIVE
+
+  Old surviving: 5/5
+  New surviving: 5/5
+  Old memory retention: 14.6%
+
+============================================================
+  FIX 1: Init at mean
+============================================================
+  Memory       Type       α      Final   Status
+  labrador     OLD     0.87   0.012802    ALIVE
+  cat          OLD     1.45   0.009344    ALIVE
+  person       OLD     1.23   0.010237    ALIVE
+  horse        OLD     1.10   0.010467    ALIVE
+  landscape    OLD     0.66   0.017559    ALIVE
+  bulldog      NEW     0.66   0.015065    ALIVE
+  kitten       NEW     0.56   0.016240    ALIVE
+  car          NEW     1.37   0.009235    ALIVE
+  coffee       NEW     1.10   0.010689    ALIVE
+  puppy        NEW     1.21   0.010449    ALIVE
+
+  Old surviving: 5/5
+  New surviving: 5/5
+  Old memory retention: 21.3%
+
+============================================================
+  FIX 2: Gradual warmup
+============================================================
+  Memory       Type       α      Final   Status
+  labrador     OLD     0.87   0.012774    ALIVE
+  cat          OLD     1.45   0.009338    ALIVE
+  person       OLD     1.23   0.010221    ALIVE
+  horse        OLD     1.10   0.010425    ALIVE
+  landscape    OLD     0.66   0.017527    ALIVE
+  bulldog      NEW     0.66   0.015847    ALIVE
+  kitten       NEW     0.56   0.016600    ALIVE
+  car          NEW     1.37   0.009293    ALIVE
+  coffee       NEW     1.10   0.010638    ALIVE
+  puppy        NEW     1.21   0.010436    ALIVE
+
+  Old surviving: 5/5
+  New surviving: 5/5
+  Old memory retention: 21.2%
+
+======================================================================
+SUMMARY COMPARISON
+======================================================================
+Metric                             Original    Mean Init       Warmup
+----------------------------------------------------------------------
+  Old survivors                             5            5            5
+  New survivors                             5            5            5
+  Old retention %                       14.6%        21.3%        21.2%
+  Max old activation                   0.0099       0.0176       0.0175
+  Max new activation                   0.0462       0.0162       0.0166
+  Old/New ratio                          0.32         0.98         0.96
+
+======================================================================
+BEST APPROACH:
+  FIX 1: Init at mean — 21% old memory retention
+======================================================================
