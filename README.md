@@ -136,36 +136,41 @@ This sweep printed no numbers. Both sweeps show the same three regimes. In both,
 
 ## Architecture
 
-```mermaid
-flowchart TB
-    subgraph ENC["1 · Encode — encoder.py"]
-        URL["Image URL (Unsplash)"] -->|"requests + Pillow"| IMG["RGB image"]
-        IMG -->|"transformers: AutoProcessor<br/>+ I-JEPA ViT-H/14, mean-pool patches"| EMB["1280-d embedding"]
-    end
-
-    subgraph DYN["2 · Memory dynamics — memory.py"]
-        STORE["store()<br/>a_i = 1, decay rate α_i"] --> STEP["step() × 500<br/>decay + diffusion + inhibition + replay"]
-        STEP --> RET["retrieve()<br/>score = cos(q, x_i) · a_i"]
-        STEP --> EN["energy()<br/>E(a)"]
-    end
-
-    subgraph OUT["3 · Outputs — plotting.py, run_experiments.py"]
-        CACHE["embeddings.pt"]
-        FIG["Figures (matplotlib)"]
-        MET["metrics.json"]
-    end
-
-    RNG["NumPy RandomState(seed)<br/>decay rates + replay coin flip"]
-
-    EMB --> STORE
-    EMB -->|"torch.save"| CACHE
-    CACHE -.->|"--embeddings: skip the model"| STORE
-    RNG --> STORE
-    RNG --> STEP
-    STEP --> FIG
-    EN --> FIG
-    STEP --> MET
-    RET --> MET
+```text
++-- 1. ENCODE ------------------------------- memory_dynamics/encoder.py --+
+|                                                                          |
+| image URL --(requests)--> bytes --(Pillow)--> RGB image                  |
+|                                                   |                      |
+|    transformers: AutoProcessor + I-JEPA ViT-H/14  |                      |
+|                                                   v                      |
+|                                 1280-d embedding (mean over patches)     |
+|                                                                          |
++---------------------------------------------------+----------------------+
+                                                    |
+    outputs/embeddings.pt <--(torch.save)-----------+
+    (--embeddings loads it back and                 |
+     skips the 2.5 GB model) ......................>|
+                                                    v
++-- 2. MEMORY DYNAMICS ----------------------- memory_dynamics/memory.py --+
+|                                                                          |
+| store()          one memory per image: a_i = 1, decay rate alpha_i       |
+|    |                                                                     |
+|    v                                                                     |
+| step() x 500     da/dt = - decay - diffusion - inhibition + replay       |
+|    |                                                                     |
+|    +--> retrieve()    score_i = cos(query, x_i) * a_i                    |
+|    +--> energy()      E(a)                                               |
+|                                                                          |
+| randomness: NumPy RandomState(seed) -> decay rates, replay coin flip     |
+|                                                                          |
++---------------------------------------------------+----------------------+
+                                                    |
+                                                    v
++-- 3. OUTPUTS ------------------------- plotting.py, run_experiments.py --+
+|                                                                          |
+| figures (matplotlib)                     metrics.json                    |
+|                                                                          |
++--------------------------------------------------------------------------+
 ```
 
 | Part | File | Libraries | Job |
