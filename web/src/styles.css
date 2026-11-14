@@ -1597,6 +1597,43 @@ tr.win td {
   margin-bottom: 14px;
 }
 
+/* Home: three run cards */
+.run-cards.home-runs {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.threshold-meter {
+  display: grid;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--muted);
+}
+.tm-track {
+  position: relative;
+  height: 8px;
+  border-radius: 2px;
+  background: var(--track);
+  overflow: hidden;
+}
+.tm-fill {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  background: var(--ember);
+}
+.tm-labels {
+  display: flex;
+  justify-content: space-between;
+  font-variant-numeric: tabular-nums;
+}
+.tm-labels b {
+  color: var(--ink);
+  font-weight: 560;
+}
+.stat-value + .threshold-meter {
+  margin-top: 10px;
+}
+
 /* Experiment 3: the two test cards */
 .run-cards.beyond-cards {
   margin-top: 0;
@@ -1774,15 +1811,20 @@ td.ember-text {
   }
 }
 @media (max-width: 1180px) {
-  .run-cards.experiment-cards {
+  .run-cards.experiment-cards,
+  .run-cards.home-runs {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .home-runs .run-card:nth-child(3) {
+    grid-column: 1 / -1;
   }
   .experiment-cards .experiment-card:last-child {
     grid-column: 1 / -1;
   }
 }
 @media (max-width: 860px) {
-  .run-cards.experiment-cards {
+  .run-cards.experiment-cards,
+  .run-cards.home-runs {
     grid-template-columns: minmax(0, 1fr);
   }
   .site-nav a:not(.keep) {

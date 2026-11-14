@@ -38,11 +38,11 @@ function Hero() {
         <p className="hero-sub rise" style={d(2)}>
           Ghosh, Jaiswal and Gupta model memory as activations that decay, spread across a similarity graph, and get reinforced by
           replay. Their experiments use random vectors. Here the same equations run on I-JEPA embeddings of real photographs,
-          twice, with one difference in how replay scores the memories.
+          twice, with one difference in how replay scores the memories, and once more at the paper's own scale.
         </p>
         <div className="actions rise" style={d(3)}>
           <a className="btn btn-primary" href="#runs">
-            Compare the two runs
+            Compare the runs
           </a>
           <a className="btn btn-text" href={REPO}>
             View the code <span aria-hidden="true">→</span>
@@ -181,7 +181,7 @@ function PaperSection() {
                     <td>Memories N</td>
                     <td data-label="Paper">200</td>
                     <td data-label="These runs">
-                      {recorded.memories.length}; {ten.memories.length} in the second run B experiment
+                      {recorded.memories.length}; {ten.memories.length} in the second run B experiment; 200 in run C
                     </td>
                   </tr>
                   <tr>
@@ -210,7 +210,7 @@ function PaperSection() {
                     <td>Run length and seeds</td>
                     <td data-label="Paper">3,000 steps, averaged over 10 seeds</td>
                     <td data-label="These runs">
-                      {recorded.steps} steps, one seed ({recorded.seed})
+                      {recorded.steps} steps (3,000 in run C), one seed ({recorded.seed})
                     </td>
                   </tr>
                 </tbody>
@@ -275,6 +275,12 @@ const NOTEBOOK_ROWS: { path: string; href: string; what: string; output?: string
     href: NOTEBOOKS.forgettingFixes,
     what: "Run B, beyond the paper: the same test with a photo in every slot, run three ways: new memories start at 1, at the mean activation, or warm up over 50 steps.",
     output: "results/forgetting_fixes_output.txt",
+  },
+  {
+    path: "colab/paper/paper_scale_real_jepa.ipynb",
+    href: NOTEBOOKS.paperScale,
+    what: "Run C: the paper's N = 200 and 3,000 steps with normalised replay, on the first 200 CIFAR-100 test images encoded with I-JEPA.",
+    output: "results/paper_scale_output.txt",
   },
   {
     path: "colab/_facebook_ijepa_vith14_1k.ipynb",

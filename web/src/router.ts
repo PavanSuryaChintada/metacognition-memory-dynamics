@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 
-export type Route = "home" | "unnormalised" | "normalised" | "normalised-10" | "normalised-beyond" | "normalised-beyond-fix";
+export type Route = "home" | "unnormalised" | "normalised" | "normalised-10" | "normalised-beyond" | "normalised-beyond-fix" | "paper";
 
 const parse = (hash: string): Route =>
   hash === "#/unnormalised"
@@ -13,7 +13,9 @@ const parse = (hash: string): Route =>
           ? "normalised-beyond"
           : hash === "#/normalised/beyond/fix"
             ? "normalised-beyond-fix"
-            : "home";
+            : hash === "#/paper"
+              ? "paper"
+              : "home";
 
 export const isBeyond = (r: Route) => r === "normalised-beyond" || r === "normalised-beyond-fix";
 export const isRunB = (r: Route) => r === "normalised" || r === "normalised-10" || isBeyond(r);

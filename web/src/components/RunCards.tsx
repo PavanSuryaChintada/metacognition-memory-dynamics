@@ -1,4 +1,4 @@
-import { normalised, ten } from "../data/results";
+import { normalised, paperScale, ten } from "../data/results";
 import { lateShareRange, normalisedFinals, unnormalisedFinals, winnerShare } from "../data/derived";
 import { MiniBars } from "./Memories";
 import { Tex } from "./Tex";
@@ -6,11 +6,30 @@ import { d } from "./ui";
 
 const SCALE = 0.15; // shared bar scale, so the two cards compare directly
 
-/** The two runs, side by side. Each card opens that run's page. */
+/** Run C's highest final activation as a share of the 0.001 survival line. */
+export function ThresholdMeter() {
+  const v = paperScale.max_activation;
+  const line = paperScale.setup.alive_threshold;
+  return (
+    <div className="threshold-meter" role="img" aria-label={`Highest activation ${v}, ${Math.round((v / line) * 100)}% of the ${line} line`}>
+      <div className="tm-track">
+        <span className="tm-fill" style={{ width: `${(v / line) * 100}%` }} />
+      </div>
+      <div className="tm-labels">
+        <span>
+          highest <b>{v.toFixed(6)}</b>
+        </span>
+        <span>{line} line</span>
+      </div>
+    </div>
+  );
+}
+
+/** The runs, side by side. Each card opens that run's page. */
 export function RunCards() {
   const pct = (v: number) => `${(v * 100).toFixed(1)}%`;
   return (
-    <div className="run-cards" id="runs">
+    <div className="run-cards home-runs" id="runs">
       <a className="run-card rise" style={d(4)} href="#/unnormalised">
         <div className="run-card-head">
           <span className="label">Run A</span>
@@ -80,9 +99,42 @@ export function RunCards() {
           Open run B <span aria-hidden="true">→</span>
         </span>
       </a>
+      <a className="run-card rise" style={d(6)} href="#/paper">
+        <div className="run-card-head">
+          <span className="label">Run C</span>
+          <span className="tag note">N = {paperScale.setup.n}</span>
+        </div>
+        <h2 className="run-title">Paper scale</h2>
+        <div className="run-formula">
+          <Tex>{String.raw`N = ${paperScale.setup.n},\quad T = ${paperScale.setup.steps}`}</Tex>
+        </div>
+        <p className="run-desc">
+          Run B's replay at the paper's size: {paperScale.setup.n} CIFAR-100 images through I-JEPA for {paperScale.setup.steps.toLocaleString("en")}{" "}
+          steps. Inhibition grows with the number of memories, and none of them stays above {paperScale.setup.alive_threshold}.
+        </p>
+        <ThresholdMeter />
+        <dl className="run-stats">
+          <div>
+            <dt>Memories left</dt>
+            <dd>
+              {paperScale.survivors} of {paperScale.setup.n}
+            </dd>
+          </div>
+          <div>
+            <dt>Order by decay</dt>
+            <dd>
+              ρ = {paperScale.spearman_rho_decay_vs_activation.toFixed(2)} <span className="dd-sub">by margins under 0.000001</span>
+            </dd>
+          </div>
+        </dl>
+        <span className="run-open">
+          Open run C <span aria-hidden="true">→</span>
+        </span>
+      </a>
       <p className="run-cards-note muted small">
-        Bars show each memory's activation at step 500 on the same scale, 0 to {SCALE}. Same photos, decay rates, parameters and
-        seed in both runs.
+        Runs A and B: bars show each memory's activation at step 500 on the same scale, 0 to {SCALE}, with the same photos, decay
+        rates, parameters and seed. Run C: the highest of its 200 memories at step {paperScale.setup.steps.toLocaleString("en")}, against
+        the 0.001 line.
       </p>
     </div>
   );

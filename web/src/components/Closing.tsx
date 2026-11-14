@@ -34,8 +34,8 @@ export function Closing() {
       <div className="wrap">
         <Statement />
         <p className="sub">
-          Everything here comes from six recorded Colab runs: the original notebook, the replay-tracking run, the
-          raw-versus-normalised comparisons with 4 and 10 memories, and two tests beyond the paper.
+          Everything here comes from seven recorded Colab runs: the original notebook, the replay-tracking run, the
+          raw-versus-normalised comparisons with 4 and 10 memories, two tests beyond the paper, and the paper-scale run.
         </p>
 
         <div className="footer-cols">
@@ -43,13 +43,16 @@ export function Closing() {
             <div className="label">This project</div>
             <ul>
               <li>
-                <a href="#runs">The two runs</a>
+                <a href="#runs">All runs</a>
               </li>
               <li>
                 <a href="#/unnormalised">Run A, unnormalised</a>
               </li>
               <li>
                 <a href="#/normalised">Run B, normalised</a>
+              </li>
+              <li>
+                <a href="#/paper">Run C, paper scale</a>
               </li>
               <li>
                 <a href="#model">The model</a>
@@ -82,6 +85,9 @@ export function Closing() {
               </li>
               <li>
                 <a href={NOTEBOOKS.forgettingFixes}>Run B, gentler new memories</a>
+              </li>
+              <li>
+                <a href={NOTEBOOKS.paperScale}>Run C, paper scale</a>
               </li>
               <li>
                 <a href={`${REPO}/tree/main/notebooks/colab`}>All Colab notebooks</a>

@@ -30,7 +30,7 @@ export function RunIntro({
     <section className="run-intro" id="top">
       <div className="wrap">
         <a className="back rise" href="#runs" style={d(0)}>
-          <span aria-hidden="true">←</span> Both runs
+          <span aria-hidden="true">←</span> All runs
         </a>
         <p className="label rise" style={d(1)}>
           {run} · {name}

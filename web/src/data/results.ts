@@ -9,11 +9,13 @@ import forgettingRun from "../../../results/forgetting_5_plus_5.json";
 import forgettingFigure from "../../../results/figures/forgetting_5_plus_5.png";
 import fixesRun from "../../../results/forgetting_fixes.json";
 import fixesFigure from "../../../results/figures/forgetting_fixes.png";
+import paperScaleRun from "../../../results/paper_scale.json";
+import paperScaleFigure from "../../../results/figures/paper_scale.png";
 import demoFigure from "../../../results/figures/dynamics_demo.png";
 import sweepAFigure from "../../../results/figures/three_regimes_sweep_a.png";
 import sweepBFigure from "../../../results/figures/three_regimes_sweep_b.png";
 import softmaxFigure from "../../../results/figures/softmax_results.png";
-import type { ForgettingFixes, ForgettingTest, NormalisedComparison, Recorded, ReplayTracking, TenMemories } from "./types";
+import type { ForgettingFixes, ForgettingTest, PaperScale, NormalisedComparison, Recorded, ReplayTracking, TenMemories } from "./types";
 
 export const recorded = metrics as Recorded;
 /** The second Colab run, which logged the softmax replay weights at every step. */
@@ -26,6 +28,8 @@ export const ten = tenRun as TenMemories;
 export const forgetting = forgettingRun as ForgettingTest;
 /** The same test run three ways: new memories start at 1, at the mean, or warm up. */
 export const fixes = fixesRun as ForgettingFixes;
+/** Run C: the paper's N = 200 and T = 3000 with real images. */
+export const paperScale = paperScaleRun as PaperScale;
 export const figures = {
   demo: demoFigure,
   sweepA: sweepAFigure,
@@ -35,6 +39,7 @@ export const figures = {
   ten: tenFigure,
   forgetting: forgettingFigure,
   fixes: fixesFigure,
+  paperScale: paperScaleFigure,
 };
 
 /**
@@ -107,6 +112,7 @@ export const NOTEBOOKS = {
   normalised10: nb("colab/normalised/metacognition_10_mem.ipynb"),
   forgetting: nb("colab/normalised/beyond_paper/5_5_forgetting_test.ipynb"),
   forgettingFixes: nb("colab/normalised/beyond_paper/5_5forgetting_test_fix.ipynb"),
+  paperScale: nb("colab/paper/paper_scale_real_jepa.ipynb"),
   ijepaSample: nb("colab/_facebook_ijepa_vith14_1k.ipynb"),
   vjepaSample: nb("colab/facebook_vjepa2_vitl_fpc64_256.ipynb"),
 };

@@ -3,6 +3,7 @@ import { Closing } from "./components/Closing";
 import { Home } from "./pages/Home";
 import { RunUnnormalised } from "./pages/RunUnnormalised";
 import { RunNormalised } from "./pages/RunNormalised";
+import { RunPaperScale } from "./pages/RunPaperScale";
 import { useRevealAll } from "./hooks";
 import { isRunB, useRoute } from "./router";
 
@@ -16,6 +17,8 @@ export function App() {
       <main key={isRunB(route) ? "normalised" : route}>
         {route === "unnormalised" ? (
           <RunUnnormalised />
+        ) : route === "paper" ? (
+          <RunPaperScale />
         ) : isRunB(route) ? (
           <RunNormalised
             view={

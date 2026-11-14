@@ -106,6 +106,33 @@ export type ForgettingFixes = {
   old_sum_at_250_derived: number;
 };
 
+/** Shape of results/paper_scale.json: run C, the paper's N and T with 200 CIFAR-100 images. */
+export type PaperScale = {
+  setup: {
+    images: string;
+    n: number;
+    steps: number;
+    h: number;
+    beta: number;
+    gamma: number;
+    delta: number;
+    eta: number;
+    replay_prob: number;
+    seed: number;
+    alive_threshold: number;
+  };
+  embedding_norms: { min: number; max: number; mean: number };
+  cosine_off_diagonal: { min: number; max: number; mean: number; std: number };
+  progress: { step: number; alive: number; max: string; mean: string }[];
+  survivors: number;
+  max_activation: number;
+  mean_activation: number;
+  spearman_rho_decay_vs_activation: number;
+  spearman_p: string;
+  top10: { rank: number; label: string; decay: number; activation: number }[];
+  verdict_printed: string;
+};
+
 /** Shape of results/metrics.json: the numbers the Colab run printed. */
 export type Recorded = {
   source: string;

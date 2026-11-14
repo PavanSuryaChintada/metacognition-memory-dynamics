@@ -39,6 +39,9 @@ export function Header({ route }: { route: Route }) {
               <a href="#/normalised" aria-current={isRunB(route) ? "page" : undefined}>
                 Run B
               </a>
+              <a href="#/paper" aria-current={route === "paper" ? "page" : undefined}>
+                Run C
+              </a>
             </>
           ) : (
             <>
