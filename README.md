@@ -46,14 +46,14 @@ Four Unsplash images, each encoded once and stored as a memory. All runs share t
 
 ## Results
 
-Sections 1 to 3 come from the notebook run in [`notebooks/metacognition.ipynb`](notebooks/metacognition.ipynb). Sections 4 to 9 come from the later Colab runs in [`notebooks/colab/`](notebooks/colab/). For sections 1 to 3:
+Sections 1 to 3 come from the notebook run in [`notebooks/metacognition.ipynb`](notebooks/metacognition.ipynb). Sections 4 to 10 come from the later Colab runs in [`notebooks/colab/`](notebooks/colab/). For sections 1 to 3:
 
 - The printed output is in [`results/notebook_output.txt`](results/notebook_output.txt), copied verbatim.
 - Every value is collected in [`results/metrics.json`](results/metrics.json).
 
 ### 1. Single run (η = 0.8, p = 0.3)
 
-![Activation norm, energy and final activations for the single run](results/figures/dynamics_demo.png)
+![Activation norm, energy and final activations for the single run](results/figures/metacognition/dynamics_demo.png)
 
 | Memory | Decay $\alpha$ | Final activation |
 |---|---|---|
@@ -91,7 +91,7 @@ The same four memories were run under three settings of replay strength $\eta$ a
 
 #### Sweep B (final version, notebook cell 5)
 
-![Collapse, balanced and runaway regimes, sweep B](results/figures/three_regimes_sweep_b.png)
+![Collapse, balanced and runaway regimes, sweep B](results/figures/metacognition/three_regimes_sweep_b.png)
 
 | Regime | η | p | η·p | Final ‖a‖ | Final E |
 |---|---|---|---|---|---|
@@ -108,7 +108,7 @@ The same four memories were run under three settings of replay strength $\eta$ a
 
 #### Sweep A (first version, notebook cell 3)
 
-![Collapse, balanced and runaway regimes, sweep A](results/figures/three_regimes_sweep_a.png)
+![Collapse, balanced and runaway regimes, sweep A](results/figures/metacognition/three_regimes_sweep_a.png)
 
 | Regime | η | p | η·p | Final ‖a‖ (read off the figure) |
 |---|---|---|---|---|
@@ -126,7 +126,7 @@ A second Colab run repeated the single run with the same images, seed and settin
 - **Numbers:** [`results/replay_tracking.json`](results/replay_tracking.json).
 - **Labels:** that run's output and figure use `labrador` for the beagle and `cute_dog` for the French bulldog.
 
-![Replay tracking: activations, replay weights, replay share, forces, energy and pre-softmax scores](results/figures/softmax_results.png)
+![Replay tracking: activations, replay weights, replay share, forces, energy and pre-softmax scores](results/figures/colab/unnormalised/softmax_results.png)
 
 - **It reproduces the first run.** The person ends at 0.137944; the notebook printed 0.13794458.
 - **Replay went to one memory.**
@@ -170,7 +170,7 @@ Mean force on each memory over the 500 steps:
 
 Its printed output is in [`results/normalised_output.txt`](results/normalised_output.txt), and the numbers are in [`results/normalised_replay.json`](results/normalised_replay.json).
 
-![Raw replay (top row) and normalised replay (bottom row)](results/figures/normalised.png)
+![Raw replay (top row) and normalised replay (bottom row)](results/figures/colab/normalised/normalised.png)
 
 | Memory | Decay rate α | Raw arm | Normalised arm |
 |---|---|---|---|
@@ -198,7 +198,7 @@ Its printed output is in [`results/normalised_output.txt`](results/normalised_ou
 - **Numbers:** [`results/normalised_10_memories.json`](results/normalised_10_memories.json).
 - **Labels:** that run's output and figure use `labrador` for the beagle, `bulldog` for the French bulldog and `coffee` for the photo of an armchair on a cliff by the sea.
 
-![Raw replay (top row) and normalised replay (bottom row) with 10 memories](results/figures/normalised_10_memories.png)
+![Raw replay (top row) and normalised replay (bottom row) with 10 memories](results/figures/colab/normalised/normalised_10_memories.png)
 
 In the order the notebook prints them, which is by unrounded decay rate:
 
@@ -236,7 +236,7 @@ Every run above stores all of its memories at step 0. [`notebooks/colab/normalis
 - **Labels:** `labrador` is the beagle, `bulldog` the French bulldog and `coffee` the armchair, as in §6.
 - **The horse is not a photo.** Its link returned 404 three times, so the notebook used a random vector, `torch.randn(1280)`, in its place. It is called the random vector below.
 
-![Five old memories, five new ones added at step 250](results/figures/forgetting_5_plus_5.png)
+![Five old memories, five new ones added at step 250](results/figures/colab/normalised/beyond_paper/forgetting_5_plus_5.png)
 
 | Memory | Group | Decay rate α | Step 250 | Step 500 | Change (printed) |
 |---|---|---|---|---|---|
@@ -285,7 +285,7 @@ Every run above stores all of its memories at step 0. [`notebooks/colab/normalis
   - As before, `labrador` is the beagle, `bulldog` the French bulldog and `coffee` the armchair.
   - Every slot is a photo; there is no random vector.
 
-![Three ways to add the new memories](results/figures/forgetting_fixes.png)
+![Three ways to add the new memories](results/figures/colab/normalised/beyond_paper/forgetting_fixes.png)
 
 - **No memory drops below 0.001 in any arm**, even when new memories start at 1. §7's one loss was the random vector.
 - **Starting at the mean keeps 46% more of the old activation:** an old sum of 0.0604 at step 500, against 0.0414 when starting at 1.
@@ -307,7 +307,7 @@ Every run above stores all of its memories at step 0. [`notebooks/colab/normalis
   - boosting old memories' replay (the notebook's header lists it, but it isn't run);
   - other seeds.
 
-### 9. Run C: the paper's scale on real I-JEPA (seventh Colab run)
+### 9. Run C, test 1: the paper's scale on real I-JEPA (seventh Colab run)
 
 [`notebooks/colab/paper/paper_scale_real_jepa.ipynb`](notebooks/colab/paper/paper_scale_real_jepa.ipynb) uses the paper's N = 200 and T = 3,000 with real images.
 
@@ -317,7 +317,7 @@ Every run above stores all of its memories at step 0. [`notebooks/colab/normalis
 - **Printed output:** [`results/paper_scale_output.txt`](results/paper_scale_output.txt), copied word for word.
 - **Numbers:** [`results/paper_scale.json`](results/paper_scale.json).
 
-![Paper scale on real I-JEPA](results/figures/paper_scale.png)
+![Paper scale on real I-JEPA](results/figures/colab/paper/paper_scale.png)
 
 | | Printed |
 |---|---|
@@ -347,8 +347,58 @@ Every run above stores all of its memories at step 0. [`notebooks/colab/normalis
 - **Not run:**
   - the paper's own raw Gaussian setup with these settings;
   - a larger η;
-  - δ scaled with N;
   - other images or seeds.
+- **Lower δ** is test 2, §10.
+
+### 10. Run C, test 2: sweeping γ and δ (eighth Colab run)
+
+[`notebooks/colab/paper/paper_scale_tuned.ipynb`](notebooks/colab/paper/paper_scale_tuned.ipynb) runs test 1 25 times, over five values of each:
+- γ: 0.2, 0.05, 0.02, 0.01, 0.005;
+- δ: 0.1, 0.05, 0.01, 0.005, 0.001.
+
+The images and the other settings are the same as test 1. The seed is reset at the start of every run, so replay fires at the same steps in all 25.
+
+- **Printed output:** [`results/paper_tuned_output.txt`](results/paper_tuned_output.txt), copied word for word.
+- **Numbers:** [`results/paper_tuned.json`](results/paper_tuned.json).
+
+![The sweep: survivors and Spearman ρ for each γ and δ](results/figures/colab/paper/paper_tuned_sweep.png)
+
+![Paper's values against the tuned ones](results/figures/colab/paper/paper_tuned_comparison.png)
+
+Memories above 0.001 at step 3,000:
+
+| γ \ δ | 0.1 | 0.05 | 0.01 | 0.005 | 0.001 |
+|---|---|---|---|---|---|
+| 0.2 (paper) | 0 | 0 | 0 | 0 | 200 |
+| 0.05 | 0 | 0 | 0 | 0 | 200 |
+| 0.02 | 0 | 0 | 0 | 0 | 181 |
+| 0.01 | 0 | 0 | 0 | 0 | 162 |
+| 0.005 | 0 | 0 | 0 | 0 | 143 |
+
+- **The γ = 0.2, δ = 0.1 cell reproduces test 1:** 0 alive, ρ 0.9877, highest 0.000081.
+- **δ sets the level.** Test 1's equation for the total gives an average per memory of ηp / (mean α + δN) / N:
+
+  | δ | 0.1 | 0.05 | 0.01 | 0.005 | 0.001 |
+  |---|---|---|---|---|---|
+  | Predicted average per memory | 0.000057 | 0.00011 | 0.0004 | 0.0006 | 0.0010 |
+
+  The printed highest activations follow it, whatever γ is.
+- **At δ = 0.001 the average sits exactly on the 0.001 line.**
+  - In the notebook's chosen run (γ = 0.05), the 200 end between 0.001015 and 0.001182, mean 0.001109.
+  - With random replay timing, the average per memory moves by about 0.00012 (one standard deviation) around 0.001. So at any given step it's about as likely to be below the line as above it.
+  - 200 of 200 is the count at step 3,000 of this run, not a margin.
+- **γ doesn't need lowering; less of it loses memories.** At δ = 0.001:
+  - the paper's γ = 0.2 also keeps 200;
+  - γ = 0.02, 0.01 and 0.005 keep 181, 162 and 143;
+  - the highest activation climbs from 0.001121 to 0.001583.
+  - Diffusion pulls memories together. With less of it they spread apart, and the fast-decaying ones drop below the line.
+- **The notebook's "best" is γ = 0.05** because its rule is most survivors, then the higher ρ: 0.9869, against 0.9847 for γ = 0.2.
+- **Order by decay rate holds in every run:** ρ between 0.9847 and 0.9889.
+- **The notebook's closing text is written into the code.** It says γ and δ both need cutting by about 10 to 20 times. The sweep shows δ needed 100 times and γ none.
+- **Not run:**
+  - δ between 0.001 and 0.005, or below 0.001;
+  - other seeds or images;
+  - the paper's own Gaussian setup.
 
 ## Comparison with the paper
 
@@ -468,20 +518,29 @@ Every run stays inside its bound. "Runaway" is replay-dominated but bounded, whi
 │       │       ├── 5_5_forgetting_test.ipynb    # 5 memories + 5 added at step 250
 │       │       └── 5_5forgetting_test_fix.ipynb # the same, three ways to add them
 │       ├── paper/
-│       │   └── paper_scale_real_jepa.ipynb      # run C: N = 200, T = 3,000
+│       │   ├── paper_scale_real_jepa.ipynb      # run C, test 1: N = 200, T = 3,000
+│       │   └── paper_scale_tuned.ipynb          # run C, test 2: γ and δ sweep
 │       ├── _facebook_ijepa_vith14_1k.ipynb      # I-JEPA encoder check
 │       └── facebook_vjepa2_vitl_fpc64_256.ipynb # V-JEPA 2 trial, not used
 ├── results/                   # recorded output of every run used
-│   ├── figures/
-│   │   ├── dynamics_demo.png
-│   │   ├── three_regimes_sweep_a.png
-│   │   ├── three_regimes_sweep_b.png
-│   │   ├── softmax_results.png           # replay-tracking run
-│   │   ├── normalised.png                # raw vs normalised, 4 memories
-│   │   ├── normalised_10_memories.png    # raw vs normalised, 10 memories
-│   │   ├── forgetting_5_plus_5.png       # forgetting test
-│   │   ├── forgetting_fixes.png          # the same, three ways
-│   │   └── paper_scale.png               # run C
+│   ├── figures/                # laid out like notebooks/
+│   │   ├── metacognition/        # from notebooks/metacognition.ipynb
+│   │   │   ├── dynamics_demo.png
+│   │   │   ├── three_regimes_sweep_a.png
+│   │   │   └── three_regimes_sweep_b.png
+│   │   └── colab/
+│   │       ├── unnormalised/
+│   │       │   └── softmax_results.png          # replay tracking
+│   │       ├── normalised/
+│   │       │   ├── normalised.png               # raw vs normalised, 4 memories
+│   │       │   ├── normalised_10_memories.png   # raw vs normalised, 10 memories
+│   │       │   └── beyond_paper/
+│   │       │       ├── forgetting_5_plus_5.png  # forgetting test
+│   │       │       └── forgetting_fixes.png     # the same, three ways
+│   │       └── paper/
+│   │           ├── paper_scale.png              # run C, test 1
+│   │           ├── paper_tuned_sweep.png        # run C, test 2
+│   │           └── paper_tuned_comparison.png   # run C, test 2
 │   ├── metrics.json
 │   ├── notebook_output.txt    # printed output, verbatim
 │   ├── replay_tracking.json   # numbers from the replay-tracking run
@@ -495,7 +554,9 @@ Every run stays inside its bound. "Runaway" is replay-dominated but bounded, whi
 │   ├── forgetting_fixes.json               # numbers from the three-way test
 │   ├── forgetting_fixes_output.txt         # its printed output, verbatim
 │   ├── paper_scale.json                    # numbers from run C
-│   └── paper_scale_output.txt              # its printed output, verbatim
+│   ├── paper_scale_output.txt              # its printed output, verbatim
+│   ├── paper_tuned.json                    # numbers from run C's sweep
+│   └── paper_tuned_output.txt              # its printed output, verbatim
 ├── web/                       # website: Vite + React + TypeScript
 │   ├── src/                   # pages, components, styles
 │   └── public/memories/       # thumbnails of the photos
@@ -515,6 +576,7 @@ Every run was executed in Google Colab. The notebooks are kept with their code a
 | [`notebooks/colab/normalised/beyond_paper/5_5_forgetting_test.ipynb`](notebooks/colab/normalised/beyond_paper/5_5_forgetting_test.ipynb) | Beyond the paper: five memories at step 0, five more added at step 250, normalised replay | Results §7 |
 | [`notebooks/colab/normalised/beyond_paper/5_5forgetting_test_fix.ipynb`](notebooks/colab/normalised/beyond_paper/5_5forgetting_test_fix.ipynb) | Beyond the paper: the same test run three ways (new memories start at 1, at the mean, or warm up) | Results §8 |
 | [`notebooks/colab/paper/paper_scale_real_jepa.ipynb`](notebooks/colab/paper/paper_scale_real_jepa.ipynb) | Run C: the paper's N = 200 and T = 3,000 with normalised replay, on 200 CIFAR-100 images | Results §9 |
+| [`notebooks/colab/paper/paper_scale_tuned.ipynb`](notebooks/colab/paper/paper_scale_tuned.ipynb) | Run C, test 2: the same run over five values of γ and five of δ | Results §10 |
 | [`notebooks/colab/_facebook_ijepa_vith14_1k.ipynb`](notebooks/colab/_facebook_ijepa_vith14_1k.ipynb) | Encoder check: cosine similarity of a dog photo with a cat (0.3244) and with another dog (0.3804) | Not used |
 | [`notebooks/colab/facebook_vjepa2_vitl_fpc64_256.ipynb`](notebooks/colab/facebook_vjepa2_vitl_fpc64_256.ipynb) | V-JEPA 2 video trial: gets an embedding of shape [1, 8192, 1024], then the classification step stops with `OSError` because the model id `facebook/vjepa2-vitl-fpc64-256-ssv2` isn't on Hugging Face | Not used |
 
@@ -550,7 +612,7 @@ Other flags:
 
 ## Website
 
-[`web/`](web/) is the website for everything above. The overview page shows what stays the same in every run: the model, the memories, the architecture and the paper's setup. Its hero holds three cards, one per run (unnormalised replay, normalised replay, and the paper's scale), and each opens a page with that run's explanation and every recorded result. The normalised-replay page has three experiment cards: 4 memories, 10 memories, and tests beyond the paper, which opens two more cards, one per test. Every page links the Colab notebook its numbers come from.
+[`web/`](web/) is the website for everything above. The overview page shows what stays the same in every run: the model, the memories, the architecture and the paper's setup. Its hero holds three cards, one per run (unnormalised replay, normalised replay, and the paper's scale, which opens two test cards), and each opens a page with that run's explanation and every recorded result. The normalised-replay page has three experiment cards: 4 memories, 10 memories, and tests beyond the paper, which opens two more cards, one per test. Every page links the Colab notebook its numbers come from.
 
 - **No copied numbers.** It imports the JSON files and Colab figures straight from `results/`, so the pages always show the recorded runs.
 - **Built with** Vite, React and TypeScript. The charts are hand-written SVG and the maths uses KaTeX. There are no other runtime dependencies.
