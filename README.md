@@ -33,12 +33,16 @@ where $a \in \mathbb{R}^N$ holds one activation per stored memory and every memo
 
 Four Unsplash images, each encoded once and stored as a memory. All runs share these settings: $\gamma = 0.2$, $\delta = 0.1$, $\beta = 3.0$, $h = 0.01$, 500 steps, seed 42.
 
-| # | Label | Decay rate $\alpha$ |
-|---|---|---|
-| 0 | `golden_retriever` | 0.87 |
-| 1 | `cat` | 1.45 |
-| 2 | `pug` | 1.23 |
-| 3 | `cute_dog` | 1.10 |
+| # | Notebook label | What the image shows | Decay rate $\alpha$ |
+|---|---|---|---|
+| 0 | `golden_retriever` | a beagle | 0.87 |
+| 1 | `cat` | a cat | 1.45 |
+| 2 | `pug` | **a person** (portrait photo, not a dog) | 1.23 |
+| 3 | `cute_dog` | a French bulldog | 1.10 |
+
+> **Label correction.** The notebook's labels were carried over from its first attempt, which used Wikimedia photos of a labrador, a cat, a pug and a dog. Those downloads failed. The Unsplash images that replaced them were never checked against the labels, and image 2 is a photo of a person.
+>
+> The figures in [`results/`](results/) are the notebook's original output, so they still show the old labels. **Read `pug` in any figure as "person".** The code in this repo uses the corrected labels.
 
 ## Results
 
@@ -53,33 +57,33 @@ All numbers below come from the notebook run in [`notebooks/metacognition.ipynb`
 
 | Memory | Decay $\alpha$ | Final activation |
 |---|---|---|
-| golden_retriever | 0.87 | 0 |
+| beagle | 0.87 | 0 |
 | cat | 1.45 | 0 |
-| pug | 1.23 | **0.1379** |
-| cute_dog | 1.10 | 0 |
+| person (`pug`) | 1.23 | **0.1379** |
+| French bulldog | 1.10 | 0 |
 
 Final energy is **0.0150**.
 
-- **One memory survives.** Three of the four activations reach exactly 0. The survivor is not the memory with the slowest decay: that was golden_retriever ($\alpha = 0.87$). Replay picked the winner, not decay.
+- **One memory survives.** Three of the four activations reach exactly 0. The survivor is not the memory with the slowest decay: that was the beagle ($\alpha = 0.87$). Replay picked the winner, not decay.
 - **Activation norm.** ‖a‖ falls from 2.0 and settles into a noisy plateau around 0.15 from step ~280 onward.
 - **Energy.** $E$ starts at about 3.13 and falls roughly 200× to 0.015. From step ~280 it fluctuates around 0.015–0.02, where replay puts in about as much as decay removes.
 
 ### 2. Retrieval
 
-The query is the golden_retriever image, the same image as memory 0.
+The query is the beagle image, the same image as memory 0.
 
 | Rank | Memory | Score |
 |---|---|---|
-| 1 | pug | 0.0414 |
-| 2 | cute_dog | 0.0000 |
-| 3 | golden_retriever | 0.0000 |
+| 1 | person (`pug`) | 0.0414 |
+| 2 | French bulldog (`cute_dog`) | 0.0000 |
+| 3 | beagle (`golden_retriever`) | 0.0000 |
 
 **The exact-match memory ranks last.**
 
-- The query is identical to the golden_retriever memory (cosine similarity 1), but its activation decayed to 0.
+- The query is identical to the beagle memory (cosine similarity 1), but the beagle's activation decayed to 0.
 - The score is cosine × activation, so once activations collapse, only the surviving memory can score above zero.
 - Ranks 2 and 3 are tied at 0, so their order is arbitrary.
-- The top score implies a cosine similarity between the golden_retriever and pug embeddings of about $0.0414 / 0.1379 \approx 0.30$.
+- The top score implies a cosine similarity between the beagle and person embeddings of about $0.0414 / 0.1379 \approx 0.30$.
 
 ### 3. Three dynamical regimes
 
@@ -120,7 +124,7 @@ This sweep printed no numbers. Both sweeps show the same three regimes. In both,
   - It is unknown whether the Balanced regime keeps several memories alive or just one, because the notebook did not print per-memory activations for the sweeps.
   - `run_experiments.py` now records them in `metrics.json`.
 - **Retrieval reflects survival, not similarity.** Weighting by activation means a collapsed memory cannot be retrieved even by an exact-match query (see Results §2).
-- **Why replay picked pug is an open question.**
+- **Why replay picked the person photo is an open question.**
   - The replay score $s = X X^\top a$ uses raw, unnormalised embeddings, so memories with larger norms, or more central positions in embedding space, get larger scores. $\beta = 3$ then sharpens the softmax.
   - Two things to check: the per-image embedding norms, and a version of $F(a)$ that uses normalised $X$.
 - **$E$ only descends while replay is weak.** It plateaus in the single run and rises in the Runaway regime. That is expected, since replay is not part of $E$.

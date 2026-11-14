@@ -5,23 +5,23 @@
   "steps": 500,
   "base_params": {"gamma": 0.2, "delta": 0.1, "beta": 3.0, "h": 0.01, "initial_activation": 1.0},
   "memories": [
-    {"index": 0, "label": "golden_retriever", "decay_rate": 0.8745401188473625, "url": "https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=400"},
-    {"index": 1, "label": "cat", "decay_rate": 1.4507143064099162, "url": "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=400"},
-    {"index": 2, "label": "pug", "decay_rate": 1.231993941811405, "url": "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=400"},
-    {"index": 3, "label": "cute_dog", "decay_rate": 1.0986584841970366, "url": "https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?w=400"}
+    {"index": 0, "label": "beagle", "notebook_label": "golden_retriever", "decay_rate": 0.8745401188473625, "url": "https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=400"},
+    {"index": 1, "label": "cat", "notebook_label": "cat", "decay_rate": 1.4507143064099162, "url": "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=400"},
+    {"index": 2, "label": "person", "notebook_label": "pug", "decay_rate": 1.231993941811405, "url": "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=400"},
+    {"index": 3, "label": "french_bulldog", "notebook_label": "cute_dog", "decay_rate": 1.0986584841970366, "url": "https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?w=400"}
   ],
-  "memories_note": "The notebook printed decay rates to 2 decimals (0.87, 1.45, 1.23, 1.10). Full precision values are the first four U(0.5, 1.5) draws after np.random.seed(42), which is how the notebook generated them.",
+  "memories_note": "The notebook printed decay rates to 2 decimals (0.87, 1.45, 1.23, 1.10). Full precision values are the first four U(0.5, 1.5) draws after np.random.seed(42), which is how the notebook generated them. 'label' is what the image shows; 'notebook_label' is what the notebook called it.",
   "single_run": {
     "eta": 0.8,
     "replay_prob": 0.3,
-    "final_activations": {"golden_retriever": 0.0, "cat": 0.0, "pug": 0.13794458, "cute_dog": 0.0},
+    "final_activations": {"beagle": 0.0, "cat": 0.0, "person": 0.13794458, "french_bulldog": 0.0},
     "final_energy": 0.0150,
     "retrieval": {
-      "query": "golden_retriever (same image as memory 0)",
+      "query": "beagle (same image as memory 0)",
       "top": [
-        {"label": "pug", "score": 0.0414},
-        {"label": "cute_dog", "score": 0.0000},
-        {"label": "golden_retriever", "score": 0.0000}
+        {"label": "person", "score": 0.0414},
+        {"label": "french_bulldog", "score": 0.0000},
+        {"label": "beagle", "score": 0.0000}
       ]
     },
     "figure": "figures/dynamics_demo.png"

@@ -35,11 +35,13 @@ import torch  # noqa: E402
 from memory_dynamics import DynamicalMemory  # noqa: E402
 from memory_dynamics.plotting import plot_demo, plot_regimes  # noqa: E402
 
+# The notebook labelled these golden_retriever, cat, pug, cute_dog. The labels
+# below describe what the images actually show; see README.
 IMAGES = [
-    ("https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=400", "golden_retriever"),
+    ("https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=400", "beagle"),
     ("https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=400", "cat"),
-    ("https://images.unsplash.com/photo-1517841905240-472988babdf9?w=400", "pug"),
-    ("https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?w=400", "cute_dog"),
+    ("https://images.unsplash.com/photo-1517841905240-472988babdf9?w=400", "person"),
+    ("https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?w=400", "french_bulldog"),
 ]
 
 BASE_PARAMS = dict(gamma=0.2, delta=0.1, beta=3.0, h=0.01)
