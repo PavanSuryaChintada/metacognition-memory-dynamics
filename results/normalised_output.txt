@@ -1,0 +1,42 @@
+# Printed output of notebooks/normalised_replay.py (third Colab run), copied word for word.
+# Labels are the ones used in that run: labrador = the beagle photo, cute_dog = the French bulldog.
+
+Loading I-JEPA...
+Loading weights: 100%
+ 517/517 [00:00<00:00, 3710.84it/s]
+
+Encoding images...
+  labrador: decay=0.87, dim=1280
+  cat: decay=1.45, dim=1280
+  person: decay=1.23, dim=1280
+  cute_dog: decay=1.10, dim=1280
+
+Running ORIGINAL (unnormalized replay)...
+  Replay fired 154 times
+Running FIXED (normalized replay)...
+  Replay fired 154 times
+
+============================================================
+COMPARISON: ORIGINAL vs NORMALIZED REPLAY
+============================================================
+
+Final Activations:
+  Memory         Original       Normalized     Decay α
+  labrador       0.000000       0.049097       0.87
+  cat            0.000000       0.030218       1.45
+  person         0.146975       0.035070       1.23
+  cute_dog       0.000000       0.039555       1.10
+
+Late Replay Weights (last 10%):
+  Original (unnormalized):
+    labrador      : 0.0000
+    cat           : 0.0000
+    person        : 1.0000
+    cute_dog      : 0.0000
+  Normalized:
+    labrador      : 0.2511
+    cat           : 0.2466
+    person        : 0.2491
+    cute_dog      : 0.2532
+
+Surviving memories: Original=1/4, Normalized=4/4
