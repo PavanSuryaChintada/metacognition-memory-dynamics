@@ -1,9 +1,8 @@
-# Printed output of notebooks/normalised_replay.py (third Colab run), copied word for word.
-# Labels are the ones used in that run: labrador = the beagle photo, cute_dog = the French bulldog.
+# Printed output of notebooks/colab/normalised/normalised_metacognition.ipynb (raw vs normalised, 4 memories),
+# copied word for word from the executed notebook. Labels are the ones used in that run:
+# labrador = the beagle photo, cute_dog = the French bulldog.
 
 Loading I-JEPA...
-Loading weights: 100%
- 517/517 [00:00<00:00, 3710.84it/s]
 
 Encoding images...
   labrador: decay=0.87, dim=1280
@@ -21,11 +20,11 @@ COMPARISON: ORIGINAL vs NORMALIZED REPLAY
 ============================================================
 
 Final Activations:
-  Memory         Original       Normalized     Decay α
-  labrador       0.000000       0.049097       0.87
-  cat            0.000000       0.030218       1.45
-  person         0.146975       0.035070       1.23
-  cute_dog       0.000000       0.039555       1.10
+  Memory         Original       Normalized     Decay α   
+  labrador       0.000000       0.049097       0.87      
+  cat            0.000000       0.030218       1.45      
+  person         0.146975       0.035070       1.23      
+  cute_dog       0.000000       0.039555       1.10      
 
 Late Replay Weights (last 10%):
   Original (unnormalized):
@@ -40,3 +39,10 @@ Late Replay Weights (last 10%):
     cute_dog      : 0.2532
 
 Surviving memories: Original=1/4, Normalized=4/4
+
+============================================================
+VERDICT
+============================================================
+✅ Normalizing replay scores recovered the balanced regime.
+   Original: 1/4 survived → Normalized: 4/4 survived
+   The paper's framework works with real embeddings once scores are normalized.

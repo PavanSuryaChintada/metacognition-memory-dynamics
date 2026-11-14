@@ -1,8 +1,9 @@
-# Printed output of notebooks/replay_tracking.py (second Colab run), copied word for word.
-# Labels are the ones used in that run: labrador = the beagle photo, cute_dog = the French bulldog.
+# Printed output of the cell headed TRUE RUN 1 REPRODUCTION WITH F(a) TRACKING (the ninth cell) in
+# notebooks/colab/unnormalised/metacognition_4_memories.ipynb (replay tracking),
+# copied word for word from the executed notebook. Labels are the ones used in that run:
+# labrador = the beagle photo, cute_dog = the French bulldog.
 
-Loading weights: 100%
- 517/517 [00:00<00:00, 6667.25it/s]
+Loading I-JEPA processor and model...
 
 Encoding images with I-JEPA (full 1280-d, mean pooled)...
   Stored: labrador (decay=0.87, dim=1280)

@@ -1,29 +1,77 @@
 {
-  "source": "Third Colab run, notebooks/normalised_replay.py. Values copied from its printed output in results/normalised_output.txt; the figure is results/figures/normalised.png.",
+  "source": "notebooks/colab/normalised/normalised_metacognition.ipynb, executed in Colab. Values copied from its printed output in results/normalised_output.txt; the figure is results/figures/normalised.png.",
   "setup": {
-    "model": "facebook/ijepa_vith14_1k", "embedding_dim": 1280, "steps": 500, "seed": 42,
-    "eta": 0.8, "beta": 3.0, "replay_prob": 0.3, "gamma": 0.2, "delta": 0.1, "h": 0.01,
+    "model": "facebook/ijepa_vith14_1k",
+    "embedding_dim": 1280,
+    "steps": 500,
+    "seed": 42,
+    "eta": 0.8,
+    "beta": 3.0,
+    "replay_prob": 0.3,
+    "gamma": 0.2,
+    "delta": 0.1,
+    "h": 0.01,
     "replay_scores": {
       "unnormalised": "s = X X^T a, raw embeddings (as the paper writes F(a))",
       "normalised": "s = Xn Xn^T a, each embedding scaled to length 1 inside F(a) only"
     }
   },
-  "labels": ["beagle", "cat", "person", "french_bulldog"],
-  "labels_in_run": ["labrador", "cat", "person", "cute_dog"],
-  "decay_rates_printed": [0.87, 1.45, 1.23, 1.10],
-  "replay_events": {"unnormalised": 154, "normalised": 154},
+  "labels": [
+    "beagle",
+    "cat",
+    "person",
+    "french_bulldog"
+  ],
+  "labels_in_run": [
+    "labrador",
+    "cat",
+    "person",
+    "cute_dog"
+  ],
+  "decay_rates_printed": [
+    0.87,
+    1.45,
+    1.23,
+    1.1
+  ],
+  "replay_events": {
+    "unnormalised": 154,
+    "normalised": 154
+  },
   "final_activations": {
-    "unnormalised": {"beagle": 0.0, "cat": 0.0, "person": 0.146975, "french_bulldog": 0.0},
-    "normalised": {"beagle": 0.049097, "cat": 0.030218, "person": 0.035070, "french_bulldog": 0.039555}
+    "unnormalised": {
+      "beagle": 0.0,
+      "cat": 0.0,
+      "person": 0.146975,
+      "french_bulldog": 0.0
+    },
+    "normalised": {
+      "beagle": 0.049097,
+      "cat": 0.030218,
+      "person": 0.03507,
+      "french_bulldog": 0.039555
+    }
   },
   "replay_weight_mean_last_10pct": {
-    "unnormalised": {"beagle": 0.0, "cat": 0.0, "person": 1.0, "french_bulldog": 0.0},
-    "normalised": {"beagle": 0.2511, "cat": 0.2466, "person": 0.2491, "french_bulldog": 0.2532}
+    "unnormalised": {
+      "beagle": 0.0,
+      "cat": 0.0,
+      "person": 1.0,
+      "french_bulldog": 0.0
+    },
+    "normalised": {
+      "beagle": 0.2511,
+      "cat": 0.2466,
+      "person": 0.2491,
+      "french_bulldog": 0.2532
+    }
   },
-  "survivors_above_0_001": {"unnormalised": 1, "normalised": 4},
+  "survivors_above_0_001": {
+    "unnormalised": 1,
+    "normalised": 4
+  },
   "notes": [
     "Both arms use the same embeddings, decay rates and parameters, and the seed is reset before each arm, so their replay coin flips are identical (154 replay events each).",
-    "The seed is reset after the decay rates are drawn, so the coin flips start four draws earlier than in the notebook. That is why the unnormalised arm ends at 0.146975 here, against 0.137944 in the notebook and the replay-tracking run.",
-    "As pasted, the script's loop right after printing 'Late Replay Weights' unpacks two-item tuples into three names, which raises ValueError in Python; the printed output continues past it, so the code that ran differed at that point. The values here come from the lines after it."
+    "The seed is reset after the decay rates are drawn, so the coin flips start four draws earlier than in the notebook. That is why the unnormalised arm ends at 0.146975 here, against 0.137944 in the notebook and the replay-tracking run."
   ]
 }

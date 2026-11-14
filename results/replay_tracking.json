@@ -1,26 +1,112 @@
 {
-  "source": "Second Colab run of notebooks/replay_tracking.py. Values copied from its printed output in results/replay_tracking_output.txt; the figure is results/figures/softmax_results.png.",
-  "setup": {"model": "facebook/ijepa_vith14_1k", "embedding_dim": 1280, "pooling": "mean over patches", "seed": 42, "steps": 500, "eta": 0.8, "beta": 3.0, "replay_prob": 0.3, "gamma": 0.2, "delta": 0.1, "h": 0.01},
-  "labels": ["beagle", "cat", "person", "french_bulldog"],
-  "labels_in_run": ["labrador", "cat", "person", "cute_dog"],
-  "decay_rates_printed": [0.87, 1.45, 1.23, 1.10],
+  "source": "The cell headed TRUE RUN 1 REPRODUCTION WITH F(a) TRACKING (the ninth cell) in notebooks/colab/unnormalised/metacognition_4_memories.ipynb, executed in Colab. Values copied from its printed output in results/replay_tracking_output.txt; the figure is results/figures/softmax_results.png.",
+  "setup": {
+    "model": "facebook/ijepa_vith14_1k",
+    "embedding_dim": 1280,
+    "pooling": "mean over patches",
+    "seed": 42,
+    "steps": 500,
+    "eta": 0.8,
+    "beta": 3.0,
+    "replay_prob": 0.3,
+    "gamma": 0.2,
+    "delta": 0.1,
+    "h": 0.01
+  },
+  "labels": [
+    "beagle",
+    "cat",
+    "person",
+    "french_bulldog"
+  ],
+  "labels_in_run": [
+    "labrador",
+    "cat",
+    "person",
+    "cute_dog"
+  ],
+  "decay_rates_printed": [
+    0.87,
+    1.45,
+    1.23,
+    1.1
+  ],
   "replay_events": 154,
   "cosine_similarity": [
-    [1.0, 0.3188, 0.3005, 0.3701],
-    [0.3188, 1.0, 0.4488, 0.4276],
-    [0.3005, 0.4488, 1.0, 0.4673],
-    [0.3701, 0.4276, 0.4673, 1.0]
+    [
+      1.0,
+      0.3188,
+      0.3005,
+      0.3701
+    ],
+    [
+      0.3188,
+      1.0,
+      0.4488,
+      0.4276
+    ],
+    [
+      0.3005,
+      0.4488,
+      1.0,
+      0.4673
+    ],
+    [
+      0.3701,
+      0.4276,
+      0.4673,
+      1.0
+    ]
   ],
-  "final_activations": {"beagle": 0.0, "cat": 0.0, "person": 0.137944, "french_bulldog": 0.0},
+  "final_activations": {
+    "beagle": 0.0,
+    "cat": 0.0,
+    "person": 0.137944,
+    "french_bulldog": 0.0
+  },
   "replay_weight_mean": {
-    "first_10pct_of_events": {"beagle": 0.0, "cat": 0.0, "person": 1.0, "french_bulldog": 0.0},
-    "last_10pct_of_events": {"beagle": 0.0, "cat": 0.0, "person": 1.0, "french_bulldog": 0.0}
+    "first_10pct_of_events": {
+      "beagle": 0.0,
+      "cat": 0.0,
+      "person": 1.0,
+      "french_bulldog": 0.0
+    },
+    "last_10pct_of_events": {
+      "beagle": 0.0,
+      "cat": 0.0,
+      "person": 1.0,
+      "french_bulldog": 0.0
+    }
   },
   "mean_forces": {
-    "beagle": {"decay": -0.13657, "diffusion": 0.00137, "inhibition": -0.06559, "replay": 0.0, "net": -0.20079},
-    "cat": {"decay": -0.15419, "diffusion": 0.01930, "inhibition": -0.06559, "replay": 0.0, "net": -0.20047},
-    "person": {"decay": -0.32114, "diffusion": -0.03209, "inhibition": -0.06559, "replay": 0.24640, "net": -0.17241},
-    "french_bulldog": {"decay": -0.14586, "diffusion": 0.01142, "inhibition": -0.06559, "replay": 0.0, "net": -0.20003}
+    "beagle": {
+      "decay": -0.13657,
+      "diffusion": 0.00137,
+      "inhibition": -0.06559,
+      "replay": 0.0,
+      "net": -0.20079
+    },
+    "cat": {
+      "decay": -0.15419,
+      "diffusion": 0.0193,
+      "inhibition": -0.06559,
+      "replay": 0.0,
+      "net": -0.20047
+    },
+    "person": {
+      "decay": -0.32114,
+      "diffusion": -0.03209,
+      "inhibition": -0.06559,
+      "replay": 0.2464,
+      "net": -0.17241
+    },
+    "french_bulldog": {
+      "decay": -0.14586,
+      "diffusion": 0.01142,
+      "inhibition": -0.06559,
+      "replay": 0.0,
+      "net": -0.20003
+    }
   },
   "notes": [
     "Printed to 4 decimals, the person's replay weight is 1.0000 and every other memory's is 0.0000, averaged over the first and over the last 10% of the 154 replay events. The figure shows the same split at every replay event.",
