@@ -8,7 +8,6 @@ import { MemoryStack } from "./components/MemoryStack";
 import { Flow } from "./components/Flow";
 import { Pipeline } from "./components/Pipeline";
 import { DriveChart } from "./components/DriveChart";
-import { Loop } from "./components/Loop";
 import { Tex } from "./components/Tex";
 import { useEnterProgress, useRevealAll } from "./hooks";
 
@@ -144,9 +143,8 @@ function MemoriesSection() {
         headline="Four photos, four memories."
         lead={
           <>
-            Each card shows the photo, its label in the notebook, and its decay rate. The third photo is a person, and it is the
-            memory that survives. Its label read <code>pug</code> when the notebook ran, so the Colab figures still say{" "}
-            <code>pug</code>; it has been renamed <code>person</code> to match the photo.
+            A beagle, a cat, a person and a French bulldog from Unsplash. Each card shows the photo, the decay rate it was given,
+            and its activation when the run ended. Only the person survives.
           </>
         }
       />
@@ -253,8 +251,9 @@ function SingleRunSection() {
             meta="‖a(t)‖ · energy, log scale · final activations"
             note={
               <>
-                The notebook's own figure, unchanged, made before the label was renamed: the bar marked <code>pug</code> is the person
-                photo. ‖a‖ falls from {startNorm.toFixed(1)} to a noisy plateau near 0.15 from about step 280.
+                The notebook's own figure, unchanged. Its axis uses the labels from the run: <code>golden_retriever</code> is the
+                beagle, <code>pug</code> the person and <code>cute_dog</code> the French bulldog. ‖a‖ falls from {startNorm.toFixed(1)}{" "}
+                to a noisy plateau near 0.15 from about step 280.
               </>
             }
             numbers={
@@ -646,8 +645,8 @@ function FindingsSection() {
               </li>
               <li>Anything statistical. One seed and four memories, where the paper uses 10 seeds and 200 memories.</li>
               <li>
-                Why replay chose the person photo. The loop below would explain a single winner, but the run didn't record the
-                replay scores or the embedding lengths that would test it.
+                Why replay chose the person photo. The run didn't record the replay scores, the embedding lengths or the similarity
+                between memories, so the reason can't be read off these results.
               </li>
             </ul>
           </div>
@@ -721,34 +720,6 @@ function DarkClose() {
   return (
     <footer className="closing" data-dark>
       <div className="wrap">
-        <section className="why" id="why">
-          <div className="why-text" data-reveal>
-            <p className="label">Hypothesis</p>
-            <h3 className="why-title">Why one memory wins.</h3>
-            <p>
-              Replay scores every memory against the current state,{" "}
-              <span className="nowrap">
-                <Tex>{"s = X^\\top X a"}</Tex>.
-              </span>{" "}
-              With raw embeddings, a memory's
-              score grows with its own activation times its squared length, plus its overlap with the others.
-            </p>
-            <p>
-              The softmax is exponential in those scores, so a small lead becomes a large share of each replay pulse. That pulse raises
-              the leader's activation, which raises its score at the next replay. Decay sets the baseline; the loop picks the winner.
-            </p>
-            <p className="why-note">
-              This fits the run, but the run didn't test it: it didn't log the replay scores or the embedding lengths. Logging{" "}
-              <Tex>{"F(a)"}</Tex> each step, and normalising <Tex>{"X"}</Tex>, would.
-            </p>
-            <a className="btn btn-light" href={file("memory_dynamics/memory.py")}>
-              Read the replay code <span aria-hidden="true">→</span>
-            </a>
-          </div>
-          <div className="why-art" data-reveal style={d(1)}>
-            <Loop />
-          </div>
-        </section>
 
         <Statement />
         <p className="sub">

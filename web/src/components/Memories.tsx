@@ -33,15 +33,6 @@ export function Outcome() {
             <li key={m.label} className={state}>
               <img src={m.thumb} alt={m.name} width={480} height={360} />
               <div className="outcome-name">{m.name}</div>
-              <div className="outcome-meta">
-                {m.notebook_label !== m.label ? (
-                  <>
-                    Notebook label <code>{m.notebook_label}</code>
-                  </>
-                ) : (
-                  "Notebook label matches"
-                )}
-              </div>
               <div
                 className="bar"
                 role="meter"
@@ -61,23 +52,5 @@ export function Outcome() {
         })}
       </ol>
     </Card>
-  );
-}
-
-export function MemoryCards() {
-  return (
-    <div className="memories">
-      {memories.map((m) => (
-        <div className="memory" key={m.label}>
-          <img src={m.thumb} alt={m.name} loading="lazy" width={480} height={360} />
-          <div className="memory-name">{m.name}</div>
-          <div className="memory-meta">
-            Notebook label <code>{m.notebook_label}</code>
-            <br />
-            Decay rate α = {m.decay_rate.toFixed(2)}
-          </div>
-        </div>
-      ))}
-    </div>
   );
 }

@@ -5,7 +5,7 @@ export type Recorded = {
   seed: number;
   steps: number;
   base_params: { gamma: number; delta: number; beta: number; h: number; initial_activation: number };
-  memories: { index: number; label: string; notebook_label: string; decay_rate: number; url: string }[];
+  memories: { index: number; label: string; label_in_run: string; decay_rate: number; url: string }[];
   single_run: {
     eta: number;
     replay_prob: number;

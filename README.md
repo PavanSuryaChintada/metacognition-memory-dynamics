@@ -35,18 +35,14 @@ where $a \in \mathbb{R}^N$ holds one activation per stored memory and every memo
 
 Four Unsplash images, each encoded once and stored as a memory. All runs share these settings: $\gamma = 0.2$, $\delta = 0.1$, $\beta = 3.0$, $h = 0.01$, 500 steps, seed 42.
 
-| # | Notebook label | What the image shows | Decay rate $\alpha$ |
-|---|---|---|---|
-| 0 | `golden_retriever` | a beagle | 0.87 |
-| 1 | `cat` | a cat | 1.45 |
-| 2 | `person` | a person | 1.23 |
-| 3 | `cute_dog` | a French bulldog | 1.10 |
+| # | Memory | Decay rate $\alpha$ |
+|---|---|---|
+| 0 | beagle | 0.87 |
+| 1 | cat | 1.45 |
+| 2 | person | 1.23 |
+| 3 | French bulldog | 1.10 |
 
-> **Entry 2 was renamed from `pug` to `person`.**
->
-> - **Why:** the notebook's first cell used a Wikimedia photo of a pug in that slot. When cell 2 switched to Unsplash URLs, the label stayed `pug`, but the new photo at that position (`photo-1517841905240-472988babdf9`) is a person.
-> - **No numbers change:** labels are only used for printing.
-> - **The record still says `pug`:** the printed output and the Colab figures in [`results/`](results/) come from the run, made before the rename. **Read `pug` there as "person".**
+> **Labels in the recorded output.** The labels were renamed after the run to match the photos. The printed output and the Colab figures in [`results/`](results/) show the labels used when the notebook ran: `golden_retriever` (beagle), `cat`, `pug` (person) and `cute_dog` (French bulldog). Labels are only used for printing, so no number depends on them.
 
 ## Results
 
@@ -79,8 +75,8 @@ The query is the beagle image, the same image as memory 0.
 | Rank | Memory | Score |
 |---|---|---|
 | 1 | person | 0.0414 |
-| 2 | French bulldog (`cute_dog`) | 0.0000 |
-| 3 | beagle (`golden_retriever`) | 0.0000 |
+| 2 | French bulldog | 0.0000 |
+| 3 | beagle | 0.0000 |
 
 **The exact-match memory ranks last.**
 

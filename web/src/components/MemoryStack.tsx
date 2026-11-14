@@ -16,14 +16,12 @@ function MemoryCard({ m, i, style }: { m: (typeof memories)[number]; i: number; 
       <h4>{m.name}</h4>
       <dl>
         <div>
-          <dt>Notebook label</dt>
-          <dd>
-            <code>{m.notebook_label}</code>
-          </dd>
-        </div>
-        <div>
           <dt>Decay rate α</dt>
           <dd>{m.decay_rate.toFixed(2)}</dd>
+        </div>
+        <div>
+          <dt>Activation at step 500</dt>
+          <dd>{survived ? m.final.toFixed(4) : "0"}</dd>
         </div>
       </dl>
     </article>

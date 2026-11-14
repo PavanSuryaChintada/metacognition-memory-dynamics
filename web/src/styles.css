@@ -1271,70 +1271,7 @@ pre .comment {
   opacity: 1;
 }
 
-/* Dark close: the hypothesis, the statement, the footer */
-.why {
-  display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
-  column-gap: var(--gutter);
-  align-items: center;
-  padding-bottom: clamp(5rem, 12vh, 8rem);
-}
-.why-text {
-  grid-column: 1 / 4;
-}
-.why-text .label {
-  color: rgba(255, 255, 255, 0.64);
-  margin-bottom: 18px;
-}
-.why-title {
-  font-size: clamp(2rem, 3.6vw, 3.15rem);
-  font-weight: 520;
-  letter-spacing: -0.035em;
-  line-height: 1.02;
-  margin: 0 0 26px;
-}
-.why-text p {
-  color: rgba(255, 255, 255, 0.76);
-  max-width: 32em;
-}
-.why-text .why-note {
-  color: rgba(255, 255, 255, 0.5);
-  font-size: 14.5px;
-}
-.why-text .btn {
-  margin-top: 14px;
-}
-.why-art {
-  grid-column: 4 / 7;
-  display: flex;
-  justify-content: center;
-}
-.loop {
-  width: 100%;
-  max-width: 400px;
-  height: auto;
-  overflow: visible;
-}
-.loop-ring {
-  fill: none;
-  stroke: rgba(255, 255, 255, 0.24);
-  stroke-width: 1.2;
-}
-.loop-node {
-  fill: #fff;
-}
-.loop-title {
-  font-size: 14px;
-  font-weight: 560;
-  fill: #fff;
-}
-.loop-sub {
-  font-size: 12px;
-  fill: rgba(255, 255, 255, 0.6);
-}
-.loop-pulse {
-  fill: var(--ember);
-}
+/* Dark close: the statement and the footer */
 .author {
   font-size: 20px;
   font-weight: 560;
@@ -1376,14 +1313,6 @@ pre .comment {
     display: block !important;
     max-width: 380px;
     margin: 0 auto;
-  }
-  .why {
-    grid-template-columns: minmax(0, 1fr);
-    row-gap: 40px;
-  }
-  .why-text,
-  .why-art {
-    grid-column: 1 / -1;
   }
   .term-row {
     grid-template-columns: repeat(2, minmax(0, 1fr));

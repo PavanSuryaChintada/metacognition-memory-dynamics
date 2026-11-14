@@ -35,9 +35,8 @@ import torch  # noqa: E402
 from memory_dynamics import DynamicalMemory  # noqa: E402
 from memory_dynamics.plotting import plot_demo, plot_regimes  # noqa: E402
 
-# The notebook labels these golden_retriever, cat, person, cute_dog (the third read
-# "pug" when it ran, but the photo is a person). The labels below describe what
-# each image shows; see README.
+# What each photo shows. The notebook's recorded output uses the labels from when it
+# ran (golden_retriever, cat, pug, cute_dog); see README.
 IMAGES = [
     ("https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=400", "beagle"),
     ("https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=400", "cat"),
