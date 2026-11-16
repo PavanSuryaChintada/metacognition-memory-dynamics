@@ -46,7 +46,7 @@ Four Unsplash images, each encoded once and stored as a memory. All runs share t
 
 ## Results
 
-Sections 1 to 3 come from the notebook run in [`notebooks/metacognition.ipynb`](notebooks/metacognition.ipynb). Sections 4 to 10 come from the later Colab runs in [`notebooks/colab/`](notebooks/colab/). For sections 1 to 3:
+Sections 1 to 3 come from the notebook run in [`notebooks/metacognition.ipynb`](notebooks/metacognition.ipynb). Sections 4 to 13 come from the later Colab runs in [`notebooks/colab/`](notebooks/colab/). For sections 1 to 3:
 
 - The printed output is in [`results/notebook_output.txt`](results/notebook_output.txt), copied verbatim.
 - Every value is collected in [`results/metrics.json`](results/metrics.json).
@@ -400,6 +400,103 @@ Memories above 0.001 at step 3,000:
   - other seeds or images;
   - the paper's own Gaussian setup.
 
+### 11. Beyond the paper: Bayesian confidence, test 1 (ninth Colab run)
+
+[`notebooks/colab/baysian approach/baysian_4_mem.ipynb`](notebooks/colab/baysian%20approach/baysian_4_mem.ipynb) gives every memory a second number next to its activation: a confidence $c_i \in [0, 1]$, starting at 0.5. It runs the four photos with normalised replay for 500 steps ($\gamma = 0.2$, $\delta = 0.1$, seed 42) twice: once as standard, once with confidence. Both draw one random number a step, so replay fires on the same steps in both.
+
+- **Replay uses confidence:** $F(a, c) = \mathrm{softmax}\big(\beta\, \hat X^\top \hat X\, (a \odot (1 - w + w\,c))\big)$ with $w = 0.5$. The notebook's comments write $a \odot c$; the code blends, so $c = 0$ still leaves half the activation.
+- **Update at each replay event:** Bayes' rule with the replay weight $r_i$ as the likelihood, $\tilde c_i = \dfrac{r_i c_i}{r_i c_i + (1 - r_i)(1 - c_i)}$, then $c_i \leftarrow c_i + \kappa(\tilde c_i - c_i)$ with $\kappa = 0.05$.
+- **Every step:** $c_i \leftarrow c_i - \lambda h\, c_i$ with $\lambda = 0.01$, clipped to $[0.01, 0.99]$.
+- **Decay rates** are `torch.linspace(0.5, 1.5, 4)`: 0.50, 0.83, 1.17, 1.50. §5 drew them at random, so the standard copy's numbers are not §5's.
+- **Printed output:** [`results/bayesian_4_memories_output.txt`](results/bayesian_4_memories_output.txt), copied word for word.
+- **Numbers:** [`results/bayesian_4_memories.json`](results/bayesian_4_memories.json).
+
+![Standard against Bayesian, 4 memories](results/figures/colab/baysian/baysian%204%20mem.png)
+
+| Memory | α | Standard | Bayesian | Difference | Confidence |
+|---|---|---|---|---|---|
+| beagle | 0.50 | 0.0956 | 0.0906 | −0.0049 | 0.0100 |
+| cat | 0.83 | 0.0481 | 0.0486 | +0.0006 | 0.0100 |
+| person | 1.17 | 0.0332 | 0.0343 | +0.0011 | 0.0100 |
+| French bulldog | 1.50 | 0.0271 | 0.0277 | +0.0006 | 0.0100 |
+
+- **Every confidence ends at the 0.01 floor.** All four memories stay above 0.001 in both copies, in the same order.
+- **The update causes it, not the decay.**
+  - $\lambda h = 0.0001$ a step keeps 95% over 500 steps.
+  - In odds, Bayes' rule multiplies by $r/(1 - r)$, which is above 1 only for a memory that gets more than half of a replay. The weights add to 1, and with four memories each averages 1/4, so every replay lowers every memory's confidence.
+  - In the figure the four curves fall together and reach the floor at about step 370.
+- **Equal confidence only softens replay.**
+  - With the same $c$ for every memory, the weight is one number $k$, and $\mathrm{softmax}(\beta \hat X^\top \hat X (k a)) = \mathrm{softmax}((k\beta) \hat X^\top \hat X a)$.
+  - $k$ goes from 0.75 to 0.505, so the Bayesian copy runs with $\beta$ falling from 2.25 to about 1.5.
+  - Flatter replay: the beagle, with the highest replay score, loses 0.0049 and the other three gain.
+  - A standard run with $\beta = 1.5$ wasn't done.
+
+### 12. Beyond the paper: Bayesian confidence, test 2 (tenth Colab run)
+
+[`notebooks/colab/baysian approach/baysian_200_mem.ipynb`](notebooks/colab/baysian%20approach/baysian_200_mem.ipynb) runs the same rule on run C's 200 CIFAR-100 images for 3,000 steps, with $\gamma = 0.05$ and $\delta = 0.001$ (the §10 setting where all 200 stay). The notebook's notes read test 1's collapse as decay outrunning replay, so it changes two settings: $\kappa$ from 0.05 to 0.2, and $\lambda$ from 0.01 to 0.0001.
+
+- **Printed output:** [`results/bayesian_200_output.txt`](results/bayesian_200_output.txt), copied word for word.
+- **Numbers:** [`results/bayesian_200.json`](results/bayesian_200.json).
+
+![Standard against Bayesian, 200 memories](results/figures/colab/baysian/baysian%20200%20mem.png)
+
+| | Standard | Bayesian |
+|---|---|---|
+| Memories above 0.001 | 200 | 200 |
+| Spearman ρ, decay against activation | 0.9869 | 0.9952 |
+| Highest activation | 0.001182 | 0.001180 |
+| Mean activation | 0.001109 | 0.001109 |
+| Confidence: lowest, highest, mean | — | 0.0100, 0.0100, 0.0100 |
+
+- **The standard copy is §10's γ = 0.05, δ = 0.001 cell** and prints the same numbers.
+- **Confidence reaches the floor faster, within about 70 steps** (read off the figure).
+  - With $r \approx 1/200$, the posterior from 0.5 is 0.005: one full Bayes step goes almost to 0.
+  - $\kappa = 0.2$ keeps about 80% of a confidence per replay event, so at $r = 1/200$ it takes 18 events, about 60 steps, to reach 0.01.
+  - The bigger step speeds the collapse. The slower decay keeps 99.7% over the run and changes nothing.
+- **The confidence–decay correlation prints `nan`:** every confidence is the same.
+- **Activations move by at most 0.000015, 1.3%.**
+  - Gained most: lion (α 0.575), clock (0.897), chair (1.289), lion (0.832), chimpanzee (0.967).
+  - Lost most: maple tree (1.013), mushroom (0.515), whale (1.374), pickup truck (1.249), mouse (0.982).
+  - With every confidence at 0.01, this is §10's replay with $\beta \approx 1.5$. Softer replay takes from memories replayed more than average and gives to those replayed less.
+
+### 13. Beyond the paper: Bayesian confidence, test 3, relative evidence (eleventh Colab run)
+
+[`notebooks/colab/baysian approach/baysian 200 fixed.ipynb`](notebooks/colab/baysian%20approach/baysian%20200%20fixed.ipynb) keeps test 2's run and images and replaces the update.
+
+- **Evidence:** $z_i = (r_i - \bar r)/\mathrm{sd}(r)$, then $e_i \leftarrow e_i + \kappa z_i$ with $\kappa = 0.01$, and $c_i = \sigma(e_i)$. $e$ starts at 0 and decays by $\lambda h\, e$ a step ($\lambda = 0.0001$, 99.7% kept over the run). Replay weight $w = 0.3$.
+- **Both rules in log-odds.** Bayes' rule adds each observation's log-likelihood ratio. Tests 1 and 2 add $\log(r/(1 - r))$, below 0 for any memory with less than half of a replay. Test 3 adds $\kappa z$, and the $z$ values of all memories add up to 0: what some gain, others lose.
+- **Printed output:** [`results/bayesian_200_fixed_output.txt`](results/bayesian_200_fixed_output.txt), copied word for word.
+- **Numbers:** [`results/bayesian_200_fixed.json`](results/bayesian_200_fixed.json). The effective-strength ρ is printed only in the figure.
+
+![Standard against relative evidence, 200 memories](results/figures/colab/baysian/baysian%20200%20fixed.png)
+
+| | Standard | Relative evidence |
+|---|---|---|
+| Memories above 0.001 | 200 | 200 |
+| Activation ρ, decay rank | 0.9869 | 0.9889 |
+| Confidence ρ, decay rank | — | −0.0267 |
+| Confidence: lowest, highest, mean | — | 0.0000, 1.0000, 0.5680 |
+| Highest activation | 0.001182 | 0.001182 |
+| Mean activation | 0.001109 | 0.001109 |
+
+Most confident, all 1.0000: maple tree (α 1.013), whale (1.374), pickup truck (1.249), mushroom (0.515), mouse (0.982). Least confident, all 0.0000: clock (0.897), lion (0.575), chair (1.289), lion (0.832), clock (1.415).
+
+- **Confidence spreads from 0 to 1, unrelated to decay rate** (ρ = −0.027), while activation follows decay (ρ = 0.9889).
+- **0 and 1 are saturation.**
+  - About 900 replay events (3,000 × 0.3). A memory steadily one standard deviation above average collects $e \approx 9$, and $\sigma(9) = 0.9999$.
+  - $z$ is standardised, so a small but steady gap in replay is enough.
+  - So 1.0000 means "replayed more than average, again and again", not a calibrated probability.
+- **It ranks the same memories as test 2.** The five most confident are exactly test 2's five that lost most, and four of the five least confident are among its five that gained most. Both measure whether a memory gets more replay than average.
+- **Probably similarity structure.** The normalised replay score is $\sum_j \cos(x_i, x_j)\, a_j$. Late in the run the activations are close together, so the score mostly reflects how similar a memory is to all the others. The notebook doesn't print each memory's summed similarity, so this isn't measured.
+- **Effective strength $a \times c$** is computed after the run: ρ = 0.162 against decay (figure title).
+  - Mushroom (α 0.515): activation 0.001181, confidence 1.0000.
+  - Lion (α 0.575): activation 0.001163, confidence 0.0000.
+  - Inside the run, confidence moves any activation by under about $3 \times 10^{-6}$ (figure).
+- **Not run:**
+  - other $\kappa$ or $w$;
+  - other seeds;
+  - any measure of accuracy: confidence here only counts replay.
+
 ## Comparison with the paper
 
 The paper's experiments (section 5.1) and this run share every parameter except the embeddings.
@@ -520,6 +617,10 @@ Every run stays inside its bound. "Runaway" is replay-dominated but bounded, whi
 │       ├── paper/
 │       │   ├── paper_scale_real_jepa.ipynb      # run C, test 1: N = 200, T = 3,000
 │       │   └── paper_scale_tuned.ipynb          # run C, test 2: γ and δ sweep
+│       ├── baysian approach/
+│       │   ├── baysian_4_mem.ipynb              # confidence, test 1: Bayes' rule, 4 photos
+│       │   ├── baysian_200_mem.ipynb            # confidence, test 2: Bayes' rule, 200 images
+│       │   └── baysian 200 fixed.ipynb          # confidence, test 3: relative evidence
 │       ├── _facebook_ijepa_vith14_1k.ipynb      # I-JEPA encoder check
 │       └── facebook_vjepa2_vitl_fpc64_256.ipynb # V-JEPA 2 trial, not used
 ├── results/                   # recorded output of every run used
@@ -537,10 +638,14 @@ Every run stays inside its bound. "Runaway" is replay-dominated but bounded, whi
 │   │       │   └── beyond_paper/
 │   │       │       ├── forgetting_5_plus_5.png  # forgetting test
 │   │       │       └── forgetting_fixes.png     # the same, three ways
-│   │       └── paper/
-│   │           ├── paper_scale.png              # run C, test 1
-│   │           ├── paper_tuned_sweep.png        # run C, test 2
-│   │           └── paper_tuned_comparison.png   # run C, test 2
+│   │       ├── paper/
+│   │       │   ├── paper_scale.png              # run C, test 1
+│   │       │   ├── paper_tuned_sweep.png        # run C, test 2
+│   │       │   └── paper_tuned_comparison.png   # run C, test 2
+│   │       └── baysian/
+│   │           ├── baysian 4 mem.png            # confidence, test 1
+│   │           ├── baysian 200 mem.png          # confidence, test 2
+│   │           └── baysian 200 fixed.png        # confidence, test 3
 │   ├── metrics.json
 │   ├── notebook_output.txt    # printed output, verbatim
 │   ├── replay_tracking.json   # numbers from the replay-tracking run
@@ -556,7 +661,13 @@ Every run stays inside its bound. "Runaway" is replay-dominated but bounded, whi
 │   ├── paper_scale.json                    # numbers from run C
 │   ├── paper_scale_output.txt              # its printed output, verbatim
 │   ├── paper_tuned.json                    # numbers from run C's sweep
-│   └── paper_tuned_output.txt              # its printed output, verbatim
+│   ├── paper_tuned_output.txt              # its printed output, verbatim
+│   ├── bayesian_4_memories.json            # numbers from confidence, test 1
+│   ├── bayesian_4_memories_output.txt      # its printed output, verbatim
+│   ├── bayesian_200.json                   # numbers from confidence, test 2
+│   ├── bayesian_200_output.txt             # its printed output, verbatim
+│   ├── bayesian_200_fixed.json             # numbers from confidence, test 3
+│   └── bayesian_200_fixed_output.txt       # its printed output, verbatim
 ├── web/                       # website: Vite + React + TypeScript
 │   ├── src/                   # pages, components, styles
 │   └── public/memories/       # thumbnails of the photos
@@ -577,6 +688,9 @@ Every run was executed in Google Colab. The notebooks are kept with their code a
 | [`notebooks/colab/normalised/beyond_paper/5_5forgetting_test_fix.ipynb`](notebooks/colab/normalised/beyond_paper/5_5forgetting_test_fix.ipynb) | Beyond the paper: the same test run three ways (new memories start at 1, at the mean, or warm up) | Results §8 |
 | [`notebooks/colab/paper/paper_scale_real_jepa.ipynb`](notebooks/colab/paper/paper_scale_real_jepa.ipynb) | Run C: the paper's N = 200 and T = 3,000 with normalised replay, on 200 CIFAR-100 images | Results §9 |
 | [`notebooks/colab/paper/paper_scale_tuned.ipynb`](notebooks/colab/paper/paper_scale_tuned.ipynb) | Run C, test 2: the same run over five values of γ and five of δ | Results §10 |
+| [`notebooks/colab/baysian approach/baysian_4_mem.ipynb`](notebooks/colab/baysian%20approach/baysian_4_mem.ipynb) | Bayesian confidence, test 1: the four photos, standard against a confidence per memory updated by Bayes' rule | Results §11 |
+| [`notebooks/colab/baysian approach/baysian_200_mem.ipynb`](notebooks/colab/baysian%20approach/baysian_200_mem.ipynb) | Bayesian confidence, test 2: the same rule on run C's 200 images, γ = 0.05, δ = 0.001 | Results §12 |
+| [`notebooks/colab/baysian approach/baysian 200 fixed.ipynb`](notebooks/colab/baysian%20approach/baysian%20200%20fixed.ipynb) | Bayesian confidence, test 3: confidence from evidence relative to the average replay | Results §13 |
 | [`notebooks/colab/_facebook_ijepa_vith14_1k.ipynb`](notebooks/colab/_facebook_ijepa_vith14_1k.ipynb) | Encoder check: cosine similarity of a dog photo with a cat (0.3244) and with another dog (0.3804) | Not used |
 | [`notebooks/colab/facebook_vjepa2_vitl_fpc64_256.ipynb`](notebooks/colab/facebook_vjepa2_vitl_fpc64_256.ipynb) | V-JEPA 2 video trial: gets an embedding of shape [1, 8192, 1024], then the classification step stops with `OSError` because the model id `facebook/vjepa2-vitl-fpc64-256-ssv2` isn't on Hugging Face | Not used |
 
@@ -612,7 +726,7 @@ Other flags:
 
 ## Website
 
-[`web/`](web/) is the website for everything above. The overview page shows what stays the same in every run: the model, the memories, the architecture and the paper's setup. Its hero holds four cards: unnormalised replay, normalised replay, the paper's scale (which opens two test cards), and tests beyond the paper (which also opens two), and each opens a page with that run's explanation and every recorded result. The normalised-replay page has two experiment cards: 4 memories and 10 memories. Every page links the Colab notebook its numbers come from.
+[`web/`](web/) is the website for everything above. The overview page shows what stays the same in every run: the model, the memories, the architecture and the paper's setup. Its hero holds five cards: unnormalised replay, normalised replay, the paper's scale (which opens two test cards), new memories added mid-run (which also opens two), and Bayesian confidence (which opens three), and each opens a page with that run's explanation and every recorded result. The normalised-replay page has two experiment cards: 4 memories and 10 memories. Every page links the Colab notebook its numbers come from.
 
 - **No copied numbers.** It imports the JSON files and Colab figures straight from `results/`, so the pages always show the recorded runs.
 - **Built with** Vite, React and TypeScript. The charts are hand-written SVG and the maths uses KaTeX. There are no other runtime dependencies.
