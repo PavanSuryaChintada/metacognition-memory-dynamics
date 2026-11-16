@@ -38,7 +38,9 @@ function Hero() {
         <p className="hero-sub rise" style={d(2)}>
           Ghosh, Jaiswal and Gupta model memory as activations that decay, spread across a similarity graph, and get reinforced by
           replay. Their experiments use random vectors. Here the same equations run on I-JEPA embeddings of real photographs,
-          twice, with one difference in how replay scores the memories, and once more at the paper's own scale. Two more tests go beyond the paper: new memories added partway through a run.
+          twice, with one difference in how replay scores the memories, and once more at the paper's own scale. Beyond the paper, two tests
+          add new memories partway through a run, and three give every memory a confidence, updated by Bayes' rule from how much it is
+          replayed.
         </p>
         <div className="actions rise" style={d(3)}>
           <a className="btn btn-primary" href="#runs">
@@ -181,7 +183,8 @@ function PaperSection() {
                     <td>Memories N</td>
                     <td data-label="Paper">200</td>
                     <td data-label="These runs">
-                      {recorded.memories.length}; {ten.memories.length} in the second run B experiment; 200 in run C
+                      {recorded.memories.length}; {ten.memories.length} in the second run B experiment; 200 in run C and in Bayesian
+                      confidence tests 2 and 3
                     </td>
                   </tr>
                   <tr>
@@ -287,6 +290,24 @@ const NOTEBOOK_ROWS: { path: string; href: string; what: string; output?: string
     href: NOTEBOOKS.paperTuned,
     what: "Run C, test 2: the same 200 images and settings, run 25 times over five values of γ and five of δ.",
     output: "results/paper_tuned_output.txt",
+  },
+  {
+    path: "colab/baysian approach/baysian_4_mem.ipynb",
+    href: NOTEBOOKS.bayesFour,
+    what: "Bayesian confidence, test 1: run B's four photos for 500 steps, standard replay against the same run with a confidence per memory updated by Bayes' rule.",
+    output: "results/bayesian_4_memories_output.txt",
+  },
+  {
+    path: "colab/baysian approach/baysian_200_mem.ipynb",
+    href: NOTEBOOKS.bayes200,
+    what: "Bayesian confidence, test 2: the same rule on run C's 200 images for 3,000 steps, with γ = 0.05 and δ = 0.001.",
+    output: "results/bayesian_200_output.txt",
+  },
+  {
+    path: "colab/baysian approach/baysian 200 fixed.ipynb",
+    href: NOTEBOOKS.bayesRelative,
+    what: "Bayesian confidence, test 3: the same 200 images and settings, with confidence built from evidence relative to the average replay.",
+    output: "results/bayesian_200_fixed_output.txt",
   },
   {
     path: "colab/_facebook_ijepa_vith14_1k.ipynb",

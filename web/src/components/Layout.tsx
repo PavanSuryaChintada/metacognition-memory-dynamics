@@ -1,7 +1,7 @@
 import type { CSSProperties, ReactNode } from "react";
 import { REPO } from "../data/results";
 import { useHeaderOnDark } from "../hooks";
-import { isBeyond, isRunB, isRunC, type Route } from "../router";
+import { isBayes, isBeyond, isRunB, isRunC, type Route } from "../router";
 
 /** The project mark: three memories fading, one held by replay. */
 export function Mark({ size = 26 }: { size?: number }) {
@@ -44,6 +44,9 @@ export function Header({ route }: { route: Route }) {
               </a>
               <a href="#/beyond" aria-current={isBeyond(route) ? "page" : undefined}>
                 Beyond
+              </a>
+              <a href="#/bayes" aria-current={isBayes(route) ? "page" : undefined}>
+                Confidence
               </a>
             </>
           ) : (

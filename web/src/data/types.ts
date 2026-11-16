@@ -176,3 +176,74 @@ export type Recorded = {
     sweep_b: { runs: { name: string; eta: number; replay_prob: number; final_norm: number; final_energy: number }[] };
   };
 };
+
+type BayesRunSetup = {
+  model: string;
+  replay: string;
+  n: number;
+  steps: number;
+  h: number;
+  beta: number;
+  eta: number;
+  replay_prob: number;
+  gamma: number;
+  delta: number;
+  seed: number;
+  alive_threshold: number;
+  decay_rates: string;
+};
+
+/** Settings of the Bayes'-rule confidence update in tests 1 and 2. */
+type BayesRule = {
+  prior_confidence: number;
+  confidence_boost: number;
+  confidence_decay_rate: number;
+  confidence_weight: number;
+  floor: number;
+  ceiling: number;
+};
+
+/** Shape of results/bayesian_4_memories.json: Bayesian confidence, test 1, run B's four photos. */
+export type BayesFour = {
+  setup: BayesRunSetup & { embedding_dim: number };
+  bayes: BayesRule;
+  embedding_norms_printed: Record<string, number>;
+  cosine_similarity: number[][];
+  memories: {
+    label: string;
+    decay_rate: number;
+    standard: number;
+    bayesian: number;
+    difference_printed: number;
+    confidence: number;
+    effective_printed: number;
+  }[];
+  survivors: { standard: number; bayesian: number };
+};
+
+type RunSummary = { survivors: number; rho: number; max: number; mean: number };
+type ClassRow = { label: string; decay: number };
+
+/** Shape of results/bayesian_200.json: Bayesian confidence, test 2, the same rule on 200 CIFAR-100 images. */
+export type Bayes200 = {
+  setup: BayesRunSetup & { images: string; mean_cosine: number };
+  bayes: BayesRule;
+  standard: RunSummary;
+  bayesian: RunSummary & { confidence: { max: number; min: number; mean: number; spread: number } };
+  confidence_decay_rho_printed: string;
+  boosted_top5: (ClassRow & { standard: number; bayesian: number; confidence: number; diff: number })[];
+  suppressed_top5: (ClassRow & { standard: number; bayesian: number; confidence: number; diff: number })[];
+};
+
+/** Shape of results/bayesian_200_fixed.json: Bayesian confidence, test 3, relative evidence. */
+export type BayesRelative = {
+  setup: BayesRunSetup & { images: string; mean_cosine: number };
+  bayes: { conf_lr: number; conf_decay: number; conf_weight: number; start_evidence: number };
+  standard: RunSummary;
+  bayesian: RunSummary;
+  confidence: { min: number; max: number; mean: number; spread: number };
+  confidence_decay_rho: number;
+  effective_decay_rho_figure: number;
+  most_confident_top5: (ClassRow & { activation: number; confidence: number; effective: number })[];
+  least_confident_top5: (ClassRow & { activation: number; confidence: number; effective: number })[];
+};

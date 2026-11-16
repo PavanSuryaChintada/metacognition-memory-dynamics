@@ -34,8 +34,9 @@ export function Closing() {
       <div className="wrap">
         <Statement />
         <p className="sub">
-          Everything here comes from eight recorded Colab notebooks: the original notebook, the replay-tracking run, the
-          raw-versus-normalised comparisons with 4 and 10 memories, two tests beyond the paper, and two at the paper's scale.
+          Everything here comes from eleven recorded Colab notebooks: the original notebook, the replay-tracking run, the
+          raw-versus-normalised comparisons with 4 and 10 memories, two at the paper's scale, two adding memories mid-run, and three
+          of Bayesian confidence.
         </p>
 
         <div className="footer-cols">
@@ -55,7 +56,10 @@ export function Closing() {
                 <a href="#/paper">Run C, paper scale</a>
               </li>
               <li>
-                <a href="#/beyond">Beyond the paper</a>
+                <a href="#/beyond">Beyond the paper, new memories</a>
+              </li>
+              <li>
+                <a href="#/bayes">Beyond the paper, confidence</a>
               </li>
               <li>
                 <a href="#model">The model</a>
@@ -94,6 +98,15 @@ export function Closing() {
               </li>
               <li>
                 <a href={NOTEBOOKS.paperTuned}>Run C, γ and δ sweep</a>
+              </li>
+              <li>
+                <a href={NOTEBOOKS.bayesFour}>Confidence, test 1</a>
+              </li>
+              <li>
+                <a href={NOTEBOOKS.bayes200}>Confidence, test 2</a>
+              </li>
+              <li>
+                <a href={NOTEBOOKS.bayesRelative}>Confidence, test 3</a>
               </li>
               <li>
                 <a href={`${REPO}/tree/main/notebooks/colab`}>All Colab notebooks</a>

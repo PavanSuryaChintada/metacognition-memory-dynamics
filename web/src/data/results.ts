@@ -18,7 +18,25 @@ import demoFigure from "../../../results/figures/metacognition/dynamics_demo.png
 import sweepAFigure from "../../../results/figures/metacognition/three_regimes_sweep_a.png";
 import sweepBFigure from "../../../results/figures/metacognition/three_regimes_sweep_b.png";
 import softmaxFigure from "../../../results/figures/colab/unnormalised/softmax_results.png";
-import type { ForgettingFixes, ForgettingTest, PaperScale, PaperTuned, NormalisedComparison, Recorded, ReplayTracking, TenMemories } from "./types";
+import bayesFourRun from "../../../results/bayesian_4_memories.json";
+import bayesFourFigure from "../../../results/figures/colab/baysian/baysian 4 mem.png";
+import bayes200Run from "../../../results/bayesian_200.json";
+import bayes200Figure from "../../../results/figures/colab/baysian/baysian 200 mem.png";
+import bayesRelativeRun from "../../../results/bayesian_200_fixed.json";
+import bayesRelativeFigure from "../../../results/figures/colab/baysian/baysian 200 fixed.png";
+import type {
+  Bayes200,
+  BayesFour,
+  BayesRelative,
+  ForgettingFixes,
+  ForgettingTest,
+  PaperScale,
+  PaperTuned,
+  NormalisedComparison,
+  Recorded,
+  ReplayTracking,
+  TenMemories,
+} from "./types";
 
 export const recorded = metrics as Recorded;
 /** The second Colab run, which logged the softmax replay weights at every step. */
@@ -35,6 +53,12 @@ export const fixes = fixesRun as ForgettingFixes;
 export const paperScale = paperScaleRun as PaperScale;
 /** Run C, test 2: the same run over five values of gamma and five of delta. */
 export const paperTuned = paperTunedRun as PaperTuned;
+/** Bayesian confidence, test 1: Bayes' rule on run B's four photos. */
+export const bayesFour = bayesFourRun as BayesFour;
+/** Bayesian confidence, test 2: the same rule on run C's 200 images. */
+export const bayes200 = bayes200Run as Bayes200;
+/** Bayesian confidence, test 3: confidence from relative evidence, on the same 200 images. */
+export const bayesRelative = bayesRelativeRun as BayesRelative;
 export const figures = {
   demo: demoFigure,
   sweepA: sweepAFigure,
@@ -47,6 +71,9 @@ export const figures = {
   paperScale: paperScaleFigure,
   tunedSweep: tunedSweepFigure,
   tunedCompare: tunedCompareFigure,
+  bayesFour: bayesFourFigure,
+  bayes200: bayes200Figure,
+  bayesRelative: bayesRelativeFigure,
 };
 
 /**
@@ -110,8 +137,8 @@ export const tenMemories = ten.memories.map((m) => ({
   decay_rate: m.decay_rate_printed,
 }));
 
-/** GitHub links to the executed Colab notebooks. */
-const nb = (path: string) => `${REPO}/blob/main/notebooks/${path}`;
+/** GitHub links to the executed Colab notebooks. Some paths have spaces, so they are encoded. */
+const nb = (path: string) => `${REPO}/blob/main/notebooks/${encodeURI(path)}`;
 export const NOTEBOOKS = {
   original: nb("metacognition.ipynb"),
   unnormalised4: nb("colab/unnormalised/metacognition_4_memories.ipynb"),
@@ -121,6 +148,9 @@ export const NOTEBOOKS = {
   forgettingFixes: nb("colab/normalised/beyond_paper/5_5forgetting_test_fix.ipynb"),
   paperScale: nb("colab/paper/paper_scale_real_jepa.ipynb"),
   paperTuned: nb("colab/paper/paper_scale_tuned.ipynb"),
+  bayesFour: nb("colab/baysian approach/baysian_4_mem.ipynb"),
+  bayes200: nb("colab/baysian approach/baysian_200_mem.ipynb"),
+  bayesRelative: nb("colab/baysian approach/baysian 200 fixed.ipynb"),
   ijepaSample: nb("colab/_facebook_ijepa_vith14_1k.ipynb"),
   vjepaSample: nb("colab/facebook_vjepa2_vitl_fpc64_256.ipynb"),
 };

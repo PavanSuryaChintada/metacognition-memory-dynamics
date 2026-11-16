@@ -1,6 +1,17 @@
 import { useEffect, useRef, useState } from "react";
 
-export type Route = "home" | "unnormalised" | "normalised" | "normalised-10" | "beyond" | "beyond-fix" | "paper" | "paper-tuned";
+export type Route =
+  | "home"
+  | "unnormalised"
+  | "normalised"
+  | "normalised-10"
+  | "beyond"
+  | "beyond-fix"
+  | "paper"
+  | "paper-tuned"
+  | "bayes"
+  | "bayes-200"
+  | "bayes-relative";
 
 const parse = (hash: string): Route =>
   hash === "#/unnormalised"
@@ -17,11 +28,18 @@ const parse = (hash: string): Route =>
               ? "paper"
               : hash === "#/paper/tuned"
                 ? "paper-tuned"
-                : "home";
+                : hash === "#/bayes"
+                  ? "bayes"
+                  : hash === "#/bayes/200"
+                    ? "bayes-200"
+                    : hash === "#/bayes/relative"
+                      ? "bayes-relative"
+                      : "home";
 
 export const isBeyond = (r: Route) => r === "beyond" || r === "beyond-fix";
 export const isRunC = (r: Route) => r === "paper" || r === "paper-tuned";
 export const isRunB = (r: Route) => r === "normalised" || r === "normalised-10";
+export const isBayes = (r: Route) => r === "bayes" || r === "bayes-200" || r === "bayes-relative";
 
 /**
  * Hash routing: "#/unnormalised" and "#/normalised" open a run's page; any other hash is
@@ -42,9 +60,13 @@ export function useRoute() {
     prev.current = route;
     // switching between views of the same run keeps the reader at the cards they clicked
     const sameRun =
-      from !== null && ((isRunB(from) && isRunB(route)) || (isRunC(from) && isRunC(route)) || (isBeyond(from) && isBeyond(route)));
+      from !== null &&
+      ((isRunB(from) && isRunB(route)) ||
+        (isRunC(from) && isRunC(route)) ||
+        (isBeyond(from) && isBeyond(route)) ||
+        (isBayes(from) && isBayes(route)));
     if (from && from !== route && sameRun) {
-      const target = isRunC(route) ? "paper-tests" : isBeyond(route) ? "beyond-tests" : "experiments";
+      const target = isRunC(route) ? "paper-tests" : isBeyond(route) ? "beyond-tests" : isBayes(route) ? "bayes-tests" : "experiments";
       const raf = requestAnimationFrame(() => document.getElementById(target)?.scrollIntoView());
       return () => cancelAnimationFrame(raf);
     }

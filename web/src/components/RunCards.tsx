@@ -1,8 +1,9 @@
-import { fixes, forgetting, normalised, paperScale, paperTuned, ten } from "../data/results";
+import { bayesRelative, fixes, forgetting, normalised, paperScale, paperTuned, ten } from "../data/results";
 import { lateShareRange, normalisedFinals, unnormalisedFinals, winnerShare } from "../data/derived";
 import { MiniBars } from "./Memories";
 import { SurvivorGrid } from "./SurvivorGrid";
 import { RetentionBars } from "../pages/BeyondPaper";
+import { ConfidenceRanges, neg } from "../pages/RunBayes";
 import { Tex } from "./Tex";
 import { d } from "./ui";
 
@@ -169,11 +170,51 @@ export function RunCards() {
           Open the tests <span aria-hidden="true">→</span>
         </span>
       </a>
+      <a className="run-card run-card-wide rise" style={d(8)} href="#/bayes">
+        <div className="run-card-head">
+          <span className="label">Beyond the paper</span>
+          <span className="tag note">3 tests</span>
+        </div>
+        <div className="rc-col">
+          <h2 className="run-title">Bayesian confidence</h2>
+          <div className="run-formula">
+            <Tex>{String.raw`c_i \leftarrow \dfrac{r_i\, c_i}{r_i\, c_i + (1 - r_i)(1 - c_i)}`}</Tex>
+          </div>
+          <p className="run-desc">
+            Every memory gets a second number, a confidence between 0 and 1, updated by Bayes' rule from its share r of each replay and
+            fed back into replay. Taking r as the likelihood sends every confidence to its floor, with 4 memories and with 200. Counting
+            evidence against the average replay spreads confidence from 0 to 1, and it has nothing to do with decay rate.
+          </p>
+        </div>
+        <div className="rc-col">
+          <ConfidenceRanges />
+          <dl className="run-stats">
+            <div>
+              <dt>Confidence spread</dt>
+              <dd>
+                0.00 → {bayesRelative.confidence.spread.toFixed(2)}{" "}
+                <span className="dd-sub">Bayes' rule → relative evidence</span>
+              </dd>
+            </div>
+            <div>
+              <dt>Confidence vs decay</dt>
+              <dd>
+                ρ = {neg(bayesRelative.confidence_decay_rho.toFixed(2))}{" "}
+                <span className="dd-sub">activation: ρ = {bayesRelative.bayesian.rho.toFixed(2)}</span>
+              </dd>
+            </div>
+          </dl>
+          <span className="run-open">
+            Open the tests <span aria-hidden="true">→</span>
+          </span>
+        </div>
+      </a>
       <p className="run-cards-note muted small">
         Runs A and B: bars show each memory's activation at step 500 on the same scale, 0 to {SCALE}, with the same photos, decay
         rates, parameters and seed. Run C: memories above 0.001 at step {paperScale.setup.steps.toLocaleString("en")} for each γ (rows) and δ
-        (columns); the dashed cell is the paper's. Beyond the paper: the share of the old memories' activation kept from step 250 to
-        step 500, for each way of adding new ones.
+        (columns); the dashed cell is the paper's. New memories mid-run: the share of the old memories' activation kept from step 250
+        to step 500, for each way of adding new ones. Bayesian confidence: each test's final confidences from lowest to highest, with
+        the mean as a dark tick and the starting 0.5 dashed.
       </p>
     </div>
   );

@@ -1740,6 +1740,133 @@ tr.win td {
   font-weight: 560;
   font-variant-numeric: tabular-nums;
 }
+/* Bayesian confidence: final confidence ranges, the wide home card, three test cards */
+.conf-ranges {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+  font-size: 12.5px;
+}
+.conf-ranges li {
+  display: grid;
+  grid-template-columns: 128px minmax(0, 1fr) 52px;
+  align-items: center;
+  gap: 10px;
+}
+.conf-ranges.single li {
+  grid-template-columns: minmax(0, 1fr) 52px;
+}
+.cr-name {
+  color: var(--muted);
+}
+.cr-track {
+  position: relative;
+  height: 8px;
+  border-radius: 2px;
+  background: var(--track);
+}
+.cr-fill {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  min-width: 3px;
+  border-radius: 2px;
+  background: rgba(10, 10, 10, 0.55);
+}
+.conf-ranges li.fix .cr-fill {
+  background: var(--ember);
+}
+.cr-prior {
+  position: absolute;
+  top: -4px;
+  bottom: -4px;
+  border-left: 1px dashed var(--ink-2);
+}
+.cr-mean {
+  position: absolute;
+  top: -4px;
+  bottom: -4px;
+  width: 2px;
+  margin-left: -1px;
+  background: var(--ink);
+}
+.cr-value {
+  text-align: right;
+  font-weight: 560;
+  font-variant-numeric: tabular-nums;
+}
+.conf-ranges li.cr-axis {
+  margin-top: -4px;
+}
+.cr-ticks {
+  position: relative;
+  height: 14px;
+  font-size: 11px;
+  color: var(--faint);
+  font-variant-numeric: tabular-nums;
+}
+.cr-ticks span {
+  position: absolute;
+  top: 0;
+}
+.cr-ticks span:nth-child(1) {
+  left: 0;
+}
+.cr-ticks span:nth-child(2) {
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+}
+.cr-ticks span:nth-child(3) {
+  right: 0;
+}
+.run-card.run-card-wide {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 40px;
+  row-gap: 14px;
+  align-items: start;
+}
+.run-card-wide > .run-card-head {
+  grid-column: 1 / -1;
+}
+.run-card-wide .rc-col {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-width: 0;
+  height: 100%;
+}
+.run-cards.bayes-cards {
+  margin-top: 0;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+tr.group-row td {
+  padding-top: 16px;
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+@media (max-width: 1080px) {
+  .run-cards.bayes-cards {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (max-width: 860px) {
+  .run-card.run-card-wide {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (max-width: 420px) {
+  .conf-ranges li {
+    grid-template-columns: 92px minmax(0, 1fr) 46px;
+  }
+}
 .group-strip {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
