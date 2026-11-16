@@ -65,6 +65,9 @@ export function Closing() {
                 <a href="#model">The model</a>
               </li>
               <li>
+                <a href="#journey">Research journey</a>
+              </li>
+              <li>
                 <a href="#how-it-runs">How it runs</a>
               </li>
             </ul>

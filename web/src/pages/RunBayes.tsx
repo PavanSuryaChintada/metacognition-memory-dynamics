@@ -71,6 +71,7 @@ const pct = (v: number) => `${Math.round(v * 100)}%`;
 /** A printed number with a typographic minus. */
 export const neg = (v: number | string) => String(v).replace("-", "−");
 const confRho = neg(bayesRelative.confidence_decay_rho);
+const word = (n: number) => ["no", "one", "two", "three", "four", "five"][n] ?? String(n);
 
 /* ------------------------------------------------------------ page */
 
@@ -1208,7 +1209,7 @@ function Sets3({ num }: { num: number }) {
       label="What sets it"
       num={num}
       headline="Not decay rate. The share of replay each memory gets."
-      lead={`Confidence against decay rate gives ρ = ${confRho}: a slow-decaying memory is no more likely to be trusted. The ${topInTest2} most confident memories are the ${topInTest2} that test 2's softer replay held back most, and ${bottomInTest2} of the 5 least confident are among the 5 it helped most.`}
+      lead={`Confidence against decay rate gives ρ = ${confRho}: a slow-decaying memory is no more likely to be trusted. The ${word(topInTest2)} most confident memories are the ${word(topInTest2)} that test 2's softer replay held back most, and ${word(bottomInTest2)} of the five least confident are among the five it helped most.`}
     >
       <div className="grid">
         <div className="indent stack">

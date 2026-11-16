@@ -53,6 +53,7 @@ export function Header({ route }: { route: Route }) {
             <>
               <a href="#runs">Runs</a>
               <a href="#model">Model</a>
+              <a href="#journey">Journey</a>
               <a href="#how-it-runs">How it runs</a>
               <a href="#paper">Paper</a>
             </>

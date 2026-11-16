@@ -7,16 +7,18 @@ import { FORCES, ForcesScrolly } from "../components/Forces";
 import { MemoryStack } from "../components/MemoryStack";
 import { Flow } from "../components/Flow";
 import { Pipeline } from "../components/Pipeline";
+import { JourneyChapter } from "../components/Journey";
 import { Tex } from "../components/Tex";
 import { d } from "../components/ui";
 
-/** The overview: what stays the same in every run. Results live on the run pages. */
+/** The overview: what stays the same in every run, and the runs told as one journey. Results live on the run pages. */
 export function Home() {
   return (
     <>
       <Hero />
       <ModelChapter />
       <MemoriesSection />
+      <JourneyChapter num={3} />
       <HowItRunsSection />
       <PaperSection />
       <ReproduceSection />
@@ -125,7 +127,7 @@ function HowItRunsSection() {
     <Section
       id="how-it-runs"
       label="Architecture"
-      num={3}
+      num={5}
       headline="From photo to memory to result."
       lead="Encoding needs the 2.5 GB I-JEPA checkpoint once. After that the dynamics are a few hundred lines of PyTorch that run in seconds."
     >
@@ -152,7 +154,7 @@ function PaperSection() {
     <Section
       id="paper"
       label="The paper"
-      num={4}
+      num={6}
       headline="Same equations, real embeddings."
       lead="The paper proves its results for any embeddings, then illustrates them with synthetic data. Everything here that isn't about the embeddings is the same."
     >
@@ -330,7 +332,7 @@ function ReproduceSection() {
     <Section
       id="reproduce"
       label="Notebooks"
-      num={5}
+      num={7}
       headline="Every Colab run, as it ran."
       lead="Each notebook is on GitHub with its code, printed output and figures exactly as they ran in Colab. The printed output of each run used on this site is also kept word for word in results/."
     >

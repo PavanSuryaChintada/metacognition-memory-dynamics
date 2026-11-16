@@ -1071,6 +1071,195 @@ pre .comment {
 .plate.on .plate-label {
   fill: var(--ember-deep);
 }
+/* Pinned scroll: the research journey, one step per run */
+.journey-scrolly {
+  position: relative;
+  height: calc(var(--n) * 62vh + 100vh);
+  margin-top: 24px;
+}
+.journey-grid {
+  align-items: center;
+  width: 100%;
+}
+.journey-rail {
+  grid-column: 1 / 2;
+  position: relative;
+  padding-left: 18px;
+  display: grid;
+  gap: 18px;
+}
+.jr-track {
+  position: absolute;
+  left: 0;
+  top: 2px;
+  bottom: 2px;
+  width: 2px;
+  border-radius: 1px;
+  background: var(--track);
+}
+.jr-fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  border-radius: 1px;
+  background: var(--ember);
+}
+.jr-phase .label {
+  margin-bottom: 6px;
+}
+.jr-phase ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 1px;
+}
+.jr-phase button {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  width: 100%;
+  padding: 3px 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: 13.5px;
+  color: var(--faint);
+  text-align: left;
+  cursor: pointer;
+  transition: color 0.3s var(--ease);
+}
+.jr-phase button:hover {
+  color: var(--ink-2);
+}
+.jr-phase button.done {
+  color: var(--muted);
+}
+.jr-phase button.on {
+  color: var(--ink);
+  font-weight: 560;
+}
+.jr-num {
+  font-size: 11.5px;
+  letter-spacing: 0.04em;
+  font-variant-numeric: tabular-nums;
+}
+.jr-phase button.on .jr-num {
+  color: var(--ember-deep);
+}
+.journey-text {
+  grid-column: 2 / 5;
+  position: relative;
+  min-height: 490px;
+  padding-left: clamp(8px, 2vw, 32px);
+}
+.journey-art {
+  grid-column: 5 / 7;
+  position: relative;
+  min-height: 360px;
+}
+.journey-step {
+  position: absolute;
+  inset: 0 0 auto 0;
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 0.6s var(--ease-soft), transform 0.7s var(--ease-soft);
+  pointer-events: none;
+}
+.journey-text .journey-step {
+  padding-left: inherit;
+}
+.journey-step.on {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+}
+.journey-title {
+  font-size: clamp(1.5rem, 2.4vw, 2.1rem);
+  font-weight: 560;
+  letter-spacing: -0.03em;
+  line-height: 1.08;
+  margin: 12px 0 18px;
+  max-width: 18em;
+}
+.journey-tfw {
+  margin: 0;
+  display: grid;
+  gap: 12px;
+  max-width: 34em;
+}
+.journey-tfw div {
+  display: grid;
+  grid-template-columns: 64px minmax(0, 1fr);
+  gap: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+}
+.journey-tfw dt {
+  padding-top: 3px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.journey-tfw dd {
+  margin: 0;
+  font-size: 15.5px;
+  color: var(--ink-2);
+}
+.journey-open {
+  display: inline-block;
+  margin-top: 18px;
+  font-weight: 560;
+}
+.journey-open:hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.journey-card {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  padding: 22px;
+}
+.journey-card .stat-value {
+  margin-top: 0;
+}
+.journey-chart {
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+}
+.journey-list {
+  list-style: none;
+  margin: 24px 0 0;
+  padding: 0;
+  border-top: 1px solid var(--line);
+}
+.journey-list li {
+  display: grid;
+  gap: 16px;
+  padding: 26px 0;
+  border-bottom: 1px solid var(--line);
+}
+.journey-list .journey-title,
+.journey-list .journey-open {
+  margin: 0;
+}
+.journey-table a {
+  font-weight: 560;
+  text-decoration: underline;
+  text-decoration-color: var(--line);
+  text-underline-offset: 3px;
+}
+@media (max-width: 1080px) {
+  .jr-name {
+    display: none;
+  }
+}
+
 .forces-static {
   padding: 0 var(--gutter);
   max-width: var(--max);
