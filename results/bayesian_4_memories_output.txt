@@ -1,0 +1,78 @@
+# Printed output of notebooks/colab/baysian approach/baysian_4_mem.ipynb (Bayesian confidence, test 1: run B's four
+# photos for 500 steps, standard normalised replay against the same run with a confidence per memory updated by Bayes'
+# rule), copied word for word from the executed notebook. The figure is results/figures/colab/baysian/baysian 4 mem.png.
+
+Loading I-JEPA ViT-H/14...
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+WARNING:huggingface_hub.utils._http:Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Model loaded!
+
+  Loaded: beagle (norm=17.6)
+  Loaded: cat (norm=16.2)
+  Loaded: person (norm=17.2)
+  Loaded: french_bulldog (norm=16.5)
+
+Cosine Similarity Matrix:
+           beagle: 1.000 0.319 0.300 0.370
+              cat: 0.319 1.000 0.449 0.428
+           person: 0.300 0.449 1.000 0.467
+   french_bulldog: 0.370 0.428 0.467 1.000
+
+============================================================
+RUNNING STANDARD MODEL (normalized, no Bayesian)
+============================================================
+Final activations: {'beagle': '0.0956', 'cat': '0.0481', 'person': '0.0332', 'french_bulldog': '0.0271'}
+Survivors: 4/4
+
+============================================================
+RUNNING BAYESIAN MODEL (normalized + confidence)
+============================================================
+Final activations: {'beagle': '0.0906', 'cat': '0.0486', 'person': '0.0343', 'french_bulldog': '0.0277'}
+Final confidence:  {'beagle': '0.0100', 'cat': '0.0100', 'person': '0.0100', 'french_bulldog': '0.0100'}
+Survivors: 4/4
+
+============================================================
+ANALYSIS: WHAT BAYESIAN CONFIDENCE ADDS
+============================================================
+
+1. ACTIVATION COMPARISON:
+  Memory            Standard   Bayesian Difference
+  beagle              0.0956     0.0906    -0.0049
+  cat                 0.0481     0.0486    +0.0006
+  person              0.0332     0.0343    +0.0011
+  french_bulldog      0.0271     0.0277    +0.0006
+
+2. BAYESIAN CONFIDENCE (what the standard model CAN'T tell you):
+  beagle         : confidence = 0.0100, effective strength = 0.0009
+  cat            : confidence = 0.0100, effective strength = 0.0005
+  person         : confidence = 0.0100, effective strength = 0.0003
+  french_bulldog : confidence = 0.0100, effective strength = 0.0003
+
+3. KEY INSIGHT:
+  Standard model: memory strength = activation only
+  Bayesian model: memory strength = activation × confidence
+  A memory can be STRONG (high activation) but UNRELIABLE (low confidence)
+  Or WEAK (low activation) but CONFIDENT (high confidence)
+  This distinction matters for real memory systems!
+
+============================================================
+THE MATH
+============================================================
+
+STANDARD (paper):
+  F(a) = softmax(β × XᵀX × a)
+  Replay depends only on activation strength.
+
+BAYESIAN (our extension):
+  F(a,c) = softmax(β × XᵀX × (a ⊙ c))
+  where ⊙ = element-wise multiply, c = confidence vector
+
+  Confidence update (Bayes rule at each replay):
+    posterior_i = (likelihood_i × prior_i) / (likelihood_i × prior_i + (1-likelihood_i) × (1-prior_i))
+    where likelihood_i = replay_weight_i (how much memory i was replayed)
+
+  Confidence decay:
+    dc_i/dt = -λ_c × c_i (unrehearsed memories lose confidence)
+
+  Effective memory strength = a_i × c_i
+  → captures both HOW STRONG and HOW RELIABLE a memory is

@@ -1,0 +1,45 @@
+{
+  "source": "notebooks/colab/baysian approach/baysian 200 fixed.ipynb, executed in Colab. Values copied from its printed output in results/bayesian_200_fixed_output.txt; the figure is results/figures/colab/baysian/baysian 200 fixed.png. The effective-strength rho is printed only in the figure's panel title. Settings are the defaults of run_standard and run_bayesian_v3 in the notebook.",
+  "setup": {
+    "model": "facebook/ijepa_vith14_1k",
+    "images": "The first 200 CIFAR-100 test images, 32 x 32 enlarged to 224 x 224, the same as run C",
+    "replay": "normalised",
+    "n": 200,
+    "steps": 3000,
+    "h": 0.01,
+    "beta": 3.0,
+    "eta": 0.8,
+    "replay_prob": 0.3,
+    "gamma": 0.05,
+    "delta": 0.001,
+    "seed": 42,
+    "alive_threshold": 0.001,
+    "mean_cosine": 0.6812,
+    "decay_rates": "torch.linspace(0.5, 1.5, 200)"
+  },
+  "bayes": {
+    "conf_lr": 0.01,
+    "conf_decay": 0.0001,
+    "conf_weight": 0.3,
+    "start_evidence": 0
+  },
+  "standard": { "survivors": 200, "rho": 0.9869, "max": 0.001182, "mean": 0.001109 },
+  "bayesian": { "survivors": 200, "rho": 0.9889, "max": 0.001182, "mean": 0.001109 },
+  "confidence": { "min": 0.0, "max": 1.0, "mean": 0.568, "spread": 1.0 },
+  "confidence_decay_rho": -0.0267,
+  "effective_decay_rho_figure": 0.162,
+  "most_confident_top5": [
+    { "label": "maple_tree", "decay": 1.013, "activation": 0.001116, "confidence": 1.0, "effective": 0.001116 },
+    { "label": "whale", "decay": 1.374, "activation": 0.001071, "confidence": 1.0, "effective": 0.001071 },
+    { "label": "pickup_truck", "decay": 1.249, "activation": 0.001085, "confidence": 1.0, "effective": 0.001085 },
+    { "label": "mushroom", "decay": 0.515, "activation": 0.001181, "confidence": 1.0, "effective": 0.001181 },
+    { "label": "mouse", "decay": 0.982, "activation": 0.001118, "confidence": 1.0, "effective": 0.001118 }
+  ],
+  "least_confident_top5": [
+    { "label": "clock", "decay": 0.897, "activation": 0.001099, "confidence": 0.0, "effective": 0.0 },
+    { "label": "lion", "decay": 0.575, "activation": 0.001163, "confidence": 0.0, "effective": 0.0 },
+    { "label": "chair", "decay": 1.289, "activation": 0.001032, "confidence": 0.0, "effective": 0.0 },
+    { "label": "lion", "decay": 0.832, "activation": 0.001115, "confidence": 0.0, "effective": 0.0 },
+    { "label": "clock", "decay": 1.415, "activation": 0.001022, "confidence": 0.0, "effective": 0.0 }
+  ]
+}

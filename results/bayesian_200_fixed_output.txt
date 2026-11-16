@@ -1,0 +1,72 @@
+# Printed output of notebooks/colab/baysian approach/baysian 200 fixed.ipynb (Bayesian confidence, test 3: the same 200
+# images and settings as test 2, with confidence built from relative evidence instead), copied word for word from the
+# executed notebook. The figure is results/figures/colab/baysian/baysian 200 fixed.png.
+
+Loading I-JEPA ViT-H/14...
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+WARNING:huggingface_hub.utils._http:Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Model loaded!
+
+Downloading CIFAR-100...
+100%|██████████| 169M/169M [33:04<00:00, 85.2kB/s]
+Embedding 200 images...
+  50/200 (353s)
+  100/200 (692s)
+  150/200 (1022s)
+  200/200 (1364s)
+
+Embeddings ready. Mean cosine sim: 0.6812
+Time: 1364s
+
+============================================================
+STANDARD MODEL
+============================================================
+Survivors: 200/200, ρ = 0.9869
+
+============================================================
+BAYESIAN MODEL v3 (relative evidence)
+============================================================
+Survivors: 200/200, ρ = 0.9889
+Confidence: min=0.0000, max=1.0000, mean=0.5680, spread=1.0000
+Confidence-Decay ρ = -0.0267
+
+============================================================
+SUMMARY
+============================================================
+
+Metric                                       Standard     Bayesian
+-----------------------------------------------------------------
+Survivors                                         200          200
+Activation ρ (decay rank)                      0.9869       0.9889
+Confidence ρ (decay rank)                         N/A      -0.0267
+Confidence spread (max-min)                       N/A       1.0000
+Max activation                               0.001182     0.001182
+Mean activation                              0.001109     0.001109
+
+Top 5 MOST confident memories:
+  maple_tree           decay=1.013  act=0.001116  conf=1.0000  effective=0.001116
+  whale                decay=1.374  act=0.001071  conf=1.0000  effective=0.001071
+  pickup_truck         decay=1.249  act=0.001085  conf=1.0000  effective=0.001085
+  mushroom             decay=0.515  act=0.001181  conf=1.0000  effective=0.001181
+  mouse                decay=0.982  act=0.001118  conf=1.0000  effective=0.001118
+
+Top 5 LEAST confident memories:
+  clock                decay=0.897  act=0.001099  conf=0.0000  effective=0.000000
+  lion                 decay=0.575  act=0.001163  conf=0.0000  effective=0.000000
+  chair                decay=1.289  act=0.001032  conf=0.0000  effective=0.000000
+  lion                 decay=0.832  act=0.001115  conf=0.0000  effective=0.000000
+  clock                decay=1.415  act=0.001022  conf=0.0000  effective=0.000000
+
+
+INTERVIEW EXPLANATION:
+  v1/v2 failed because raw replay weight (≈1/200 = 0.005) was too small
+  to use as Bayesian likelihood — posterior barely moved.
+
+  v3 fix: use RELATIVE evidence instead.
+  - Each memory accumulates evidence: +1 if replayed above average, -1 if below
+  - Confidence = sigmoid(accumulated evidence) → range [0, 1]
+  - This creates genuine differentiation:
+    High-replay memories → positive evidence → high confidence
+    Low-replay memories → negative evidence → low confidence
+  - Confidence-weighted replay creates a feedback loop:
+    confident memories get more replay → more evidence → stay confident

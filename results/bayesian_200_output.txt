@@ -1,0 +1,95 @@
+# Printed output of notebooks/colab/baysian approach/baysian_200_mem.ipynb (Bayesian confidence, test 2: the same rule
+# on run C's 200 CIFAR-100 images for 3,000 steps with gamma = 0.05 and delta = 0.001), copied word for word from the
+# executed notebook. The figure is results/figures/colab/baysian/baysian 200 mem.png.
+
+Loading I-JEPA ViT-H/14...
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+WARNING:huggingface_hub.utils._http:Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Model loaded!
+
+Downloading CIFAR-100...
+100%|██████████| 169M/169M [19:22<00:00, 145kB/s] 
+Embedding 200 images...
+  50/200 (375s)
+  100/200 (745s)
+  150/200 (1117s)
+  200/200 (1480s)
+
+Embeddings ready. Mean cosine similarity: 0.6812
+Total time: 1480s
+
+============================================================
+RUNNING STANDARD MODEL (γ=0.05, δ=0.001)
+============================================================
+Survivors: 200/200, Spearman ρ = 0.9869
+Max: 0.001182, Mean: 0.001109
+
+============================================================
+RUNNING BAYESIAN MODEL (γ=0.05, δ=0.001)
+============================================================
+Survivors: 200/200, Spearman ρ = 0.9952
+Max act: 0.001180, Mean act: 0.001109
+Max conf: 0.0100, Min conf: 0.0100, Mean conf: 0.0100
+
+============================================================
+DETAILED COMPARISON: STANDARD vs BAYESIAN
+============================================================
+
+Metric                                  Standard     Bayesian
+------------------------------------------------------------
+Survivors (a > 0.001)                        200          200
+Spearman ρ (decay vs activation)          0.9869       0.9952
+Max activation                          0.001182     0.001180
+Mean activation (all)                   0.001109     0.001109
+Mean confidence                              N/A       0.0100
+Confidence spread (max-min)                  N/A       0.0000
+
+Memories BOOSTED by Bayesian (top 5):
+  lion                 decay=0.575  std=0.001160  bay=0.001175  conf=0.0100  diff=+0.000015
+  clock                decay=0.897  std=0.001096  bay=0.001110  conf=0.0100  diff=+0.000014
+  chair                decay=1.289  std=0.001030  bay=0.001043  conf=0.0100  diff=+0.000013
+  lion                 decay=0.832  std=0.001113  bay=0.001125  conf=0.0100  diff=+0.000012
+  chimpanzee           decay=0.967  std=0.001092  bay=0.001102  conf=0.0100  diff=+0.000010
+
+Memories SUPPRESSED by Bayesian (top 5):
+  maple_tree           decay=1.013  std=0.001117  bay=0.001111  conf=0.0100  diff=-0.000006
+  mushroom             decay=0.515  std=0.001182  bay=0.001176  conf=0.0100  diff=-0.000005
+  whale                decay=1.374  std=0.001072  bay=0.001067  conf=0.0100  diff=-0.000005
+  pickup_truck         decay=1.249  std=0.001086  bay=0.001082  conf=0.0100  diff=-0.000005
+  mouse                decay=0.982  std=0.001119  bay=0.001114  conf=0.0100  diff=-0.000005
+
+Confidence-Decay correlation (Spearman ρ): nan
+(Does low decay → high confidence? i.e., do stronger memories become more confident?)
+
+============================================================
+WHAT BAYESIAN ADDS — THE INTERVIEW STORY
+============================================================
+
+The standard model gives you ONE number per memory: activation (strength).
+The Bayesian model gives you TWO numbers: activation AND confidence.
+
+This matters because:
+1. A memory can be STRONG but UNRELIABLE (high a, low c)
+   → e.g., a vivid but distorted memory
+2. A memory can be WEAK but CONFIDENT (low a, high c)
+   → e.g., a faded but accurate memory
+3. Effective memory = a × c captures BOTH strength and reliability
+
+The confidence-weighted replay F(a,c) = softmax(β × XᵀX × (a ⊙ c))
+means unreliable memories get LESS replay even if they're strong.
+This is more biologically plausible — the brain doesn't just replay
+the strongest memories, it replays the ones it trusts.
+
+Confidence update uses Bayes rule:
+  posterior ∝ likelihood × prior
+  where likelihood = replay weight (how much this memory was selected)
+
+This creates a FEEDBACK LOOP:
+  High confidence → more replay → more evidence → higher confidence
+  Low confidence → less replay → less evidence → lower confidence
+
+This is exactly how real memory consolidation works —
+rehearsed memories become more reliable over time.
+
+/tmp/ipykernel_472/541997485.py:319: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  conf_rho, _ = spearmanr(A.numpy(), -bay_final_c)

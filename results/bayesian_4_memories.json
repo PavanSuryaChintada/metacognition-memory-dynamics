@@ -1,0 +1,41 @@
+{
+  "source": "notebooks/colab/baysian approach/baysian_4_mem.ipynb, executed in Colab. Values copied from its printed output in results/bayesian_4_memories_output.txt; the figure is results/figures/colab/baysian/baysian 4 mem.png. Settings are the defaults of run_standard and run_bayesian in the notebook.",
+  "setup": {
+    "model": "facebook/ijepa_vith14_1k",
+    "embedding_dim": 1280,
+    "replay": "normalised",
+    "n": 4,
+    "steps": 500,
+    "h": 0.01,
+    "beta": 3.0,
+    "eta": 0.8,
+    "replay_prob": 0.3,
+    "gamma": 0.2,
+    "delta": 0.1,
+    "seed": 42,
+    "alive_threshold": 0.001,
+    "decay_rates": "torch.linspace(0.5, 1.5, 4): 0.50, 0.83, 1.17, 1.50 in the order beagle, cat, person, French bulldog"
+  },
+  "bayes": {
+    "prior_confidence": 0.5,
+    "confidence_boost": 0.05,
+    "confidence_decay_rate": 0.01,
+    "confidence_weight": 0.5,
+    "floor": 0.01,
+    "ceiling": 0.99
+  },
+  "embedding_norms_printed": { "beagle": 17.6, "cat": 16.2, "person": 17.2, "french_bulldog": 16.5 },
+  "cosine_similarity": [
+    [1.0, 0.319, 0.3, 0.37],
+    [0.319, 1.0, 0.449, 0.428],
+    [0.3, 0.449, 1.0, 0.467],
+    [0.37, 0.428, 0.467, 1.0]
+  ],
+  "memories": [
+    { "label": "beagle", "decay_rate": 0.5, "standard": 0.0956, "bayesian": 0.0906, "difference_printed": -0.0049, "confidence": 0.01, "effective_printed": 0.0009 },
+    { "label": "cat", "decay_rate": 0.8333, "standard": 0.0481, "bayesian": 0.0486, "difference_printed": 0.0006, "confidence": 0.01, "effective_printed": 0.0005 },
+    { "label": "person", "decay_rate": 1.1667, "standard": 0.0332, "bayesian": 0.0343, "difference_printed": 0.0011, "confidence": 0.01, "effective_printed": 0.0003 },
+    { "label": "french_bulldog", "decay_rate": 1.5, "standard": 0.0271, "bayesian": 0.0277, "difference_printed": 0.0006, "confidence": 0.01, "effective_printed": 0.0003 }
+  ],
+  "survivors": { "standard": 4, "bayesian": 4 }
+}
